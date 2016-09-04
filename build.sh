@@ -28,7 +28,7 @@ git config user.name "Release Manager"
 git config user.email "Release.Manager@jenkins.com.au"
 git add --all
 git commit -m "bump version"
-git push https://cjmason8:$GIT_PASS@github.com/cjmason8/expenseManager.git
+git push https://cjmason8:${GIT_PASS}@github.com/cjmason8/expenseManager.git
 
 docker login --username=cjmason8 --password=$PASSWORD
 
