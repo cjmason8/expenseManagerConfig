@@ -25,6 +25,7 @@ TAG_NAME="${TAG_NAME%.*}.$((${TAG_NAME##*.}+1))"
 echo $TAG_NAME > VERSION
 
 echo "commiting bump version"
+git checkout master
 git config user.name "Release Manager"
 git config user.email "Release.Manager@jenkins.com.au"
 git add --all
