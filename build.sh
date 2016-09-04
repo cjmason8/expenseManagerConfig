@@ -4,12 +4,15 @@ set -e
 
 FULL_IMAGE_NAME="expense-manager"
 
-while getopts ":p:" opt; do
+while getopts ":p:gp:" opt; do
   case $opt in
     # Provide commands to run
     p)
       PASSWORD="${OPTARG}"
     ;;
+    gp)
+      GIT_PASS="${OPTARG}"
+    ;;    
     \?)
       echo "Invalid option -$OPTARG" >&2
     ;;
@@ -20,6 +23,12 @@ echo "Building version."
 TAG_NAME=$(<VERSION)
 TAG_NAME="${TAG_NAME%.*}.$((${TAG_NAME##*.}+1))"
 echo $TAG_NAME > VERSION
+
+git config user.name "Release Manager"
+git config user.email "Release.Manager@jenkins.com.au"
+git add --all
+git commit -m "bump version"
+git push https://cjmason8:${GIT_PASS}@github.com/cjmason8/expenseManager.git
 
 docker login --username=cjmason8 --password=$PASSWORD
 
