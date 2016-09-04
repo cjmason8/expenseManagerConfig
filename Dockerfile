@@ -30,6 +30,6 @@ RUN ls -al
 EXPOSE 8081
 #CMD ["cd /app/expenseManager && ./mvnw spring-boot:run"]
 
-ADD /maven/expenseManager-0.0.1-SNAPSHOT.jar myapp.jar
+ADD /app/expenseManager/target/expenseManager-0.0.1-SNAPSHOT.jar myapp.jar
 RUN sh -c 'touch /myapp.jar'
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/myapp.jar"]
