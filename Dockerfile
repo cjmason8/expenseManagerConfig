@@ -24,12 +24,12 @@ COPY .mvn /app/expenseManager/.mvn
 COPY pom.xml /app/expenseManager
 RUN chmod +x /app/expenseManager/mvnw
 RUN cd /app/expenseManager && ./mvnw install
-RUN ls -al
 
 # Start app
 EXPOSE 8081
 #CMD ["cd /app/expenseManager && ./mvnw spring-boot:run"]
 
+RUN ls -al /app/expenseManager/target
 ADD /app/expenseManager/target/expenseManager-0.0.1-SNAPSHOT.jar myapp.jar
 RUN sh -c 'touch /myapp.jar'
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/myapp.jar"]
