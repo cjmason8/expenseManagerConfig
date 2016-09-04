@@ -4,13 +4,13 @@ set -e
 
 FULL_IMAGE_NAME="expense-manager"
 
-while getopts ":p:gp:" opt; do
+while getopts ":p:d:" opt; do
   case $opt in
     # Provide commands to run
     p)
       PASSWORD="${OPTARG}"
     ;;
-    gp)
+    d)
       GIT_PASS="${OPTARG}"
     ;;    
     \?)
