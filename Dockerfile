@@ -28,4 +28,4 @@ RUN ls -al
 
 # Start Tomcat after container boots
 EXPOSE 8081
-CMD ["/app/expenseManager/mvnw2 spring-boot:run"]
+CMD ["/app/expenseManager/mvnw spring-boot:run"]
