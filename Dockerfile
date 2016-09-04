@@ -26,6 +26,10 @@ RUN chmod +x /app/expenseManager/mvnw
 RUN cd /app/expenseManager && ./mvnw install
 RUN ls -al
 
-# Start Tomcat after container boots
+# Start app
 EXPOSE 8081
-CMD ["cd /app/expenseManager && ./mvnw spring-boot:run"]
+#CMD ["cd /app/expenseManager && ./mvnw spring-boot:run"]
+
+ADD target/expenseManager-0.0.1-SNAPSHOT.jar myapp.jar
+RUN sh -c 'touch /myapp.jar'
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/myapp.jar"]
