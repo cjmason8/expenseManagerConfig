@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import au.com.mason.expenseManager.dao.BaseDao;
 import au.com.mason.expenseManager.dao.WeekBeginningDao;
@@ -110,7 +109,7 @@ public class WeekBeginningService
     return total;
   }
   
-  @Transactional
+  //@Transactional
   public WeekBeginning create(LocalDate startDate)
   {
     WeekBeginning weekBeginning = new WeekBeginning();
@@ -216,7 +215,7 @@ public class WeekBeginningService
     this.rentalIncomeLineService.update(carryOver);
   }
   
-  @Transactional
+  //@Transactional
   public void updateCarryOvers()
   {
     BigDecimal offSetBalance = this.settingsService.getOffsetBalance();
@@ -242,7 +241,7 @@ public class WeekBeginningService
     }
   }
   
-  @Transactional
+  //@Transactional
   public void changeOverCurrentWeek(WeekBeginning newCurrentWeek)
   {
     LocalDate previosWeekStartDate = newCurrentWeek.getStartDate().minusWeeks(1);
