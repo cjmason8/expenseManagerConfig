@@ -32,4 +32,4 @@ EXPOSE 8081
 RUN ls -al /app/expenseManager/target
 #COPY ./target/expenseManager-0.0.1-SNAPSHOT.jar ./myapp.jar
 RUN sh -c 'touch /app/expenseManager/target/expenseManager-0.0.1-SNAPSHOT.jar'
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/expenseManager/target/expenseManager-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-Dspring.port=8081 -Djava.security.egd=file:/dev/./urandom","-jar","/app/expenseManager/target/expenseManager-0.0.1-SNAPSHOT.jar"]
