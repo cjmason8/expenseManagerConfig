@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 class TestRestController {
 
-	@CrossOrigin(origins = "http://localhost:45612")
+	@CrossOrigin(origins = "http://54.213.123.227:45612")
 	@RequestMapping("/test")
     String home(@RequestParam String type) {
 		if (type.equals("Joe")) {
