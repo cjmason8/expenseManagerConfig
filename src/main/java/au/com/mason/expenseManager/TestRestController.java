@@ -15,7 +15,7 @@ class TestRestController {
 	@CrossOrigin(origins = {"http://54.191.108.166:45612", "http://localhost:45612"})
 	@RequestMapping("/test")
     String home(@RequestParam String type) {
-		LOGGER.info("Entering test");
+		LOGGER.debug("Entering test");
 		if (type.equals("Joe")) {
 			return "{\"msg\":\"Your the best Joe!\"}";
 		}
