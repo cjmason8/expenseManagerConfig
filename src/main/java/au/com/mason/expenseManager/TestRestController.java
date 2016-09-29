@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 class TestRestController {
 	
-	private static FluentLogger LOG = FluentLogger.getLogger("fluentd.test", "localhost", 24227);
+	private static FluentLogger LOG = FluentLogger.getLogger("fluentd.test", "localhost", 24224);
 
 	@CrossOrigin(origins = {"http://54.191.108.166:45612", "http://localhost:45612"})
 	@RequestMapping("/test")
