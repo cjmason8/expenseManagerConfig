@@ -1,0 +1,9 @@
+expenseManager:
+  image: cjmason8/expense-manager:latest
+  log_driver: fluentd
+  log_opt:
+    fluentd-address: "127.0.0.1:24224"
+    tag: "docker.{{.ImageName}}"
+  ports:
+    - "8081:8080"
+

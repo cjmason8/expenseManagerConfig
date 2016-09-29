@@ -1,6 +1,7 @@
 package au.com.mason.expenseManager;
 
-import org.fluentd.logger.FluentLogger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 class TestRestController {
 	
-	private static FluentLogger LOG = FluentLogger.getLogger("fluentd.test", "localhost", 24224);
+	private static final Logger LOGGER = LogManager.getLogger(TestRestController.class.getName());
 
 	@CrossOrigin(origins = {"http://54.191.108.166:45612", "http://localhost:45612"})
 	@RequestMapping("/test")
     String home(@RequestParam String type) {
-		LOG.log("test_label", "test_key", "Entering test");
+		LOGGER.debug("All is good in the world of science !!!");
 		if (type.equals("Joe")) {
 			return "{\"msg\":\"Your the best Joe!\"}";
 		}
