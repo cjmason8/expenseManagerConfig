@@ -4,8 +4,8 @@
       "appenders": {
          "RollingFile": {
             "name":"File",
-            "fileName":"/var/log/expenseManager.log",
-            "filePattern":"/var/log/expenseManager-backup-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz",
+            "fileName":"/applogs/expenseManager.log",
+            "filePattern":"/applogs/expenseManager-backup-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz",
             "PatternLayout": {
                "pattern":"%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"
             },
@@ -21,7 +21,7 @@
       },
       "loggers": {
          "root": {
-            "level":"debug",
+            "level":"info",
             "appender-ref": {
               "ref":"File"
             }
