@@ -1,5 +1,5 @@
 expenseManager:
-  image: cjmason8/expense-manager:latest
+  image: cjmason8/expense-manager:1.5.0
   log_driver: fluentd
   log_opt:
     fluentd-address: "172.17.0.1:24224"
