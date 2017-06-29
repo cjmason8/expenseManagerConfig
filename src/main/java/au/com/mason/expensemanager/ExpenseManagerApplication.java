@@ -1,4 +1,4 @@
-package au.com.mason.expenseManager;
+package au.com.mason.expensemanager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
