@@ -18,30 +18,30 @@ public class ExpenseController {
 	@Autowired
 	private ExpenseService expenseService;
 	
-	@RequestMapping(value = "/events", method = RequestMethod.GET, produces = "application/json")
-	List<ExpenseDto> events() throws Exception {
+	@RequestMapping(value = "/expenses", method = RequestMethod.GET, produces = "application/json")
+	List<ExpenseDto> expenses() throws Exception {
 		return expenseService.getAll();
         
     }
 	
-	@RequestMapping(value = "/events/{id}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.GET, produces = "application/json")
 	ExpenseDto getExpense(@PathVariable Long id) throws Exception {
 		return expenseService.getById(id);
         
     }
 	
-	@RequestMapping(value = "/events", method = RequestMethod.POST, produces = "application/json", consumes = "application/json", headers = "Accept=application/json")
-	ExpenseDto addExpense(@RequestBody ExpenseDto expense) {
+	@RequestMapping(value = "/expenses", method = RequestMethod.POST, produces = "application/json", consumes = "application/json", headers = "Accept=application/json")
+	ExpenseDto addExpense(@RequestBody ExpenseDto expense) throws Exception {
 		
 		return expenseService.addExpense(expense);
     }
 	
-	@RequestMapping(value = "/events/{id}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json", headers = "Accept=application/json")
-	ExpenseDto updateExpense(@RequestBody ExpenseDto event, Long id) throws Exception {
-		return expenseService.updateExpense(event);
+	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json", headers = "Accept=application/json")
+	ExpenseDto updateExpense(@RequestBody ExpenseDto expense, Long id) throws Exception {
+		return expenseService.updateExpense(expense);
     }
 	
-	@RequestMapping(value = "/events/{id}", method = RequestMethod.DELETE, produces = "application/json", consumes = "application/json", headers = "Accept=application/json")
+	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.DELETE, produces = "application/json", consumes = "application/json", headers = "Accept=application/json")
 	String updateExpense(@PathVariable Long id) throws Exception {
 		
 		expenseService.deleteExpense(id);

@@ -14,10 +14,10 @@ public interface ExpenseMapper {
 	
 	ExpenseMapper INSTANCE = Mappers.getMapper( ExpenseMapper.class );
 	 
-    Expense expenseDtoToExpense(ExpenseDto expenseDto);
+    Expense expenseDtoToExpense(ExpenseDto expenseDto) throws Exception;
     
-    Expense expenseDtoToExpense(ExpenseDto expenseDto, @MappingTarget Expense expense);
+    Expense expenseDtoToExpense(ExpenseDto expenseDto, @MappingTarget Expense expense) throws Exception;
     
-    ExpenseDto expenseToExpenseDto(Expense expense);
+    ExpenseDto expenseToExpenseDto(Expense expense) throws Exception;
 
 }

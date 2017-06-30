@@ -18,10 +18,10 @@ import au.com.mason.expensemanager.util.EnvUtil;
 @Component
 public class UserAuthenticationService {
 	
-	private static final String EVENT_MANAGER = "EVENT_MANAGER";
+	private static final String EXPENSE_MANAGER = "EXPENSE_MANAGER";
 	
 	public String login(LoginInput loginInput) throws Exception {
-		loginInput.setApplicationType(EVENT_MANAGER);
+		loginInput.setApplicationType(EXPENSE_MANAGER);
 		
 		HttpClient httpClient = HttpClientBuilder.create().build(); 
 

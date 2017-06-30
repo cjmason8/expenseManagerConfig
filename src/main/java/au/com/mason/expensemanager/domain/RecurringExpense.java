@@ -13,9 +13,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "expenses")
-public class Expense {
+public class RecurringExpense {
 	
-	public Expense() {}
+	public RecurringExpense() {}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,8 +24,10 @@ public class Expense {
 	@Enumerated(EnumType.STRING)
 	private ExpenseType expenseType;
 	private BigDecimal amount;
-	private Date dueDate;
-	private Boolean paid = Boolean.FALSE;
+	@Enumerated(EnumType.STRING)
+	private RecurringType recurringType;
+	private Date startDate;
+	private Date endDate;
 	
 	public long getId() {
 		return id;
@@ -51,20 +53,28 @@ public class Expense {
 		this.amount = amount;
 	}
 
-	public Date getDueDate() {
-		return dueDate;
+	public RecurringType getRecurringType() {
+		return recurringType;
 	}
 
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
+	public void setRecurringType(RecurringType recurringType) {
+		this.recurringType = recurringType;
 	}
 
-	public Boolean getPaid() {
-		return paid;
+	public Date getStartDate() {
+		return startDate;
 	}
 
-	public void setPaid(Boolean paid) {
-		this.paid = paid;
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 	
 }

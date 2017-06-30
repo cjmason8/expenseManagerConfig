@@ -9,23 +9,24 @@ import org.springframework.stereotype.Component;
 import au.com.mason.expensemanager.dao.ExpenseDao;
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.dto.ExpenseDto;
-import au.com.mason.expensemanager.mapper.ExpenseMapper;
+import au.com.mason.expensemanager.mapper.ExpenseMapperWrapper;
 
 @Component
 public class ExpenseService {
 	
-	private ExpenseMapper expenseMapper = ExpenseMapper.INSTANCE;
+	@Autowired
+	private ExpenseMapperWrapper expenseMapperWrapper;
 	
 	@Autowired
 	private ExpenseDao expenseDao;
 	
-	public List<ExpenseDto> getAll() {
+	public List<ExpenseDto> getAll() throws Exception {
 		List<Expense> expenses = expenseDao.getAll();
 		List<ExpenseDto> expenseDtos = new ArrayList<>();
 		
-		expenses.forEach(expense -> {
-			expenseDtos.add(expenseMapper.expenseToExpenseDto(expense));
-		});
+		for (Expense expense : expenses) {
+			expenseDtos.add(expenseMapperWrapper.expenseToExpenseDto(expense));
+		}
 		
 		return expenseDtos;
 	}
@@ -34,23 +35,23 @@ public class ExpenseService {
 		return expenseDao.getById(id);
 	}
 	
-	public ExpenseDto getById(Long id) {
+	public ExpenseDto getById(Long id) throws Exception {
 		Expense expense = expenseDao.getById(id);
 
-		return expenseMapper.expenseToExpenseDto(expense);
+		return expenseMapperWrapper.expenseToExpenseDto(expense);
 	}
 	
-	public ExpenseDto addExpense(ExpenseDto expenseDto) {
-		Expense expense = expenseMapper.expenseDtoToExpense(expenseDto);
+	public ExpenseDto addExpense(ExpenseDto expenseDto) throws Exception {
+		Expense expense = expenseMapperWrapper.expenseDtoToExpense(expenseDto);
 		
-		return expenseMapper.expenseToExpenseDto(expenseDao.create(expense));
+		return expenseMapperWrapper.expenseToExpenseDto(expenseDao.create(expense));
 	}
 	
-	public ExpenseDto updateExpense(ExpenseDto expenseDto) {
+	public ExpenseDto updateExpense(ExpenseDto expenseDto) throws Exception {
 		Expense expense = expenseDao.getById(expenseDto.getId());
-		expenseMapper.expenseDtoToExpense(expenseDto, expense);
+		expenseMapperWrapper.expenseDtoToExpense(expenseDto, expense);
 		
-		return expenseMapper.expenseToExpenseDto(expenseDao.update(expense));
+		return expenseMapperWrapper.expenseToExpenseDto(expenseDao.update(expense));
 	}
 	
 	public void deleteExpense(Long id) {

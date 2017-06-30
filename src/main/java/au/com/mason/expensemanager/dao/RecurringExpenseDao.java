@@ -8,29 +8,29 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
-import au.com.mason.expensemanager.domain.Expense;
+import au.com.mason.expensemanager.domain.RecurringExpense;
 
 @Repository
 @Transactional
-public class ExpenseDao {
+public class RecurringExpenseDao {
   
   /**
    * Save the expense in the database.
    */
-  public Expense create(Expense expense) {
-    entityManager.persist(expense);
+  public RecurringExpense create(RecurringExpense recurringExpense) {
+    entityManager.persist(recurringExpense);
     
-    return expense;
+    return recurringExpense;
   }
   
   /**
    * Delete the expense from the database.
    */
-  public void delete(Expense expense) {
-    if (entityManager.contains(expense))
-      entityManager.remove(expense);
+  public void delete(RecurringExpense recurringExpense) {
+    if (entityManager.contains(recurringExpense))
+      entityManager.remove(recurringExpense);
     else
-      entityManager.remove(entityManager.merge(expense));
+      entityManager.remove(entityManager.merge(recurringExpense));
     return;
   }
   
@@ -38,11 +38,11 @@ public class ExpenseDao {
    * Delete the expense from the database.
    */
   public void deleteById(Long id) {
-	Expense expense = getById(id);
-    if (entityManager.contains(expense))
-      entityManager.remove(expense);
+	RecurringExpense recurringExpense = getById(id);
+    if (entityManager.contains(recurringExpense))
+      entityManager.remove(recurringExpense);
     else
-      entityManager.remove(entityManager.merge(expense));
+      entityManager.remove(entityManager.merge(recurringExpense));
     return;
   }  
   
@@ -51,21 +51,21 @@ public class ExpenseDao {
    */
   @SuppressWarnings("unchecked")
   public List getAll() {
-    return entityManager.createQuery("from Expense").getResultList();
+    return entityManager.createQuery("from RecurringExpense").getResultList();
   }
   
   /**
    * Return the expense having the passed id.
    */
-  public Expense getById(long id) {
-    return entityManager.find(Expense.class, id);
+  public RecurringExpense getById(long id) {
+    return entityManager.find(RecurringExpense.class, id);
   }
 
   /**
    * Update the passed expense in the database.
    */
-  public Expense update(Expense expense) {
-    return entityManager.merge(expense);
+  public RecurringExpense update(RecurringExpense recurringExpense) {
+    return entityManager.merge(recurringExpense);
   }
 
   // Private fields
