@@ -18,7 +18,9 @@ public class RecurringExpenseMapperWrapper {
 	public RecurringExpense recurringExpenseDtoToRecurringExpense(RecurringExpenseDto recurringExpenseDto) throws Exception {
 		RecurringExpense recurringExpense = recurringExpenseMapper.recurringExpenseDtoToRecurringExpense(recurringExpenseDto);
 		recurringExpense.setStartDate(FORMATTER.parse(recurringExpenseDto.getStartDateString()));
-		recurringExpense.setEndDate(FORMATTER.parse(recurringExpenseDto.getEndDateString()));
+		if (recurringExpenseDto.getEndDateString() != null) {
+			recurringExpense.setEndDate(FORMATTER.parse(recurringExpenseDto.getEndDateString()));
+		}
 		
 		return recurringExpense;
 	}
@@ -32,11 +34,17 @@ public class RecurringExpenseMapperWrapper {
     }
     
     public RecurringExpenseDto recurringExpenseToRecurringExpenseDto(RecurringExpense recurringExpense) throws Exception {
-    	RecurringExpenseDto expenseDto = recurringExpenseMapper.recurringExpenseToRecurringExpenseDto(recurringExpense);
-    	expenseDto.setStartDateString(FORMATTER.format(recurringExpense.getStartDate()));
-    	expenseDto.setEndDateString(FORMATTER.format(recurringExpense.getEndDate()));
+    	RecurringExpenseDto recurringExpenseDto = recurringExpenseMapper.recurringExpenseToRecurringExpenseDto(recurringExpense);
+    	if (recurringExpense.getStartDate()!= null) {
+    		recurringExpenseDto.setStartDateString(FORMATTER.format(recurringExpense.getStartDate()));
+    	}
+    	if (recurringExpense.getEndDate() != null) {
+    		recurringExpenseDto.setEndDateString(FORMATTER.format(recurringExpense.getEndDate()));
+    	}
+    	recurringExpenseDto.setExpenseTypeDescription(recurringExpense.getExpenseType().getDescription());
+    	recurringExpenseDto.setRecurringTypeDescription(recurringExpense.getRecurringType().getDescription());
     	
-    	return expenseDto;
+    	return recurringExpenseDto;
     }
 
 }

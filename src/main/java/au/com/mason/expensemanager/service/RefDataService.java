@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import au.com.mason.expensemanager.domain.ExpenseType;
+import au.com.mason.expensemanager.domain.RecurringType;
 import au.com.mason.expensemanager.dto.RefDataDto;
 import au.com.mason.expensemanager.mapper.RefDataMapper;
 
@@ -20,6 +21,12 @@ public class RefDataService {
 		List<RefDataDto> refDataDtos = new ArrayList<>();		
 		if (type.equals("expenseType")) {
 			Arrays.asList(ExpenseType.values()).forEach(refData -> {
+				refDataDtos.add(refDataMapper.refDataToRefDataDto(refData));
+			});
+			
+		}
+		else if (type.equals("recurringType")) {
+			Arrays.asList(RecurringType.values()).forEach(refData -> {
 				refDataDtos.add(refDataMapper.refDataToRefDataDto(refData));
 			});
 			

@@ -1,5 +1,7 @@
 package au.com.mason.expensemanager.dao;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -66,6 +68,15 @@ public class ExpenseDao {
    */
   public Expense update(Expense expense) {
     return entityManager.merge(expense);
+  }
+  
+  public List<Expense> getExpensesForWeek(LocalDate weekStartDate) {
+	  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	  String sql = "from Expense where dueDate > to_date('" + weekStartDate.format(formatter) + "', 'yyyy-mm-dd') " + 
+			  "AND dueDate < to_date('" + weekStartDate.plusDays(6).format(formatter) + "', 'yyyy-mm-dd')";
+	  System.out.println(sql);
+	return entityManager.createQuery(sql).getResultList();
   }
 
   // Private fields

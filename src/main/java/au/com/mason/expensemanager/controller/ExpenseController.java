@@ -1,5 +1,7 @@
 package au.com.mason.expensemanager.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,8 @@ public class ExpenseController {
 	
 	@RequestMapping(value = "/expenses", method = RequestMethod.GET, produces = "application/json")
 	List<ExpenseDto> expenses() throws Exception {
-		return expenseService.getAll();
+		LocalDate startOfWeek = LocalDate.parse("2017-07-03", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		return expenseService.getExpensesForWeek(startOfWeek);
         
     }
 	

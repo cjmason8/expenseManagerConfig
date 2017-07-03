@@ -1,6 +1,6 @@
 package au.com.mason.expensemanager.domain;
 
-public enum RecurringType {
+public enum RecurringType implements RefData {
 
 	WEEKLY("Weekly"), FORTNIGHTLY("Fortnightly"), MONTHLY("Monthly"), YEARLY("Yearly");
 	

@@ -1,5 +1,6 @@
 package au.com.mason.expensemanager.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,17 @@ public class ExpenseService {
 		
 		return expenseDtos;
 	}
+	
+	public List<ExpenseDto> getExpensesForWeek(LocalDate startOfWeek) throws Exception {
+		List<Expense> expenses = expenseDao.getExpensesForWeek(startOfWeek);
+		List<ExpenseDto> expenseDtos = new ArrayList<>();
+		
+		for (Expense expense : expenses) {
+			expenseDtos.add(expenseMapperWrapper.expenseToExpenseDto(expense));
+		}
+		
+		return expenseDtos;
+	}	
 	
 	public Expense getExpenseById(Long id) {
 		return expenseDao.getById(id);

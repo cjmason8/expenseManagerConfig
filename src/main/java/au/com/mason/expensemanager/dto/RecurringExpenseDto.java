@@ -3,6 +3,8 @@ package au.com.mason.expensemanager.dto;
 public class RecurringExpenseDto {
 
 	private Integer id;
+	private String expenseType;
+	private String expenseTypeDescription;
 	private String recurringType;
 	private String recurringTypeDescription;
 	private String amount;
@@ -55,6 +57,22 @@ public class RecurringExpenseDto {
 	
 	public void setEndDateString(String endDateString) {
 		this.endDateString = endDateString;
+	}
+
+	public String getExpenseType() {
+		return expenseType;
+	}
+
+	public void setExpenseType(String expenseType) {
+		this.expenseType = expenseType;
+	}
+
+	public String getExpenseTypeDescription() {
+		return expenseTypeDescription;
+	}
+
+	public void setExpenseTypeDescription(String expenseTypeDescription) {
+		this.expenseTypeDescription = expenseTypeDescription;
 	}
 	
 }

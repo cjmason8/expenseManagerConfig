@@ -44,7 +44,7 @@ public class RecurringExpenseService {
 	public RecurringExpenseDto addRecurringExpense(RecurringExpenseDto recurringExpenseDto) throws Exception {
 		RecurringExpense recurringExpense = recurringExpenseMapperWrapper.recurringExpenseDtoToRecurringExpense(recurringExpenseDto);
 		
-		return recurringExpenseMapperWrapper.recurringExpenseToRecurringExpenseDto(recurringExpense);
+		return recurringExpenseMapperWrapper.recurringExpenseToRecurringExpenseDto(recurringExpenseDao.create(recurringExpense));
 	}
 	
 	public RecurringExpenseDto updateRecurringExpense(RecurringExpenseDto recurringExpenseDto) throws Exception {

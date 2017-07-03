@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "expenses")
+@Table(name = "recurring_expenses")
 public class RecurringExpense {
 	
 	public RecurringExpense() {}
