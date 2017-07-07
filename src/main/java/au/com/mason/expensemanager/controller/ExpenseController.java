@@ -27,9 +27,9 @@ public class ExpenseController {
 	@RequestMapping(value = "/expenses/week", method = RequestMethod.GET, produces = "application/json")
 	ExpensesForWeekDto expensesForWeek() throws Exception {
 
-		LocalDate now = LocalDate.now();
-		return new ExpensesForWeekDto(expenseService.getExpensesForWeek(DateUtil.getMonday(now)), 
-				now.minusDays(7).format(FORMATTER), now.plusDays(7).format(FORMATTER), DateUtil.getMonday(now).format(FORMATTER));
+		LocalDate monday = DateUtil.getMonday(LocalDate.now());
+		return new ExpensesForWeekDto(expenseService.getExpensesForWeek(monday), 
+				monday.minusDays(7).format(FORMATTER), monday.plusDays(7).format(FORMATTER), monday.format(FORMATTER));
     }
 	
 	@RequestMapping(value = "/expenses/week/{date}", method = RequestMethod.GET, produces = "application/json")
