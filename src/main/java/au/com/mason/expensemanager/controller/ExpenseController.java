@@ -12,19 +12,32 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import au.com.mason.expensemanager.dto.ExpenseDto;
+import au.com.mason.expensemanager.dto.ExpensesForWeekDto;
 import au.com.mason.expensemanager.service.ExpenseService;
+import au.com.mason.expensemanager.util.DateUtil;
 
 @RestController
 public class ExpenseController {
 	
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	
 	@Autowired
 	private ExpenseService expenseService;
 	
-	@RequestMapping(value = "/expenses", method = RequestMethod.GET, produces = "application/json")
-	List<ExpenseDto> expenses() throws Exception {
-		LocalDate startOfWeek = LocalDate.parse("2017-07-03", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		return expenseService.getExpensesForWeek(startOfWeek);
-        
+	@RequestMapping(value = "/expenses/week", method = RequestMethod.GET, produces = "application/json")
+	ExpensesForWeekDto expensesForWeek() throws Exception {
+
+		LocalDate now = LocalDate.now();
+		return new ExpensesForWeekDto(expenseService.getExpensesForWeek(DateUtil.getMonday(now)), 
+				now.minusDays(7).format(FORMATTER), now.plusDays(7).format(FORMATTER), DateUtil.getMonday(now).format(FORMATTER));
+    }
+	
+	@RequestMapping(value = "/expenses/week/{date}", method = RequestMethod.GET, produces = "application/json")
+	ExpensesForWeekDto expensesForSpecificWeek(@PathVariable String date) throws Exception {
+
+		LocalDate localDate = LocalDate.parse(date, FORMATTER);
+		return new ExpensesForWeekDto(expenseService.getExpensesForWeek(localDate), 
+				localDate.minusDays(7).format(FORMATTER), localDate.plusDays(7).format(FORMATTER), date);
     }
 	
 	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.GET, produces = "application/json")

@@ -1,7 +1,7 @@
 package au.com.mason.expensemanager.mapper;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Component;
 
@@ -11,15 +11,15 @@ import au.com.mason.expensemanager.dto.RecurringExpenseDto;
 @Component
 public class RecurringExpenseMapperWrapper {
 	
-	private static final DateFormat FORMATTER = new SimpleDateFormat("dd/mm/yyyy");
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	
 	private RecurringExpenseMapper recurringExpenseMapper = RecurringExpenseMapper.INSTANCE;
 	
 	public RecurringExpense recurringExpenseDtoToRecurringExpense(RecurringExpenseDto recurringExpenseDto) throws Exception {
 		RecurringExpense recurringExpense = recurringExpenseMapper.recurringExpenseDtoToRecurringExpense(recurringExpenseDto);
-		recurringExpense.setStartDate(FORMATTER.parse(recurringExpenseDto.getStartDateString()));
+		recurringExpense.setStartDate(LocalDate.parse(recurringExpenseDto.getStartDateString(), FORMATTER));
 		if (recurringExpenseDto.getEndDateString() != null) {
-			recurringExpense.setEndDate(FORMATTER.parse(recurringExpenseDto.getEndDateString()));
+			recurringExpense.setEndDate(LocalDate.parse(recurringExpenseDto.getEndDateString(), FORMATTER));
 		}
 		
 		return recurringExpense;
@@ -27,8 +27,10 @@ public class RecurringExpenseMapperWrapper {
     
     public RecurringExpense recurringExpenseDtoToRecurringExpense(RecurringExpenseDto recurringExpenseDto, RecurringExpense recurringExpense) throws Exception {
     	RecurringExpense existingRecurringExpense = recurringExpenseMapper.recurringExpenseDtoToRecurringExpense(recurringExpenseDto, recurringExpense);
-    	existingRecurringExpense.setStartDate(FORMATTER.parse(recurringExpenseDto.getStartDateString()));
-    	existingRecurringExpense.setEndDate(FORMATTER.parse(recurringExpenseDto.getEndDateString()));
+    	existingRecurringExpense.setStartDate(LocalDate.parse(recurringExpenseDto.getStartDateString(), FORMATTER));
+    	if (recurringExpenseDto.getEndDateString() != null) {
+    		existingRecurringExpense.setEndDate(LocalDate.parse(recurringExpenseDto.getEndDateString(), FORMATTER));
+    	}
 		
 		return existingRecurringExpense;    	
     }

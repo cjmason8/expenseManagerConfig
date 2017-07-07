@@ -1,14 +1,18 @@
 package au.com.mason.expensemanager.domain;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -26,6 +30,10 @@ public class Expense {
 	private BigDecimal amount;
 	private Date dueDate;
 	private Boolean paid = Boolean.FALSE;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "recurringExpenseId")
+	private RecurringExpense recurringExpense;
 	
 	public long getId() {
 		return id;
@@ -51,12 +59,12 @@ public class Expense {
 		this.amount = amount;
 	}
 
-	public Date getDueDate() {
-		return dueDate;
+	public LocalDate getDueDate() {
+		return new java.sql.Date(dueDate.getTime()).toLocalDate();
 	}
 
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
+	public void setDueDate(LocalDate dueDate) {
+		this.dueDate = java.sql.Date.valueOf(dueDate);
 	}
 
 	public Boolean getPaid() {
@@ -65,6 +73,14 @@ public class Expense {
 
 	public void setPaid(Boolean paid) {
 		this.paid = paid;
+	}
+
+	public RecurringExpense getRecurringExpense() {
+		return recurringExpense;
+	}
+
+	public void setRecurringExpense(RecurringExpense recurringExpense) {
+		this.recurringExpense = recurringExpense;
 	}
 	
 }

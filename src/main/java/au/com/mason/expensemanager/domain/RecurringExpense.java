@@ -1,6 +1,7 @@
 package au.com.mason.expensemanager.domain;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -61,20 +62,24 @@ public class RecurringExpense {
 		this.recurringType = recurringType;
 	}
 
-	public Date getStartDate() {
-		return startDate;
+	public LocalDate getStartDate() {
+		return new java.sql.Date(startDate.getTime()).toLocalDate();
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+	public void setStartDate(LocalDate startDate) {
+		this.startDate = java.sql.Date.valueOf(startDate);
 	}
 
-	public Date getEndDate() {
-		return endDate;
+	public LocalDate getEndDate() {
+		if (endDate != null) {
+			return new java.sql.Date(endDate.getTime()).toLocalDate();
+		}
+		
+		return null;
 	}
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = java.sql.Date.valueOf(endDate);
 	}
 	
 }

@@ -8,6 +8,7 @@ public class ExpenseDto {
 	private String amount;
 	private String dueDateString;
 	private Boolean paid;
+	private String week;
 
 	public Long getId() {
 		return id;
@@ -55,6 +56,14 @@ public class ExpenseDto {
 
 	public void setPaid(Boolean paid) {
 		this.paid = paid;
+	}
+
+	public String getWeek() {
+		return week;
+	}
+
+	public void setWeek(String week) {
+		this.week = week;
 	}
 
 }

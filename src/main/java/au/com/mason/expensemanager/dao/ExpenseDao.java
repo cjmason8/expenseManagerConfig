@@ -6,11 +6,13 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
 import au.com.mason.expensemanager.domain.Expense;
+import au.com.mason.expensemanager.domain.RecurringExpense;
 
 @Repository
 @Transactional
@@ -73,11 +75,33 @@ public class ExpenseDao {
   public List<Expense> getExpensesForWeek(LocalDate weekStartDate) {
 	  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-	  String sql = "from Expense where dueDate > to_date('" + weekStartDate.format(formatter) + "', 'yyyy-mm-dd') " + 
-			  "AND dueDate < to_date('" + weekStartDate.plusDays(6).format(formatter) + "', 'yyyy-mm-dd')";
-	  System.out.println(sql);
-	return entityManager.createQuery(sql).getResultList();
+	  String sql = "from Expense where dueDate >= to_date('" + weekStartDate.format(formatter) + "', 'yyyy-mm-dd') " + 
+			  "AND dueDate <= to_date('" + weekStartDate.plusDays(6).format(formatter) + "', 'yyyy-mm-dd')";
+
+	  return entityManager.createQuery(sql).getResultList();
   }
+  
+  public List<Expense> getExpensesPastDate(LocalDate date) {
+	  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	  String sql = "from Expense where dueDate > to_date('" + date.format(formatter) + "', 'yyyy-mm-dd')";
+
+	  return entityManager.createQuery(sql).getResultList();
+  }  
+  
+  public List<Expense> getExpensesPastDate(LocalDate date, RecurringExpense recurringExpense) {
+	  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	  String sql = "from Expense where dueDate > to_date('" + date.format(formatter) + "', 'yyyy-mm-dd') and recurringExpense = :recurringExpense";
+	  Query query = entityManager.createQuery(sql);
+	  query.setParameter("recurringExpense", recurringExpense);
+	  
+	return query.getResultList();
+  }
+  
+  public void deleteExpenses(Long recurringExpenseId) {
+	  entityManager.createQuery("delete from Expense where recurringExpense.id = " + recurringExpenseId).executeUpdate();
+  }  
 
   // Private fields
   
