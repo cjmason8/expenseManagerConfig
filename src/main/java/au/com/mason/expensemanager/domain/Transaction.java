@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,22 +14,25 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "recurring_expenses")
-public class RecurringExpense {
+@Table(name="transactions")
+@DiscriminatorColumn(name = "transactionType")
+public abstract class Transaction<T extends RefData> {
 	
-	public RecurringExpense() {}
+	public Transaction() {}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
-	@Enumerated(EnumType.STRING)
-	private ExpenseType expenseType;
 	private BigDecimal amount;
+	private Date dueDate;
+	
 	@Enumerated(EnumType.STRING)
 	private RecurringType recurringType;
 	private Date startDate;
 	private Date endDate;
+	
+	private Boolean deleted = Boolean.FALSE;
 	
 	public long getId() {
 		return id;
@@ -38,20 +42,20 @@ public class RecurringExpense {
 		this.id = id;
 	}
 
-	public ExpenseType getExpenseType() {
-		return expenseType;
-	}
-
-	public void setExpenseType(ExpenseType expenseType) {
-		this.expenseType = expenseType;
-	}
-
 	public BigDecimal getAmount() {
-		return amount.setScale(2);
+		return amount;
 	}
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+
+	public LocalDate getDueDate() {
+		return new java.sql.Date(dueDate.getTime()).toLocalDate();
+	}
+
+	public void setDueDate(LocalDate dueDate) {
+		this.dueDate = java.sql.Date.valueOf(dueDate);
 	}
 
 	public RecurringType getRecurringType() {
@@ -63,7 +67,11 @@ public class RecurringExpense {
 	}
 
 	public LocalDate getStartDate() {
-		return new java.sql.Date(startDate.getTime()).toLocalDate();
+		if (startDate != null) {
+			return new java.sql.Date(startDate.getTime()).toLocalDate();
+		}
+		
+		return null;
 	}
 
 	public void setStartDate(LocalDate startDate) {
@@ -82,4 +90,20 @@ public class RecurringExpense {
 		this.endDate = java.sql.Date.valueOf(endDate);
 	}
 	
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public abstract void setEntryType(T entryType);
+	
+	public abstract T getEntryType();
+	
+	public abstract Transaction<T> getRecurringTransaction();
+	
+	public abstract void setRecurringTransaction(Transaction<T> recurringTransaction);
+
 }

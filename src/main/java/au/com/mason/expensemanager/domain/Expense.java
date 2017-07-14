@@ -1,72 +1,45 @@
 package au.com.mason.expensemanager.domain;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Date;
-
-import javax.persistence.CascadeType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "expenses")
-public class Expense {
+@DiscriminatorValue("EXPENSE")
+public class Expense extends Transaction<ExpenseType> {
 	
-	public Expense() {}
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
-
 	@Enumerated(EnumType.STRING)
-	private ExpenseType expenseType;
-	private BigDecimal amount;
-	private Date dueDate;
+	private ExpenseType entryType;
+	
+	@OneToOne
+	@JoinColumn(name = "recurringTransactionId")
+	private Expense recurringTransaction;
+	
 	private Boolean paid = Boolean.FALSE;
+
+	@Override
+	public void setEntryType(ExpenseType entryType) {
+		this.entryType = entryType;
+	}
+
+	@Override
+	public ExpenseType getEntryType() {
+		return entryType;
+	}
+
+	@Override
+	public Expense getRecurringTransaction() {
+		return recurringTransaction;
+	}
+
+	@Override
+	public void setRecurringTransaction(Transaction<ExpenseType> recurringTransaction) {
+		this.recurringTransaction = (Expense) recurringTransaction;
+	}
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "recurringExpenseId")
-	private RecurringExpense recurringExpense;
-	
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public ExpenseType getExpenseType() {
-		return expenseType;
-	}
-
-	public void setExpenseType(ExpenseType expenseType) {
-		this.expenseType = expenseType;
-	}
-
-	public BigDecimal getAmount() {
-		return amount.setScale(2);
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
-
-	public LocalDate getDueDate() {
-		return new java.sql.Date(dueDate.getTime()).toLocalDate();
-	}
-
-	public void setDueDate(LocalDate dueDate) {
-		this.dueDate = java.sql.Date.valueOf(dueDate);
-	}
-
 	public Boolean getPaid() {
 		return paid;
 	}
@@ -75,12 +48,4 @@ public class Expense {
 		this.paid = paid;
 	}
 
-	public RecurringExpense getRecurringExpense() {
-		return recurringExpense;
-	}
-
-	public void setRecurringExpense(RecurringExpense recurringExpense) {
-		this.recurringExpense = recurringExpense;
-	}
-	
 }

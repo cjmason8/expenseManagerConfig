@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import au.com.mason.expensemanager.dao.ExpenseDao;
-import au.com.mason.expensemanager.dao.RecurringExpenseDao;
 import au.com.mason.expensemanager.domain.Expense;
-import au.com.mason.expensemanager.domain.RecurringExpense;
+import au.com.mason.expensemanager.domain.Transaction;
 import au.com.mason.expensemanager.dto.ExpenseDto;
 import au.com.mason.expensemanager.mapper.ExpenseMapperWrapper;
 import au.com.mason.expensemanager.util.DateUtil;
@@ -25,10 +24,10 @@ public class ExpenseService {
 	private ExpenseDao expenseDao;
 	
 	@Autowired
-	private RecurringExpenseDao recurringExpenseDao;	
+	private IncomeService incomeService;
 	
-	public List<ExpenseDto> getAll() throws Exception {
-		List<Expense> expenses = expenseDao.getAll();
+	public List<ExpenseDto> getAllRecurring() throws Exception {
+		List<Expense> expenses = expenseDao.getAllRecurring();
 		List<ExpenseDto> expenseDtos = new ArrayList<>();
 		
 		for (Expense expense : expenses) {
@@ -38,12 +37,15 @@ public class ExpenseService {
 		return expenseDtos;
 	}
 	
-	public List<ExpenseDto> getExpensesForWeek(LocalDate startOfWeek) throws Exception {
-		List<Expense> expenses = expenseDao.getExpensesForWeek(startOfWeek);
-		
-		if (expenses.size() == 0) {
-			expenses = createRecurringExpenses(startOfWeek);
+	public void initialiseWeek(LocalDate localDate, Transaction currentRecurringTransaction) throws Exception {
+		if (countForWeek(localDate) == 0) {
+			incomeService.createRecurringIncomes(localDate, currentRecurringTransaction);
+			createRecurringExpenses(localDate, currentRecurringTransaction);
 		}
+	}
+	
+	public List<ExpenseDto> getForWeek(LocalDate startOfWeek) throws Exception {
+		List<Expense> expenses = expenseDao.getForWeek(startOfWeek);
 		
 		List<ExpenseDto> expenseDtos = new ArrayList<>();
 		
@@ -52,36 +54,37 @@ public class ExpenseService {
 		}
 		
 		return expenseDtos;
+	}
+	
+	public int countForWeek(LocalDate startOfWeek) throws Exception {
+		return expenseDao.getForWeek(startOfWeek).size() + incomeService.getForWeek(startOfWeek).size();
 	}
 
-	private List<Expense> createRecurringExpenses(LocalDate startOfWeek) {
-		List<Expense> expenses;
-		List<RecurringExpense> recurringExpenses = recurringExpenseDao.getAll();
+	public void createRecurringExpenses(LocalDate startOfWeek, Transaction currentRecurringExpense) {
+		List<Expense> recurringExpenses = expenseDao.getAllRecurring();
 		
-		for (RecurringExpense recurringExpense : recurringExpenses) {
+		for (Expense recurringExpense : recurringExpenses) {
+			if (currentRecurringExpense != null && recurringExpense.getId() == currentRecurringExpense.getId()) {
+				continue;
+			}
+
 			LocalDate dueDate = recurringExpense.getStartDate();
 			while (DateUtil.getMonday(dueDate).isBefore(startOfWeek)) {
-				dueDate = dueDate.plus(recurringExpense.getRecurringType().getUnits(), recurringExpense.getRecurringType().getUnitType());
+				dueDate = dueDate.plus(recurringExpense.getRecurringType().getUnits(), 
+						recurringExpense.getRecurringType().getUnitType());
 			}
 			
 			if (DateUtil.getMonday(dueDate).isEqual(startOfWeek)) {
 				Expense newExpense = new Expense();
-				newExpense.setExpenseType(recurringExpense.getExpenseType());
+				newExpense.setEntryType(recurringExpense.getEntryType());
 				newExpense.setAmount(recurringExpense.getAmount());
 				newExpense.setDueDate(dueDate);
-				newExpense.setRecurringExpense(recurringExpense);
+				newExpense.setRecurringTransaction(recurringExpense);
 				
 				expenseDao.create(newExpense);
 			}
 		}
-		
-		expenses = expenseDao.getExpensesForWeek(startOfWeek);
-		return expenses;
 	}	
-	
-	public Expense getExpenseById(Long id) {
-		return expenseDao.getById(id);
-	}
 	
 	public ExpenseDto getById(Long id) throws Exception {
 		Expense expense = expenseDao.getById(id);
@@ -92,18 +95,97 @@ public class ExpenseService {
 	public ExpenseDto addExpense(ExpenseDto expenseDto) throws Exception {
 		Expense expense = expenseMapperWrapper.expenseDtoToExpense(expenseDto);
 		
-		return expenseMapperWrapper.expenseToExpenseDto(expenseDao.create(expense));
+		createExpense(expense);
+		handleRecurring(expense);
+		
+		return expenseMapperWrapper.expenseToExpenseDto(expense);
+	}
+
+	private void handleRecurring(Expense expense) throws Exception {
+		if (expense.getRecurringType() != null) {
+			Expense newExpenseForStartDate = new Expense();
+			newExpenseForStartDate.setEntryType(expense.getEntryType());
+			newExpenseForStartDate.setAmount(expense.getAmount());
+			newExpenseForStartDate.setDueDate(expense.getStartDate());
+			newExpenseForStartDate.setRecurringTransaction(expense);
+			
+			expenseDao.create(newExpenseForStartDate);
+			
+			createSubsequentWeeks(expense);
+		}
+	}
+	
+	private void createExpense(Expense expense) throws Exception {
+		if (expense.getRecurringType() == null) {
+			initialiseWeek(DateUtil.getMonday(expense.getDueDate()), expense.getRecurringTransaction());	
+		}
+		
+		expenseDao.create(expense);
+	}
+	
+	public int getPastDate(LocalDate startOfWeek) throws Exception {
+		return expenseDao.getPastDate(startOfWeek).size() + incomeService.getPastDate(startOfWeek).size();
+	}
+	
+	private void createSubsequentWeeks(Expense newExpense) throws Exception {
+		LocalDate dueDate = newExpense.getStartDate().plus(newExpense.getRecurringType().getUnits(), 
+				newExpense.getRecurringType().getUnitType());
+		
+		while (getPastDate(DateUtil.getMonday(dueDate)) > 0) {
+			if (countForWeek(DateUtil.getMonday(dueDate)) > 0) {
+				Expense newExpenseForSubsequent = new Expense();
+				newExpenseForSubsequent.setEntryType(newExpense.getEntryType());
+				newExpenseForSubsequent.setAmount(newExpense.getAmount());
+				newExpenseForSubsequent.setDueDate(dueDate);
+				newExpenseForSubsequent.setRecurringTransaction(newExpense);
+				
+				expenseDao.create(newExpenseForSubsequent);
+			}
+			
+			dueDate = dueDate.plus(newExpense.getRecurringType().getUnits(), 
+					newExpense.getRecurringType().getUnitType());
+			
+			if (newExpense.getEndDate() != null && dueDate.isAfter(newExpense.getEndDate())) {
+				break;
+			}
+		}
 	}
 	
 	public ExpenseDto updateExpense(ExpenseDto expenseDto) throws Exception {
-		Expense expense = expenseDao.getById(expenseDto.getId());
-		expense = expenseMapperWrapper.expenseDtoToExpense(expenseDto, expense);
+		Expense updatedExpense = expenseDao.getById(expenseDto.getId());
+		updatedExpense = expenseMapperWrapper.expenseDtoToExpense(expenseDto, updatedExpense);
+		expenseDao.update(updatedExpense);
 		
-		return expenseMapperWrapper.expenseToExpenseDto(expenseDao.update(expense));
+		handleRecurringForUpdate(updatedExpense);
+		
+		return expenseMapperWrapper.expenseToExpenseDto(updatedExpense);
+	}
+
+	private void handleRecurringForUpdate(Expense updatedExpense) {
+		if (updatedExpense.getRecurringType() != null) {
+			List<Expense> expenses = expenseDao.getPastDate(LocalDate.now(), updatedExpense);
+			for (Expense expense : expenses) {
+				expense.setAmount(updatedExpense.getAmount());
+				expenseDao.update(expense);			
+			}
+		}
 	}
 	
 	public void deleteExpense(Long id) {
-		expenseDao.deleteById(id);
+		Expense expense = expenseDao.getById(id);
+		if (expense.getRecurringType() != null) {
+			expenseDao.deleteExpenses(id);
+			if (expenseDao.getForRecurring(expense).size() > 0) {
+				expense.setDeleted(true);
+				expenseDao.update(expense);
+			}
+			else {
+				expenseDao.delete(expense);
+			}
+		}
+		else {
+			expenseDao.delete(expense);
+		}
 	}
 	
 }

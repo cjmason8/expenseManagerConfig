@@ -12,102 +12,84 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import au.com.mason.expensemanager.domain.Expense;
-import au.com.mason.expensemanager.domain.RecurringExpense;
 
 @Repository
 @Transactional
 public class ExpenseDao {
-  
-  /**
-   * Save the expense in the database.
-   */
-  public Expense create(Expense expense) {
-    entityManager.persist(expense);
-    
-    return expense;
-  }
-  
-  /**
-   * Delete the expense from the database.
-   */
-  public void delete(Expense expense) {
-    if (entityManager.contains(expense))
-      entityManager.remove(expense);
-    else
-      entityManager.remove(entityManager.merge(expense));
-    return;
-  }
-  
-  /**
-   * Delete the expense from the database.
-   */
-  public void deleteById(Long id) {
-	Expense expense = getById(id);
-    if (entityManager.contains(expense))
-      entityManager.remove(expense);
-    else
-      entityManager.remove(entityManager.merge(expense));
-    return;
-  }  
-  
-  /**
-   * Return all the expenses stored in the database.
-   */
-  @SuppressWarnings("unchecked")
-  public List getAll() {
-    return entityManager.createQuery("from Expense").getResultList();
-  }
-  
-  /**
-   * Return the expense having the passed id.
-   */
-  public Expense getById(long id) {
-    return entityManager.find(Expense.class, id);
-  }
+	
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-  /**
-   * Update the passed expense in the database.
-   */
-  public Expense update(Expense expense) {
-    return entityManager.merge(expense);
-  }
-  
-  public List<Expense> getExpensesForWeek(LocalDate weekStartDate) {
-	  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	public Expense create(Expense expense) {
+		entityManager.persist(expense);
 
-	  String sql = "from Expense where dueDate >= to_date('" + weekStartDate.format(formatter) + "', 'yyyy-mm-dd') " + 
-			  "AND dueDate <= to_date('" + weekStartDate.plusDays(6).format(formatter) + "', 'yyyy-mm-dd')";
+		return expense;
+	}
+	
+	public void delete(Expense expense) {
+		if (entityManager.contains(expense))
+			entityManager.remove(expense);
+		else
+			entityManager.remove(entityManager.merge(expense));
+		return;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Expense> getAllRecurring() {
+		return entityManager.createQuery(
+				"from Expense where recurringType IS NOT NULL AND deleted = false").getResultList();
+	}	
+	
+	public Expense getById(long id) {
+		return entityManager.find(Expense.class, id);
+	}
+	
+	public Expense update(Expense expense) {
+		return entityManager.merge(expense);
+	}
 
-	  return entityManager.createQuery(sql).getResultList();
-  }
-  
-  public List<Expense> getExpensesPastDate(LocalDate date) {
-	  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	public List<Expense> getForWeek(LocalDate weekStartDate) {
+		String sql = "from Expense where recurringType IS NULL "
+				+ "AND dueDate >= to_date('" + weekStartDate.format(FORMATTER) + "', 'yyyy-mm-dd') "
+				+ "AND dueDate <= to_date('" + weekStartDate.plusDays(6).format(FORMATTER) + "', 'yyyy-mm-dd')";
 
-	  String sql = "from Expense where dueDate > to_date('" + date.format(formatter) + "', 'yyyy-mm-dd')";
+		return entityManager.createQuery(sql).getResultList();
+	}
+	
+	public List<Expense> getPastDate(LocalDate date) {
+		String sql = "from Expense where recurringType IS NULL"
+				+ " AND dueDate > to_date('" + date.format(FORMATTER) + "', 'yyyy-mm-dd')";
 
-	  return entityManager.createQuery(sql).getResultList();
-  }  
-  
-  public List<Expense> getExpensesPastDate(LocalDate date, RecurringExpense recurringExpense) {
-	  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		return entityManager.createQuery(sql).getResultList();
+	}
 
-	  String sql = "from Expense where dueDate > to_date('" + date.format(formatter) + "', 'yyyy-mm-dd') and recurringExpense = :recurringExpense";
-	  Query query = entityManager.createQuery(sql);
-	  query.setParameter("recurringExpense", recurringExpense);
-	  
-	return query.getResultList();
-  }
-  
-  public void deleteExpenses(Long recurringExpenseId) {
-	  entityManager.createQuery("delete from Expense where recurringExpense.id = " + recurringExpenseId).executeUpdate();
-  }  
+	public List<Expense> getPastDate(LocalDate date, Expense recurringExpense) {
+		String sql = "from Expense where dueDate > to_date('" + date.format(FORMATTER)
+				+ "', 'yyyy-mm-dd') and recurringTransaction = :recurringTransaction";
+		Query query = entityManager.createQuery(sql);
+		query.setParameter("recurringTransaction", recurringExpense);
 
-  // Private fields
-  
-  // An EntityManager will be automatically injected from entityManagerFactory
-  // setup on DatabaseConfig class.
-  @PersistenceContext
-  private EntityManager entityManager;
-  
+		return query.getResultList();
+	}
+	
+	public List<Expense> getForRecurring(Expense recurringExpense) {
+		String sql = "from Expense where recurringTransaction = :recurringTransaction";
+		Query query = entityManager.createQuery(sql);
+		query.setParameter("recurringTransaction", recurringExpense);
+
+		return query.getResultList();
+	}
+
+	public void deleteExpenses(Long recurringTransactionId) {
+		entityManager.createQuery("delete from Expense where recurringTransaction.id = " + recurringTransactionId
+				+ " AND dueDate > to_date('" + LocalDate.now().format(FORMATTER) + "', 'yyyy-mm-dd')")
+				.executeUpdate();
+	}
+	
+	// Private fields
+
+	// An EntityManager will be automatically injected from entityManagerFactory
+	// setup on DatabaseConfig class.
+	@PersistenceContext
+	private EntityManager entityManager;
+
 }

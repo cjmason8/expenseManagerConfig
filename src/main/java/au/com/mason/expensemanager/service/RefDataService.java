@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import au.com.mason.expensemanager.domain.ExpenseType;
+import au.com.mason.expensemanager.domain.IncomeType;
 import au.com.mason.expensemanager.domain.RecurringType;
 import au.com.mason.expensemanager.dto.RefDataDto;
 import au.com.mason.expensemanager.mapper.RefDataMapper;
@@ -31,6 +32,12 @@ public class RefDataService {
 			});
 			
 		}
+		else if (type.equals("incomeType")) {
+			Arrays.asList(IncomeType.values()).forEach(refData -> {
+				refDataDtos.add(refDataMapper.refDataToRefDataDto(refData));
+			});
+			
+		}		
 		else {
 			throw new InvalidParameterException("value " + type + " for parameter type not valid.");
 		}

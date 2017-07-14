@@ -1,19 +1,18 @@
 package au.com.mason.expensemanager.dto;
 
-public class ExpenseDto {
+public class IncomeDto {
 
 	private Long id;
-	private String expenseType;
-	private String expenseTypeDescription;
+	private String incomeType;
+	private String incomeTypeDescription;
 	private String amount;
 	private String dueDateString;
-	private Boolean paid;
-	private String week;
 
 	private String recurringType;
 	private String recurringTypeDescription;
 	private String startDateString;
 	private String endDateString;
+	private String week;
 
 	public Long getId() {
 		return id;
@@ -23,20 +22,20 @@ public class ExpenseDto {
 		this.id = id;
 	}
 	
-	public String getExpenseType() {
-		return expenseType;
+	public String getIncomeType() {
+		return incomeType;
 	}
 	
-	public void setExpenseType(String expenseType) {
-		this.expenseType = expenseType;
+	public void setIncomeType(String incomeType) {
+		this.incomeType = incomeType;
 	}
 	
-	public String getExpenseTypeDescription() {
-		return expenseTypeDescription;
+	public String getIncomeTypeDescription() {
+		return incomeTypeDescription;
 	}
 
-	public void setExpenseTypeDescription(String expenseTypeDescription) {
-		this.expenseTypeDescription = expenseTypeDescription;
+	public void setIncomeTypeDescription(String expenseTypeDescription) {
+		this.incomeTypeDescription = expenseTypeDescription;
 	}
 
 	public String getAmount() {
@@ -45,30 +44,6 @@ public class ExpenseDto {
 
 	public void setAmount(String amount) {
 		this.amount = amount;
-	}
-
-	public String getDueDateString() {
-		return dueDateString;
-	}
-
-	public void setDueDateString(String dueDateString) {
-		this.dueDateString = dueDateString;
-	}
-
-	public Boolean getPaid() {
-		return paid;
-	}
-
-	public void setPaid(Boolean paid) {
-		this.paid = paid;
-	}
-
-	public String getWeek() {
-		return week;
-	}
-
-	public void setWeek(String week) {
-		this.week = week;
 	}
 
 	public String getRecurringType() {
@@ -101,6 +76,22 @@ public class ExpenseDto {
 
 	public void setEndDateString(String endDateString) {
 		this.endDateString = endDateString;
+	}
+
+	public String getWeek() {
+		return week;
+	}
+
+	public void setWeek(String week) {
+		this.week = week;
+	}
+
+	public String getDueDateString() {
+		return dueDateString;
+	}
+
+	public void setDueDateString(String dueDateString) {
+		this.dueDateString = dueDateString;
 	}
 
 }

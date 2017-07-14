@@ -16,7 +16,8 @@ public interface ExpenseMapper {
 	 
     Expense expenseDtoToExpense(ExpenseDto expenseDto) throws Exception;
     
-    Expense expenseDtoToExpense(ExpenseDto expenseDto, @MappingTarget Expense expense) throws Exception;
+    Expense expenseDtoToExpense(ExpenseDto expenseDto, 
+    		@MappingTarget Expense expense) throws Exception;
     
     ExpenseDto expenseToExpenseDto(Expense expense) throws Exception;
 
