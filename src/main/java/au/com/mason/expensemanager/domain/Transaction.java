@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="transactions")
 @DiscriminatorColumn(name = "transactionType")
-public class Transaction {
+public abstract class Transaction {
 	
 	public Transaction() {}
 
@@ -39,10 +39,6 @@ public class Transaction {
 	private RefData entryType;
 	
 	private Boolean deleted = Boolean.FALSE;
-	
-	@OneToOne
-	@JoinColumn(name = "recurringTransactionId")
-	private Income recurringTransaction;
 	
 	public long getId() {
 		return id;
@@ -108,14 +104,6 @@ public class Transaction {
 		this.deleted = deleted;
 	}
 	
-	public Transaction getRecurringTransaction() {
-		return recurringTransaction;
-	}
-
-	public void setRecurringTransaction(Transaction recurringTransaction) {
-		this.recurringTransaction = (Income) recurringTransaction;
-	}
-
 	public RefData getEntryType() {
 		return entryType;
 	}
@@ -131,5 +119,9 @@ public class Transaction {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
+	
+	public abstract void setRecurringTransaction(Transaction recurringTransaction);
+	
+	public abstract Transaction getRecurringTransaction();
 
 }

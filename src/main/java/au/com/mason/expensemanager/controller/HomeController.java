@@ -39,7 +39,9 @@ public class HomeController {
 	TransactionsForWeekDto expensesForSpecificWeek(@PathVariable String date) throws Exception {
 
 		LocalDate localDate = DateUtil.getMonday(LocalDate.parse(date, FORMATTER));
-		expenseService.initialiseWeek(localDate, null);
+		if (localDate.isAfter(LocalDate.now())) {
+			expenseService.initialiseWeek(localDate, null);
+		}
 		
 		return getTransactionsForWeekDto(localDate);
     }
