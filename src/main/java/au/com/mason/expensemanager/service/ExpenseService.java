@@ -57,6 +57,18 @@ public class ExpenseService {
 		return expenseDtos;
 	}
 	
+	public List<ExpenseDto> getUnpaidBeforeWeek(LocalDate startOfWeek) throws Exception {
+		List<Expense> expenses = expenseDao.getUnpaidBeforeWeek(startOfWeek);
+		
+		List<ExpenseDto> expenseDtos = new ArrayList<>();
+		
+		for (Expense expense : expenses) {
+			expenseDtos.add(expenseMapperWrapper.expenseToExpenseDto(expense));
+		}
+		
+		return expenseDtos;
+	}	
+	
 	public int countForWeek(LocalDate startOfWeek) throws Exception {
 		return expenseDao.getForWeek(startOfWeek).size() + incomeService.getForWeek(startOfWeek).size();
 	}

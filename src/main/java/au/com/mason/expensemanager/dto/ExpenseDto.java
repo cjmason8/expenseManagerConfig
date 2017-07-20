@@ -7,7 +7,7 @@ public class ExpenseDto {
 	private String expenseTypeDescription;
 	private String amount;
 	private String dueDateString;
-	private Boolean paid;
+	private boolean paid;
 	private String week;
 
 	private Long recurringTypeId;
@@ -56,11 +56,11 @@ public class ExpenseDto {
 		this.dueDateString = dueDateString;
 	}
 
-	public Boolean getPaid() {
+	public boolean getPaid() {
 		return paid;
 	}
 
-	public void setPaid(Boolean paid) {
+	public void setPaid(boolean paid) {
 		this.paid = paid;
 	}
 

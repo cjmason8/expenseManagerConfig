@@ -13,7 +13,7 @@ public class Expense extends Transaction {
 	@JoinColumn(name = "recurringTransactionId")
 	private Expense recurringTransaction;
 	
-	private Boolean paid = Boolean.FALSE;
+	private boolean paid = false;
 
 	@Override
 	public Expense getRecurringTransaction() {
@@ -25,11 +25,11 @@ public class Expense extends Transaction {
 		this.recurringTransaction = (Expense) recurringTransaction;
 	}
 	
-	public Boolean getPaid() {
+	public boolean getPaid() {
 		return paid;
 	}
 
-	public void setPaid(Boolean paid) {
+	public void setPaid(boolean paid) {
 		this.paid = paid;
 	}
 

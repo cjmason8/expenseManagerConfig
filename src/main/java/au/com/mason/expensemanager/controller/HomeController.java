@@ -32,26 +32,37 @@ public class HomeController {
 		LocalDate monday = DateUtil.getMonday(LocalDate.now());
 		expenseService.initialiseWeek(monday, null);
 
-		return new TransactionsForWeekDto(incomeService.getForWeek(monday), 
-				expenseService.getForWeek(monday), monday.minusDays(7).format(FORMATTER), 
-				monday.plusDays(7).format(FORMATTER), monday.format(FORMATTER));
+		return getTransactionsForWeekDto(monday);
     }
-	
+
 	@RequestMapping(value = "/week/{date}", method = RequestMethod.GET, produces = "application/json")
 	TransactionsForWeekDto expensesForSpecificWeek(@PathVariable String date) throws Exception {
 
 		LocalDate localDate = DateUtil.getMonday(LocalDate.parse(date, FORMATTER));
 		expenseService.initialiseWeek(localDate, null);
 		
-		return new TransactionsForWeekDto(incomeService.getForWeek(localDate), 
-				expenseService.getForWeek(localDate), localDate.minusDays(7).format(FORMATTER), 
-				localDate.plusDays(7).format(FORMATTER), localDate.format(FORMATTER));
+		return getTransactionsForWeekDto(localDate);
     }
 	
 	@RequestMapping(value = "/recurring", method = RequestMethod.GET, produces = "application/json")
 	TransactionsDto getRecurring() throws Exception {
 		return new TransactionsDto(incomeService.getAllRecurring(), expenseService.getAllRecurring());
         
-    }	
+    }
+	
+	private TransactionsForWeekDto getTransactionsForWeekDto(LocalDate localDate) throws Exception {
+		TransactionsForWeekDto transactionsForWeekDto = new TransactionsForWeekDto();
+		transactionsForWeekDto.setIncomes(incomeService.getForWeek(localDate)); 
+		transactionsForWeekDto.setExpenses(expenseService.getForWeek(localDate));
+		transactionsForWeekDto.setPreviousWeek(localDate.minusDays(7).format(FORMATTER));
+		transactionsForWeekDto.setNextWeek(localDate.plusDays(7).format(FORMATTER));
+		transactionsForWeekDto.setThisWeek(localDate.format(FORMATTER));
+		if (localDate.isEqual(DateUtil.getMonday(LocalDate.now()))) {
+			transactionsForWeekDto.setUnpaidExpenses(expenseService.getUnpaidBeforeWeek(localDate));
+		}
+		transactionsForWeekDto.setTotals();
+		
+		return transactionsForWeekDto;
+	}
 	
 }
