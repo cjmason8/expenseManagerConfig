@@ -1,5 +1,6 @@
 package au.com.mason.expensemanager.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class TransactionsForWeekDto {
@@ -9,6 +10,9 @@ public class TransactionsForWeekDto {
 	private String previousWeek;
 	private String nextWeek;
 	private String thisWeek;
+	private BigDecimal incomeTotal = new BigDecimal(0);
+	private BigDecimal expenseTotal = new BigDecimal(0);
+	private BigDecimal difference = new BigDecimal(0);
 
 	public TransactionsForWeekDto(List<IncomeDto> incomes, List<ExpenseDto> expenses, 
 			String previousWeek, String nextWeek, String thisWeek) {
@@ -17,6 +21,16 @@ public class TransactionsForWeekDto {
 		this.previousWeek = previousWeek;
 		this.nextWeek = nextWeek;
 		this.thisWeek = thisWeek;
+		
+		for (IncomeDto income : incomes) {
+			incomeTotal = incomeTotal.add(new BigDecimal(income.getAmount()));
+		}
+		
+		for (ExpenseDto expense : expenses) {
+			expenseTotal = expenseTotal.add(new BigDecimal(expense.getAmount()));
+		}
+		
+		difference = incomeTotal.subtract(expenseTotal);
 	}
 
 	public List<ExpenseDto> getExpenses() {
@@ -37,6 +51,30 @@ public class TransactionsForWeekDto {
 
 	public String getThisWeek() {
 		return thisWeek;
+	}
+
+	public BigDecimal getIncomeTotal() {
+		return incomeTotal;
+	}
+
+	public void setIncomeTotal(BigDecimal incomeTotal) {
+		this.incomeTotal = incomeTotal;
+	}
+
+	public BigDecimal getExpenseTotal() {
+		return expenseTotal;
+	}
+
+	public void setExpenseTotal(BigDecimal expenseTotal) {
+		this.expenseTotal = expenseTotal;
+	}
+
+	public BigDecimal getDifference() {
+		return difference;
+	}
+
+	public void setDifference(BigDecimal difference) {
+		this.difference = difference;
 	}
 	
 }

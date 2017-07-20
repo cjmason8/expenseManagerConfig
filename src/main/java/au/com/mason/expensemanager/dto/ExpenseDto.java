@@ -10,10 +10,11 @@ public class ExpenseDto {
 	private Boolean paid;
 	private String week;
 
-	private String recurringType;
+	private Long recurringTypeId;
 	private String recurringTypeDescription;
 	private String startDateString;
 	private String endDateString;
+	private String notes;
 
 	public Long getId() {
 		return id;
@@ -71,12 +72,12 @@ public class ExpenseDto {
 		this.week = week;
 	}
 
-	public String getRecurringType() {
-		return recurringType;
+	public Long getRecurringTypeId() {
+		return recurringTypeId;
 	}
 
-	public void setRecurringType(String recurringType) {
-		this.recurringType = recurringType;
+	public void setRecurringTypeId(Long recurringTypeId) {
+		this.recurringTypeId = recurringTypeId;
 	}
 
 	public String getRecurringTypeDescription() {
@@ -101,6 +102,14 @@ public class ExpenseDto {
 
 	public void setEndDateString(String endDateString) {
 		this.endDateString = endDateString;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 }

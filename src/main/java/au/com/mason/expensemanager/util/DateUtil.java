@@ -8,4 +8,5 @@ public class DateUtil {
 	public static LocalDate getMonday(LocalDate date) {
 		return date.with(DayOfWeek.MONDAY);
 	}
+
 }

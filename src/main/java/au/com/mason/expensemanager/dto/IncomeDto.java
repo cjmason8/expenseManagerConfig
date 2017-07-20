@@ -8,11 +8,12 @@ public class IncomeDto {
 	private String amount;
 	private String dueDateString;
 
-	private String recurringType;
+	private Long recurringTypeId;
 	private String recurringTypeDescription;
 	private String startDateString;
 	private String endDateString;
 	private String week;
+	private String notes;
 
 	public Long getId() {
 		return id;
@@ -46,12 +47,12 @@ public class IncomeDto {
 		this.amount = amount;
 	}
 
-	public String getRecurringType() {
-		return recurringType;
+	public Long getRecurringTypeId() {
+		return recurringTypeId;
 	}
 
-	public void setRecurringType(String recurringType) {
-		this.recurringType = recurringType;
+	public void setRecurringTypeId(Long recurringTypeId) {
+		this.recurringTypeId = recurringTypeId;
 	}
 
 	public String getRecurringTypeDescription() {
@@ -92,6 +93,14 @@ public class IncomeDto {
 
 	public void setDueDateString(String dueDateString) {
 		this.dueDateString = dueDateString;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 }

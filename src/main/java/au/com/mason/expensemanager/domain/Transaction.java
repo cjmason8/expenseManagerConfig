@@ -6,17 +6,17 @@ import java.util.Date;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="transactions")
 @DiscriminatorColumn(name = "transactionType")
-public abstract class Transaction<T extends RefData> {
+public class Transaction {
 	
 	public Transaction() {}
 
@@ -27,12 +27,22 @@ public abstract class Transaction<T extends RefData> {
 	private BigDecimal amount;
 	private Date dueDate;
 	
-	@Enumerated(EnumType.STRING)
-	private RecurringType recurringType;
+	@OneToOne
+	@JoinColumn(name = "recurringTypeId")
+	private RefData recurringType;
 	private Date startDate;
 	private Date endDate;
+	private String notes;
+	
+	@OneToOne
+	@JoinColumn(name = "entryTypeId")
+	private RefData entryType;
 	
 	private Boolean deleted = Boolean.FALSE;
+	
+	@OneToOne
+	@JoinColumn(name = "recurringTransactionId")
+	private Income recurringTransaction;
 	
 	public long getId() {
 		return id;
@@ -58,11 +68,11 @@ public abstract class Transaction<T extends RefData> {
 		this.dueDate = java.sql.Date.valueOf(dueDate);
 	}
 
-	public RecurringType getRecurringType() {
+	public RefData getRecurringType() {
 		return recurringType;
 	}
 
-	public void setRecurringType(RecurringType recurringType) {
+	public void setRecurringType(RefData recurringType) {
 		this.recurringType = recurringType;
 	}
 
@@ -97,13 +107,29 @@ public abstract class Transaction<T extends RefData> {
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
 	}
+	
+	public Transaction getRecurringTransaction() {
+		return recurringTransaction;
+	}
 
-	public abstract void setEntryType(T entryType);
-	
-	public abstract T getEntryType();
-	
-	public abstract Transaction<T> getRecurringTransaction();
-	
-	public abstract void setRecurringTransaction(Transaction<T> recurringTransaction);
+	public void setRecurringTransaction(Transaction recurringTransaction) {
+		this.recurringTransaction = (Income) recurringTransaction;
+	}
+
+	public RefData getEntryType() {
+		return entryType;
+	}
+
+	public void setEntryType(RefData entryType) {
+		this.entryType = entryType;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
 
 }

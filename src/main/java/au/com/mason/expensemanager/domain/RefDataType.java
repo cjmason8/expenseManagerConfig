@@ -1,15 +1,12 @@
 package au.com.mason.expensemanager.domain;
 
-public enum IncomeType implements RefData {
+public enum RefDataType {
 	
-	CHRIS_PAY("Chris Pay"),
-	JADE_PAY("Jade Pay"),
-	WODONGA_RENT("Wodonga Rent"),
-	SOUTH_KINGSVILLE_RENT("South Kingsville Rent");
+	EXPENSE_TYPE("Expense Type"), INCOME_TYPE("Income Type"), RECURRING_TYPE("Recurring Type");
 	
 	private String description;
 
-	private IncomeType(String description) {
+	private RefDataType(String description) {
 		this.description = description;
 	}
 
@@ -21,7 +18,4 @@ public enum IncomeType implements RefData {
 		this.description = description;
 	}
 	
-	public String getValue() {
-		return this.name();
-	}
 }

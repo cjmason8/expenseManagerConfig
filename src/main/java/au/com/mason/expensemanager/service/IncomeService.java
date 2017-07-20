@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import au.com.mason.expensemanager.dao.IncomeDao;
 import au.com.mason.expensemanager.domain.Income;
+import au.com.mason.expensemanager.domain.RecurringUnit;
 import au.com.mason.expensemanager.domain.Transaction;
 import au.com.mason.expensemanager.dto.IncomeDto;
 import au.com.mason.expensemanager.mapper.IncomeMapperWrapper;
@@ -72,8 +73,9 @@ public class IncomeService {
 			}
 			LocalDate dueDate = recurringIncome.getStartDate();
 			while (DateUtil.getMonday(dueDate).isBefore(startOfWeek)) {
-				dueDate = dueDate.plus(recurringIncome.getRecurringType().getUnits(), 
-						recurringIncome.getRecurringType().getUnitType());
+				RecurringUnit recurringUnit = 
+						RecurringUnit.valueOf(recurringIncome.getRecurringType().getDescription().toUpperCase());
+				dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
 			}
 			
 			if (DateUtil.getMonday(dueDate).isEqual(startOfWeek)) {
@@ -119,8 +121,10 @@ public class IncomeService {
 	}
 	
 	private void createSubsequentWeeks(Income newIncome) throws Exception {
-		LocalDate dueDate = newIncome.getStartDate().plus(newIncome.getRecurringType().getUnits(), 
-				newIncome.getRecurringType().getUnitType());
+		RecurringUnit recurringUnit = 
+				RecurringUnit.valueOf(newIncome.getRecurringType().getDescription().toUpperCase());
+		
+		LocalDate dueDate = newIncome.getStartDate().plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
 		
 		while (expenseService.getPastDate(DateUtil.getMonday(dueDate)) > 0) {
 			if (expenseService.countForWeek(DateUtil.getMonday(dueDate)) > 0) {
@@ -133,7 +137,7 @@ public class IncomeService {
 				incomeDao.create(newIncomeForSubsequent);
 			}
 			
-			dueDate = dueDate.plus(newIncome.getRecurringType().getUnits(), newIncome.getRecurringType().getUnitType());
+			dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
 			
 			if (newIncome.getEndDate() != null && dueDate.isAfter(newIncome.getEndDate())) {
 				break;

@@ -2,47 +2,83 @@ package au.com.mason.expensemanager.service;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import au.com.mason.expensemanager.domain.ExpenseType;
-import au.com.mason.expensemanager.domain.IncomeType;
-import au.com.mason.expensemanager.domain.RecurringType;
+import au.com.mason.expensemanager.dao.RefDataDao;
+import au.com.mason.expensemanager.domain.RefData;
+import au.com.mason.expensemanager.domain.RefDataType;
 import au.com.mason.expensemanager.dto.RefDataDto;
-import au.com.mason.expensemanager.mapper.RefDataMapper;
+import au.com.mason.expensemanager.mapper.RefDataMapperWrapper;
 
 @Component
 public class RefDataService {
 	
-	private RefDataMapper refDataMapper = RefDataMapper.INSTANCE;
+	@Autowired
+	private RefDataDao refDataDao;
 	
-	public List<RefDataDto> getRefData(String type) {
-		List<RefDataDto> refDataDtos = new ArrayList<>();		
+	@Autowired
+	private RefDataMapperWrapper refDataMapperWrapper;
+	
+	public List<RefDataDto> getAll() throws Exception {
+		List<RefDataDto> refDataDtos = new ArrayList<>();
+		for(RefData refData : refDataDao.getAll()) {
+			refDataDtos.add(refDataMapperWrapper.refDataToRefDataDto(refData));
+		};
+		
+		return refDataDtos;
+	}
+	
+	public List<RefDataDto> getRefData(String type) throws Exception {
+		List<RefDataDto> refDataDtos = new ArrayList<>();
+		String typeVal = "";
 		if (type.equals("expenseType")) {
-			Arrays.asList(ExpenseType.values()).forEach(refData -> {
-				refDataDtos.add(refDataMapper.refDataToRefDataDto(refData));
-			});
-			
+			typeVal = RefDataType.EXPENSE_TYPE.name();
 		}
 		else if (type.equals("recurringType")) {
-			Arrays.asList(RecurringType.values()).forEach(refData -> {
-				refDataDtos.add(refDataMapper.refDataToRefDataDto(refData));
-			});
-			
+			typeVal = RefDataType.RECURRING_TYPE.name();
 		}
 		else if (type.equals("incomeType")) {
-			Arrays.asList(IncomeType.values()).forEach(refData -> {
-				refDataDtos.add(refDataMapper.refDataToRefDataDto(refData));
-			});
-			
+			typeVal = RefDataType.INCOME_TYPE.name();
 		}		
 		else {
 			throw new InvalidParameterException("value " + type + " for parameter type not valid.");
 		}
 		
+		for(RefData refData : refDataDao.getAll(typeVal)) {
+			refDataDtos.add(refDataMapperWrapper.refDataToRefDataDto(refData));
+		};
+		
 		return refDataDtos;
+	}
+	
+	public RefDataDto updateRefData(RefDataDto refDataDto) throws Exception {
+		RefData updatedRefData = refDataDao.getById(refDataDto.getId());
+		updatedRefData = refDataMapperWrapper.refDataDtoToRefData(refDataDto, updatedRefData);
+		
+		refDataDao.update(updatedRefData);
+		
+		return refDataMapperWrapper.refDataToRefDataDto(updatedRefData);
+	}
+	
+	public RefDataDto createRefData(RefDataDto refDataDto) throws Exception {
+		RefData refData = refDataMapperWrapper.refDataDtoToRefData(refDataDto);
+		
+		refDataDao.create(refData);
+		
+		return refDataDto;
+	}
+	
+	public void deleteRefData(Long id) {
+		refDataDao.deleteById(id);
+	}
+	
+	public RefDataDto getById(Long id) throws Exception {
+		RefData refData = refDataDao.getById(id);
+		
+		return refDataMapperWrapper.refDataToRefDataDto(refData);
 	}
 
 }

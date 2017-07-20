@@ -2,8 +2,19 @@ package au.com.mason.expensemanager.dto;
 
 public class RefDataDto {
 
+	private Long id;
 	private String value;
+	private String type;
+	private String typeDescription;
 	private String description;
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getValue() {
 		return value;
@@ -19,6 +30,22 @@ public class RefDataDto {
 	
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getTypeDescription() {
+		return typeDescription;
+	}
+
+	public void setTypeDescription(String typeDescription) {
+		this.typeDescription = typeDescription;
 	}
 	
 }

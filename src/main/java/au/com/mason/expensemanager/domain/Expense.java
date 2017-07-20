@@ -2,17 +2,12 @@ package au.com.mason.expensemanager.domain;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
 @DiscriminatorValue("EXPENSE")
-public class Expense extends Transaction<ExpenseType> {
-	
-	@Enumerated(EnumType.STRING)
-	private ExpenseType entryType;
+public class Expense extends Transaction {
 	
 	@OneToOne
 	@JoinColumn(name = "recurringTransactionId")
@@ -21,22 +16,12 @@ public class Expense extends Transaction<ExpenseType> {
 	private Boolean paid = Boolean.FALSE;
 
 	@Override
-	public void setEntryType(ExpenseType entryType) {
-		this.entryType = entryType;
-	}
-
-	@Override
-	public ExpenseType getEntryType() {
-		return entryType;
-	}
-
-	@Override
 	public Expense getRecurringTransaction() {
 		return recurringTransaction;
 	}
 
 	@Override
-	public void setRecurringTransaction(Transaction<ExpenseType> recurringTransaction) {
+	public void setRecurringTransaction(Transaction recurringTransaction) {
 		this.recurringTransaction = (Expense) recurringTransaction;
 	}
 	
