@@ -5,7 +5,7 @@ import java.time.temporal.ChronoUnit;
 public enum RecurringUnit {
 	WEEKLY(7, ChronoUnit.DAYS), FORTNIGHTLY(14, ChronoUnit.DAYS), 
 	MONTHLY(1, ChronoUnit.MONTHS), YEARLY(1, ChronoUnit.YEARS),
-	QUARTERLY(3, ChronoUnit.MONTHS);
+	QUARTERLY(3, ChronoUnit.MONTHS), FOUR_WEEKLY(4, ChronoUnit.WEEKS);
 	
 	private Integer units;
 	private ChronoUnit unitType;

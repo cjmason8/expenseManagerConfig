@@ -84,7 +84,7 @@ public class ExpenseService {
 			LocalDate dueDate = recurringExpense.getStartDate();
 			while (DateUtil.getMonday(dueDate).isBefore(startOfWeek)) {
 				RecurringUnit recurringUnit = 
-						RecurringUnit.valueOf(recurringExpense.getRecurringType().getDescription().toUpperCase());
+						RecurringUnit.valueOf(recurringExpense.getRecurringType().getDescription().toUpperCase().replaceAll(" ", "_"));
 				dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
 			}
 			
