@@ -121,6 +121,7 @@ public class ExpenseService {
 			newExpenseForStartDate.setEntryType(expense.getEntryType());
 			newExpenseForStartDate.setAmount(expense.getAmount());
 			newExpenseForStartDate.setDueDate(expense.getStartDate());
+			newExpenseForStartDate.setNotes(expense.getNotes());
 			newExpenseForStartDate.setRecurringTransaction(expense);
 			
 			createExpense(newExpenseForStartDate);
@@ -152,6 +153,7 @@ public class ExpenseService {
 				newExpenseForSubsequent.setEntryType(newExpense.getEntryType());
 				newExpenseForSubsequent.setAmount(newExpense.getAmount());
 				newExpenseForSubsequent.setDueDate(dueDate);
+				newExpenseForSubsequent.setNotes(newExpense.getNotes());
 				newExpenseForSubsequent.setRecurringTransaction(newExpense);
 				
 				expenseDao.create(newExpenseForSubsequent);

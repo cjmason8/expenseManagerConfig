@@ -83,6 +83,7 @@ public class IncomeService {
 				newIncome.setEntryType(recurringIncome.getEntryType());
 				newIncome.setAmount(recurringIncome.getAmount());
 				newIncome.setDueDate(dueDate);
+				newIncome.setNotes(recurringIncome.getNotes());
 				newIncome.setRecurringTransaction(recurringIncome);
 				
 				incomeDao.create(newIncome);
@@ -112,6 +113,7 @@ public class IncomeService {
 			newIncomeForStartDate.setEntryType(income.getEntryType());
 			newIncomeForStartDate.setAmount(income.getAmount());
 			newIncomeForStartDate.setDueDate(income.getStartDate());
+			newIncomeForStartDate.setNotes(income.getNotes());
 			newIncomeForStartDate.setRecurringTransaction(income);
 			
 			createIncome(newIncomeForStartDate);
