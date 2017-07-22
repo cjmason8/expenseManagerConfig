@@ -1,7 +1,7 @@
-eventManager:
-  image: cjmason8/event-manager:latest
+expenseManager:
+  image: cjmason8/expense-manager:latest
   environment:
-    DB_URL: jdbc:postgresql://172.17.0.1:5432/eventmanager
+    DB_URL: jdbc:postgresql://172.17.0.1:5432/expensemanager
     DB_USER: postgres
     DB_PASS: jade76
     DB_DRIVER: org.postgresql.Driver
