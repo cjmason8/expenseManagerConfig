@@ -84,7 +84,7 @@ public class ExpenseService {
 			LocalDate dueDate = recurringExpense.getStartDate();
 			while (DateUtil.getMonday(dueDate).isBefore(startOfWeek)) {
 				RecurringUnit recurringUnit = 
-						RecurringUnit.valueOf(recurringExpense.getRecurringType().getDescription().toUpperCase().replaceAll(" ", "_"));
+						RecurringUnit.valueOf(recurringExpense.getRecurringType().getDescriptionUpper());
 				dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
 			}
 			
@@ -143,7 +143,7 @@ public class ExpenseService {
 	
 	private void createSubsequentWeeks(Expense newExpense) throws Exception {
 		RecurringUnit recurringUnit = 
-				RecurringUnit.valueOf(newExpense.getRecurringType().getDescription().toUpperCase());
+				RecurringUnit.valueOf(newExpense.getRecurringType().getDescriptionUpper());
 		
 		LocalDate dueDate = newExpense.getStartDate().plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
 		

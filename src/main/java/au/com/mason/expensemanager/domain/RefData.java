@@ -44,4 +44,8 @@ public class RefData {
 		this.type = type;
 	}
 	
+	public String getDescriptionUpper() {
+		return description.toUpperCase().replace(" ", "_");
+	}
+	
 }

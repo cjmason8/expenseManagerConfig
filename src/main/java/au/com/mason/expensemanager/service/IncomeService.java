@@ -74,7 +74,7 @@ public class IncomeService {
 			LocalDate dueDate = recurringIncome.getStartDate();
 			while (DateUtil.getMonday(dueDate).isBefore(startOfWeek)) {
 				RecurringUnit recurringUnit = 
-						RecurringUnit.valueOf(recurringIncome.getRecurringType().getDescription().toUpperCase());
+						RecurringUnit.valueOf(recurringIncome.getRecurringType().getDescriptionUpper());
 				dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
 			}
 			
@@ -122,7 +122,7 @@ public class IncomeService {
 	
 	private void createSubsequentWeeks(Income newIncome) throws Exception {
 		RecurringUnit recurringUnit = 
-				RecurringUnit.valueOf(newIncome.getRecurringType().getDescription().toUpperCase());
+				RecurringUnit.valueOf(newIncome.getRecurringType().getDescriptionUpper());
 		
 		LocalDate dueDate = newIncome.getStartDate().plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
 		
