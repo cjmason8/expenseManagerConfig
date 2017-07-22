@@ -123,8 +123,7 @@ public class ExpenseService {
 			newExpenseForStartDate.setDueDate(expense.getStartDate());
 			newExpenseForStartDate.setRecurringTransaction(expense);
 			
-			expenseDao.create(newExpenseForStartDate);
-			
+			createExpense(newExpenseForStartDate);
 			createSubsequentWeeks(expense);
 		}
 	}

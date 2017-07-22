@@ -57,7 +57,7 @@ public class ExpenseDao {
 	
 	public List<Expense> getUnpaidBeforeWeek(LocalDate weekStartDate) {
 		String sql = "from Expense where recurringType IS NULL "
-				+ "AND dueDate <= to_date('" + weekStartDate.format(FORMATTER) + "', 'yyyy-mm-dd') "
+				+ "AND dueDate < to_date('" + weekStartDate.format(FORMATTER) + "', 'yyyy-mm-dd') "
 				+ "AND paid = false";
 
 		return entityManager.createQuery(sql).getResultList();
