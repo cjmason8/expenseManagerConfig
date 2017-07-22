@@ -1,5 +1,5 @@
-eventManager:
-  image: cjmason8/event-manager:latest
+expenseManager:
+  image: cjmason8/expense-manager:latest
   ports:
     - "8083:8080"
 

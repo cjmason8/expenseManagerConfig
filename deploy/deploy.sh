@@ -20,12 +20,12 @@ while getopts ":p:e:" opt; do
 done
 
 #echo "docker stop"
-#docker stop ${ENV}_eventManager_1
+#docker stop ${ENV}_expenseManager_1
 echo "docker login"
 docker login --username=cjmason8 --password=$PASSWORD
 echo "docker pull"
-docker pull cjmason8/event-manager:latest
+docker pull cjmason8/expense-manager:latest
 echo "docker compose"
 pwd
-docker-compose -f ${ENV}/docker-compose-${ENV}.yml up -d eventManager
+docker-compose -f ${ENV}/docker-compose-${ENV}.yml up -d expenseManager
 echo "finished"
