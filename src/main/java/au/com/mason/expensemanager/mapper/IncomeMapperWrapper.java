@@ -23,7 +23,9 @@ public class IncomeMapperWrapper {
 	
 	public Income incomeDtoToIncome(IncomeDto incomeDto) throws Exception {
 		Income income = incomeMapper.incomeDtoToIncome(incomeDto);
-		income.setDueDate(LocalDate.parse(incomeDto.getDueDateString(), FORMATTER));
+		if (incomeDto.getDueDateString() != null) {
+			income.setDueDate(LocalDate.parse(incomeDto.getDueDateString(), FORMATTER));
+		}
 		income.setEntryType(refDataDao.getById(Long.valueOf(incomeDto.getIncomeType())));
 		if (incomeDto.getRecurringTypeId()!= null) {
 			income.setRecurringType(refDataDao.getById(Long.valueOf(incomeDto.getRecurringTypeId())));
@@ -41,7 +43,9 @@ public class IncomeMapperWrapper {
     
     public Income incomeDtoToIncome(IncomeDto incomeDto, Income income) throws Exception {
     	Income existingIncome = incomeMapper.incomeDtoToIncome(incomeDto, income);
-    	existingIncome.setDueDate(LocalDate.parse(incomeDto.getDueDateString(), FORMATTER));
+    	if (incomeDto.getDueDateString()!= null) {
+    		existingIncome.setDueDate(LocalDate.parse(incomeDto.getDueDateString(), FORMATTER));
+    	}
     	existingIncome.setEntryType(refDataDao.getById(Long.valueOf(incomeDto.getIncomeType())));
     	if (incomeDto.getRecurringTypeId()!= null) {
     		existingIncome.setRecurringType(refDataDao.getById(Long.valueOf(incomeDto.getRecurringTypeId())));
@@ -61,11 +65,14 @@ public class IncomeMapperWrapper {
     	IncomeDto incomeDto = incomeMapper.incomeToIncomeDto(income);
     	incomeDto.setIncomeTypeDescription(income.getEntryType().getDescription());
     	incomeDto.setIncomeType(String.valueOf(income.getEntryType().getId()));
-    	incomeDto.setDueDateString(FORMATTER.format(income.getDueDate()));
-    	incomeDto.setWeek(FORMATTER.format(income.getDueDate().with(DayOfWeek.MONDAY)));
+    	if (income.getDueDate() != null) {
+    		incomeDto.setDueDateString(FORMATTER.format(income.getDueDate()));
+    		incomeDto.setWeek(FORMATTER.format(income.getDueDate().with(DayOfWeek.MONDAY)));
+    	}
     	
     	if (income.getStartDate() != null) {
     		incomeDto.setStartDateString(FORMATTER.format(income.getStartDate()));
+    		incomeDto.setWeek(FORMATTER.format(income.getStartDate().with(DayOfWeek.MONDAY)));
     	}
     	if (income.getEndDate() != null) {
     		incomeDto.setEndDateString(FORMATTER.format(income.getEndDate()));

@@ -57,7 +57,11 @@ public abstract class Transaction {
 	}
 
 	public LocalDate getDueDate() {
-		return new java.sql.Date(dueDate.getTime()).toLocalDate();
+		if (dueDate != null) {
+			return new java.sql.Date(dueDate.getTime()).toLocalDate();
+		}
+	
+		return null;
 	}
 
 	public void setDueDate(LocalDate dueDate) {
