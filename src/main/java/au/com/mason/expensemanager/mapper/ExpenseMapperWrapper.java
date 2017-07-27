@@ -24,10 +24,12 @@ public class ExpenseMapperWrapper {
 	public Expense expenseDtoToExpense(ExpenseDto expenseDto) throws Exception {
 		Expense expense = expenseMapper.expenseDtoToExpense(expenseDto);
 		expense.setEntryType(refDataDao.getById(Long.valueOf(expenseDto.getExpenseType())));
-		if (expenseDto.getRecurringTypeId()!= null) {
+		if (expenseDto.getRecurringTypeId() != null) {
 			expense.setRecurringType(refDataDao.getById(Long.valueOf(expenseDto.getRecurringTypeId())));
 		}
-		expense.setDueDate(LocalDate.parse(expenseDto.getDueDateString(), FORMATTER));
+		if (expenseDto.getDueDateString() != null) {
+			expense.setDueDate(LocalDate.parse(expenseDto.getDueDateString(), FORMATTER));
+		}
 		
 		if (expenseDto.getStartDateString() != null) {
 			expense.setStartDate(LocalDate.parse(expenseDto.getStartDateString(), FORMATTER));
@@ -42,10 +44,12 @@ public class ExpenseMapperWrapper {
     public Expense expenseDtoToExpense(ExpenseDto expenseDto, Expense expense) throws Exception {
     	Expense existingExpense = expenseMapper.expenseDtoToExpense(expenseDto, expense);
     	existingExpense.setEntryType(refDataDao.getById(Long.valueOf(expenseDto.getExpenseType())));
-    	if (expenseDto.getRecurringTypeId()!= null) {
+    	if (expenseDto.getRecurringTypeId() != null) {
     		existingExpense.setRecurringType(refDataDao.getById(Long.valueOf(expenseDto.getRecurringTypeId())));
     	}
-    	existingExpense.setDueDate(LocalDate.parse(expenseDto.getDueDateString(), FORMATTER));
+    	else {
+    		existingExpense.setDueDate(LocalDate.parse(expenseDto.getDueDateString(), FORMATTER));
+    	}
     	
     	if (expenseDto.getStartDateString() != null) {
     		existingExpense.setStartDate(LocalDate.parse(expenseDto.getStartDateString(), FORMATTER));
@@ -59,13 +63,16 @@ public class ExpenseMapperWrapper {
     
     public ExpenseDto expenseToExpenseDto(Expense expense) throws Exception {
     	ExpenseDto expenseDto = expenseMapper.expenseToExpenseDto(expense);
-    	expenseDto.setDueDateString(FORMATTER.format(expense.getDueDate()));
+    	if (expense.getDueDate() != null) {
+    		expenseDto.setDueDateString(FORMATTER.format(expense.getDueDate()));
+    		expenseDto.setWeek(FORMATTER.format(expense.getDueDate().with(DayOfWeek.MONDAY)));
+    	}
     	expenseDto.setExpenseTypeDescription(expense.getEntryType().getDescription());
     	expenseDto.setExpenseType(String.valueOf(expense.getEntryType().getId()));
-    	expenseDto.setWeek(FORMATTER.format(expense.getDueDate().with(DayOfWeek.MONDAY)));
     	
     	if (expense.getStartDate() != null) {
     		expenseDto.setStartDateString(FORMATTER.format(expense.getStartDate()));
+    		expenseDto.setWeek(FORMATTER.format(expense.getStartDate().with(DayOfWeek.MONDAY)));
     	}
     	if (expense.getEndDate() != null) {
     		expenseDto.setEndDateString(FORMATTER.format(expense.getEndDate()));
