@@ -3,13 +3,11 @@ package au.com.mason.expensemanager.dto;
 public class IncomeDto {
 
 	private Long id;
-	private String incomeType;
-	private String incomeTypeDescription;
+	private RefDataDto incomeType;
 	private String amount;
 	private String dueDateString;
 
-	private Long recurringTypeId;
-	private String recurringTypeDescription;
+	private RefDataDto recurringType;
 	private String startDateString;
 	private String endDateString;
 	private String week;
@@ -23,22 +21,14 @@ public class IncomeDto {
 		this.id = id;
 	}
 	
-	public String getIncomeType() {
+	public RefDataDto getIncomeType() {
 		return incomeType;
 	}
 	
-	public void setIncomeType(String incomeType) {
+	public void setIncomeType(RefDataDto incomeType) {
 		this.incomeType = incomeType;
 	}
 	
-	public String getIncomeTypeDescription() {
-		return incomeTypeDescription;
-	}
-
-	public void setIncomeTypeDescription(String expenseTypeDescription) {
-		this.incomeTypeDescription = expenseTypeDescription;
-	}
-
 	public String getAmount() {
 		return amount;
 	}
@@ -47,20 +37,12 @@ public class IncomeDto {
 		this.amount = amount;
 	}
 
-	public Long getRecurringTypeId() {
-		return recurringTypeId;
+	public RefDataDto getRecurringType() {
+		return recurringType;
 	}
 
-	public void setRecurringTypeId(Long recurringTypeId) {
-		this.recurringTypeId = recurringTypeId;
-	}
-
-	public String getRecurringTypeDescription() {
-		return recurringTypeDescription;
-	}
-
-	public void setRecurringTypeDescription(String recurringTypeDescription) {
-		this.recurringTypeDescription = recurringTypeDescription;
+	public void setRecurringType(RefDataDto recurringType) {
+		this.recurringType = recurringType;
 	}
 
 	public String getStartDateString() {

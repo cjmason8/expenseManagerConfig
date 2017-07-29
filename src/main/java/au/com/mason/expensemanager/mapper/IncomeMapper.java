@@ -1,9 +1,7 @@
 package au.com.mason.expensemanager.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +9,7 @@ import au.com.mason.expensemanager.domain.Income;
 import au.com.mason.expensemanager.dto.IncomeDto;
 
 @Component
-@Mapper
+@Mapper(uses = {RefDataMapper.class})
 public interface IncomeMapper {
 	
 	IncomeMapper INSTANCE = Mappers.getMapper( IncomeMapper.class );
@@ -20,9 +18,6 @@ public interface IncomeMapper {
     
     Income incomeDtoToIncome(IncomeDto incomeDto, @MappingTarget Income income) throws Exception;
     
-	@Mappings({
-	      @Mapping(target="recurringTypeId", source="income.recurringType.id")
-	    })
     IncomeDto incomeToIncomeDto(Income income) throws Exception;
 
 }
