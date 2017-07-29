@@ -3,7 +3,7 @@ package au.com.mason.expensemanager.dto;
 public class ExpenseDto {
 
 	private Long id;
-	private String expenseType;
+	private RefDataDto expenseType;
 	private String expenseTypeDescription;
 	private String amount;
 	private String dueDateString;
@@ -24,11 +24,11 @@ public class ExpenseDto {
 		this.id = id;
 	}
 	
-	public String getExpenseType() {
+	public RefDataDto getExpenseType() {
 		return expenseType;
 	}
 	
-	public void setExpenseType(String expenseType) {
+	public void setExpenseType(RefDataDto expenseType) {
 		this.expenseType = expenseType;
 	}
 	
