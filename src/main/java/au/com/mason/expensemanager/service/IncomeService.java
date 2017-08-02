@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import au.com.mason.expensemanager.dao.IncomeDao;
 import au.com.mason.expensemanager.domain.Income;
-import au.com.mason.expensemanager.domain.RecurringUnit;
 import au.com.mason.expensemanager.domain.Transaction;
 import au.com.mason.expensemanager.dto.IncomeDto;
 import au.com.mason.expensemanager.mapper.IncomeMapperWrapper;
@@ -73,9 +72,7 @@ public class IncomeService {
 			}
 			LocalDate dueDate = recurringIncome.getStartDate();
 			while (DateUtil.getMonday(dueDate).isBefore(startOfWeek)) {
-				RecurringUnit recurringUnit = 
-						RecurringUnit.valueOf(recurringIncome.getRecurringType().getDescriptionUpper());
-				dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
+				dueDate = DateUtil.findDueDate(recurringIncome, dueDate);
 			}
 			
 			if (DateUtil.getMonday(dueDate).isEqual(startOfWeek)) {
@@ -123,10 +120,7 @@ public class IncomeService {
 	}
 	
 	private void createSubsequentWeeks(Income newIncome) throws Exception {
-		RecurringUnit recurringUnit = 
-				RecurringUnit.valueOf(newIncome.getRecurringType().getDescriptionUpper());
-		
-		LocalDate dueDate = newIncome.getStartDate().plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
+		LocalDate dueDate = DateUtil.findDueDate(newIncome, newIncome.getStartDate());
 		
 		while (expenseService.getPastDate(DateUtil.getMonday(dueDate)) > 0) {
 			if (expenseService.countForWeek(DateUtil.getMonday(dueDate)) > 0) {
@@ -139,7 +133,7 @@ public class IncomeService {
 				incomeDao.create(newIncomeForSubsequent);
 			}
 			
-			dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
+			dueDate = DateUtil.findDueDate(newIncome, dueDate);
 			
 			if (newIncome.getEndDate() != null && dueDate.isAfter(newIncome.getEndDate())) {
 				break;

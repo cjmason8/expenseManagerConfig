@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import au.com.mason.expensemanager.dao.ExpenseDao;
 import au.com.mason.expensemanager.domain.Expense;
-import au.com.mason.expensemanager.domain.RecurringUnit;
 import au.com.mason.expensemanager.domain.Transaction;
 import au.com.mason.expensemanager.dto.ExpenseDto;
 import au.com.mason.expensemanager.mapper.ExpenseMapperWrapper;
@@ -83,9 +82,7 @@ public class ExpenseService {
 
 			LocalDate dueDate = recurringExpense.getStartDate();
 			while (DateUtil.getMonday(dueDate).isBefore(startOfWeek)) {
-				RecurringUnit recurringUnit = 
-						RecurringUnit.valueOf(recurringExpense.getRecurringType().getDescriptionUpper());
-				dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
+				dueDate = DateUtil.findDueDate(recurringExpense, dueDate);
 			}
 			
 			if (DateUtil.getMonday(dueDate).isEqual(startOfWeek)) {
@@ -98,8 +95,8 @@ public class ExpenseService {
 				expenseDao.create(newExpense);
 			}
 		}
-	}	
-	
+	}
+
 	public ExpenseDto getById(Long id) throws Exception {
 		Expense expense = expenseDao.getById(id);
 
@@ -142,10 +139,7 @@ public class ExpenseService {
 	}
 	
 	private void createSubsequentWeeks(Expense newExpense) throws Exception {
-		RecurringUnit recurringUnit = 
-				RecurringUnit.valueOf(newExpense.getRecurringType().getDescriptionUpper());
-		
-		LocalDate dueDate = newExpense.getStartDate().plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
+		LocalDate dueDate = DateUtil.findDueDate(newExpense, newExpense.getStartDate());
 		
 		while (getPastDate(DateUtil.getMonday(dueDate)) > 0) {
 			if (countForWeek(DateUtil.getMonday(dueDate)) > 0) {
@@ -159,7 +153,7 @@ public class ExpenseService {
 				expenseDao.create(newExpenseForSubsequent);
 			}
 			
-			dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
+			dueDate = DateUtil.findDueDate(newExpense, dueDate);
 			
 			if (newExpense.getEndDate() != null && dueDate.isAfter(newExpense.getEndDate())) {
 				break;

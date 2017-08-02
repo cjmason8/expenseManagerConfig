@@ -7,7 +7,7 @@ public enum RecurringUnit {
 	MONTHLY(1, ChronoUnit.MONTHS), YEARLY(1, ChronoUnit.YEARS),
 	QUARTERLY(3, ChronoUnit.MONTHS), FOUR_WEEKLY(4, ChronoUnit.WEEKS),
 	EVERY_TWO_MONTHS(2, ChronoUnit.MONTHS), EVERY_SIX_MONTHS(6, ChronoUnit.MONTHS),
-	EVERY_FOUR_MONTHS(4, ChronoUnit.MONTHS);
+	EVERY_FOUR_MONTHS(4, ChronoUnit.MONTHS), BI_MONTHLY(2, ChronoUnit.WEEKS);
 	
 	private Integer units;
 	private ChronoUnit unitType;
