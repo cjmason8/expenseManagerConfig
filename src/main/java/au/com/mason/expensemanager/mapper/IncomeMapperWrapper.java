@@ -20,7 +20,7 @@ public class IncomeMapperWrapper {
 			income.setDueDate(DateUtil.getFormattedDate(incomeDto.getDueDateString()));
 		}
 		income.setEntryType(refDataMapper.refDataDtoToRefData(incomeDto.getIncomeType()));
-		if (incomeDto.getRecurringType()!= null) {
+		if (incomeDto.getRecurringType() != null) {
 			income.setRecurringType(refDataMapper.refDataDtoToRefData(incomeDto.getRecurringType()));
 		}
 		
