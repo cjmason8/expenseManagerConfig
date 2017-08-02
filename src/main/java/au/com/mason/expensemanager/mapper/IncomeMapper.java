@@ -9,7 +9,7 @@ import au.com.mason.expensemanager.domain.Income;
 import au.com.mason.expensemanager.dto.IncomeDto;
 
 @Component
-@Mapper
+@Mapper(uses = {RefDataMapper.class})
 public interface IncomeMapper {
 	
 	IncomeMapper INSTANCE = Mappers.getMapper( IncomeMapper.class );
