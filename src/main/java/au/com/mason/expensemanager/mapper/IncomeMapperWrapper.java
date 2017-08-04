@@ -12,7 +12,7 @@ import au.com.mason.expensemanager.domain.Income;
 import au.com.mason.expensemanager.dto.IncomeDto;
 
 @Component
-public class IncomeMapperWrapper {
+public class IncomeMapperWrapper implements TransactionMapperWrapper<Income, IncomeDto> {
 	
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	
@@ -21,14 +21,20 @@ public class IncomeMapperWrapper {
 	@Autowired
 	private RefDataDao refDataDao;
 	
-	public Income incomeDtoToIncome(IncomeDto incomeDto) throws Exception {
+	public Income transactionDtoToTransaction(IncomeDto incomeDto) throws Exception {
 		Income income = incomeMapper.incomeDtoToIncome(incomeDto);
 		if (incomeDto.getDueDateString() != null) {
 			income.setDueDate(LocalDate.parse(incomeDto.getDueDateString(), FORMATTER));
 		}
+<<<<<<< Updated upstream
 		income.setEntryType(refDataDao.getById(Long.valueOf(incomeDto.getIncomeType())));
 		if (incomeDto.getRecurringTypeId()!= null) {
 			income.setRecurringType(refDataDao.getById(Long.valueOf(incomeDto.getRecurringTypeId())));
+=======
+		income.setEntryType(refDataMapper.refDataDtoToRefData(incomeDto.getTransactionType()));
+		if (incomeDto.getRecurringType()!= null) {
+			income.setRecurringType(refDataMapper.refDataDtoToRefData(incomeDto.getRecurringType()));
+>>>>>>> Stashed changes
 		}
 		
 		if (incomeDto.getStartDateString() != null) {
@@ -41,14 +47,20 @@ public class IncomeMapperWrapper {
 		return income;
 	}
     
-    public Income incomeDtoToIncome(IncomeDto incomeDto, Income income) throws Exception {
+    public Income transactionDtoToTransaction(IncomeDto incomeDto, Income income) throws Exception {
     	Income existingIncome = incomeMapper.incomeDtoToIncome(incomeDto, income);
     	if (incomeDto.getDueDateString()!= null) {
     		existingIncome.setDueDate(LocalDate.parse(incomeDto.getDueDateString(), FORMATTER));
     	}
+<<<<<<< Updated upstream
     	existingIncome.setEntryType(refDataDao.getById(Long.valueOf(incomeDto.getIncomeType())));
     	if (incomeDto.getRecurringTypeId()!= null) {
     		existingIncome.setRecurringType(refDataDao.getById(Long.valueOf(incomeDto.getRecurringTypeId())));
+=======
+    	existingIncome.setEntryType(refDataMapper.refDataDtoToRefData(incomeDto.getTransactionType()));
+    	if (incomeDto.getRecurringType() != null) {
+    		existingIncome.setRecurringType(refDataMapper.refDataDtoToRefData(incomeDto.getRecurringType()));
+>>>>>>> Stashed changes
     	}
     	
 		if (incomeDto.getStartDateString() != null) {
@@ -61,10 +73,14 @@ public class IncomeMapperWrapper {
 		return existingIncome;    	
     }
     
-    public IncomeDto incomeToIncomeDto(Income income) throws Exception {
+    public IncomeDto transactionToTransactionDto(Income income) throws Exception {
     	IncomeDto incomeDto = incomeMapper.incomeToIncomeDto(income);
+<<<<<<< Updated upstream
     	incomeDto.setIncomeTypeDescription(income.getEntryType().getDescription());
     	incomeDto.setIncomeType(String.valueOf(income.getEntryType().getId()));
+=======
+    	incomeDto.setTransactionType(refDataMapper.refDataToRefDataDto(income.getEntryType()));
+>>>>>>> Stashed changes
     	if (income.getDueDate() != null) {
     		incomeDto.setDueDateString(FORMATTER.format(income.getDueDate()));
     		incomeDto.setWeek(FORMATTER.format(income.getDueDate().with(DayOfWeek.MONDAY)));

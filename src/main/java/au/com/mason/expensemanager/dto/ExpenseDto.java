@@ -1,7 +1,8 @@
 package au.com.mason.expensemanager.dto;
 
-public class ExpenseDto {
+public class ExpenseDto extends TransactionDto {
 
+<<<<<<< Updated upstream
 	private Long id;
 	private RefDataDto expenseType;
 	private String expenseTypeDescription;
@@ -55,6 +56,9 @@ public class ExpenseDto {
 	public void setDueDateString(String dueDateString) {
 		this.dueDateString = dueDateString;
 	}
+=======
+	private boolean paid;
+>>>>>>> Stashed changes
 
 	public boolean getPaid() {
 		return paid;
@@ -64,6 +68,7 @@ public class ExpenseDto {
 		this.paid = paid;
 	}
 
+<<<<<<< Updated upstream
 	public String getWeek() {
 		return week;
 	}
@@ -112,4 +117,6 @@ public class ExpenseDto {
 		this.notes = notes;
 	}
 
+=======
+>>>>>>> Stashed changes
 }

@@ -1,16 +1,13 @@
 package au.com.mason.expensemanager.dto;
 
-<<<<<<< Updated upstream
-public class IncomeDto {
+public class TransactionDto {
 
 	private Long id;
-	private String incomeType;
-	private String incomeTypeDescription;
+	private RefDataDto transactionType;
 	private String amount;
 	private String dueDateString;
 
-	private Long recurringTypeId;
-	private String recurringTypeDescription;
+	private RefDataDto recurringType;
 	private String startDateString;
 	private String endDateString;
 	private String week;
@@ -24,22 +21,14 @@ public class IncomeDto {
 		this.id = id;
 	}
 	
-	public String getIncomeType() {
-		return incomeType;
+	public RefDataDto getTransactionType() {
+		return transactionType;
 	}
 	
-	public void setIncomeType(String incomeType) {
-		this.incomeType = incomeType;
+	public void setTransactionType(RefDataDto transactionType) {
+		this.transactionType = transactionType;
 	}
 	
-	public String getIncomeTypeDescription() {
-		return incomeTypeDescription;
-	}
-
-	public void setIncomeTypeDescription(String expenseTypeDescription) {
-		this.incomeTypeDescription = expenseTypeDescription;
-	}
-
 	public String getAmount() {
 		return amount;
 	}
@@ -48,20 +37,12 @@ public class IncomeDto {
 		this.amount = amount;
 	}
 
-	public Long getRecurringTypeId() {
-		return recurringTypeId;
+	public RefDataDto getRecurringType() {
+		return recurringType;
 	}
 
-	public void setRecurringTypeId(Long recurringTypeId) {
-		this.recurringTypeId = recurringTypeId;
-	}
-
-	public String getRecurringTypeDescription() {
-		return recurringTypeDescription;
-	}
-
-	public void setRecurringTypeDescription(String recurringTypeDescription) {
-		this.recurringTypeDescription = recurringTypeDescription;
+	public void setRecurringType(RefDataDto recurringType) {
+		this.recurringType = recurringType;
 	}
 
 	public String getStartDateString() {
@@ -103,8 +84,5 @@ public class IncomeDto {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-=======
-public class IncomeDto extends TransactionDto {
->>>>>>> Stashed changes
 
 }
