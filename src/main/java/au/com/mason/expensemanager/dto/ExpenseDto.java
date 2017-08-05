@@ -5,14 +5,12 @@ public class ExpenseDto extends TransactionDto {
 <<<<<<< Updated upstream
 	private Long id;
 	private RefDataDto expenseType;
-	private String expenseTypeDescription;
 	private String amount;
 	private String dueDateString;
 	private boolean paid;
 	private String week;
 
-	private Long recurringTypeId;
-	private String recurringTypeDescription;
+	private RefDataDto recurringType;
 	private String startDateString;
 	private String endDateString;
 	private String notes;
@@ -33,14 +31,6 @@ public class ExpenseDto extends TransactionDto {
 		this.expenseType = expenseType;
 	}
 	
-	public String getExpenseTypeDescription() {
-		return expenseTypeDescription;
-	}
-
-	public void setExpenseTypeDescription(String expenseTypeDescription) {
-		this.expenseTypeDescription = expenseTypeDescription;
-	}
-
 	public String getAmount() {
 		return amount;
 	}
@@ -77,20 +67,12 @@ public class ExpenseDto extends TransactionDto {
 		this.week = week;
 	}
 
-	public Long getRecurringTypeId() {
-		return recurringTypeId;
+	public RefDataDto getRecurringType() {
+		return recurringType;
 	}
 
-	public void setRecurringTypeId(Long recurringTypeId) {
-		this.recurringTypeId = recurringTypeId;
-	}
-
-	public String getRecurringTypeDescription() {
-		return recurringTypeDescription;
-	}
-
-	public void setRecurringTypeDescription(String recurringTypeDescription) {
-		this.recurringTypeDescription = recurringTypeDescription;
+	public void setRecurringType(RefDataDto recurringType) {
+		this.recurringType = recurringType;
 	}
 
 	public String getStartDateString() {
