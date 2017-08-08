@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import au.com.mason.expensemanager.dao.ExpenseDao;
+import au.com.mason.expensemanager.dao.TransactionDao;
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Transaction;
 import au.com.mason.expensemanager.dto.ExpenseDto;
@@ -19,7 +20,7 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 	private IncomeService incomeService;
 	
 	@Autowired
-	private ExpenseDao expenseDao;
+	private TransactionDao<Expense> expenseDao;
 	
 	@Override
 	Expense createTransaction() {

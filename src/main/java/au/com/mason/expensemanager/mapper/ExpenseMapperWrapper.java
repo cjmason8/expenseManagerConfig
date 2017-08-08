@@ -60,7 +60,7 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
     		expenseDto.setDueDateString(DateUtil.getFormattedDateString(expense.getDueDate()));
     		expenseDto.setWeek(DateUtil.getFormattedDateString(expense.getDueDate().with(DayOfWeek.MONDAY)));
     	}
-    	expenseDto.setExpenseType(refDataMapper.refDataToRefDataDto(expense.getEntryType()));
+    	expenseDto.setTransactionType(refDataMapper.refDataToRefDataDto(expense.getEntryType()));
     	
     	if (expense.getStartDate() != null) {
     		expenseDto.setStartDateString(DateUtil.getFormattedDateString(expense.getStartDate()));

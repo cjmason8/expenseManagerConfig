@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
+import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Income;
 
 @Repository
@@ -100,5 +101,11 @@ public class IncomeDao implements TransactionDao<Income> {
 	// setup on DatabaseConfig class.
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	@Override
+	public List<Expense> getUnpaidBeforeWeek(LocalDate weekStartDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
