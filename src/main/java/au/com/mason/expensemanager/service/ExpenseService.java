@@ -29,7 +29,7 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 
 	@Override
 	public void initialiseWeek(LocalDate localDate, Transaction currentRecurringTransaction) throws Exception {
-		if (countForWeek(localDate) == 0) {
+		if (countForWeekForAll(localDate) == 0) {
 			incomeService.createRecurringTransactions(localDate, currentRecurringTransaction);
 			createRecurringTransactions(localDate, currentRecurringTransaction);
 		}
