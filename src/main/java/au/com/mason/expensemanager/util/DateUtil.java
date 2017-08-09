@@ -6,10 +6,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
-
-import org.aspectj.weaver.patterns.WithinAnnotationPointcut;
 
 import au.com.mason.expensemanager.domain.RecurringUnit;
 import au.com.mason.expensemanager.domain.Transaction;
@@ -23,10 +20,15 @@ public class DateUtil {
 	}
 	
 	public static LocalDate getFormattedDate(String date) {
-		ZonedDateTime createdAtUTC = ZonedDateTime.parse(date);
-		ZonedDateTime createdAtMelb = createdAtUTC.withZoneSameInstant(ZoneId.of("Australia/Melbourne"));
-		
-		return createdAtMelb.toLocalDate();
+		if (date.indexOf("Z") != -1) {
+			ZonedDateTime createdAtUTC = ZonedDateTime.parse(date);
+			ZonedDateTime createdAtMelb = createdAtUTC.withZoneSameInstant(ZoneId.of("Australia/Melbourne"));
+			
+			return createdAtMelb.toLocalDate();
+		}
+		else {
+			return LocalDate.parse(date, FORMATTER);
+		}
 	}
 	
 	public static String getFormattedDateString(LocalDate date) {

@@ -3,6 +3,7 @@ package au.com.mason.expensemanager.mapper;
 import java.time.DayOfWeek;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.dto.ExpenseDto;
@@ -20,14 +21,14 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
 		if (expenseDto.getRecurringType() != null) {
 			expense.setRecurringType(refDataMapper.refDataDtoToRefData(expenseDto.getRecurringType()));
 		}
-		if (expenseDto.getDueDateString() != null) {
+		if (!StringUtils.isEmpty(expenseDto.getDueDateString())) {
 			expense.setDueDate(DateUtil.getFormattedDate(expenseDto.getDueDateString()));
 		}
 		
-		if (expenseDto.getStartDateString() != null) {
+		if (!StringUtils.isEmpty(expenseDto.getStartDateString())) {
 			expense.setStartDate(DateUtil.getFormattedDate(expenseDto.getStartDateString()));
 		}
-		if (expenseDto.getEndDateString() != null) {
+		if (!StringUtils.isEmpty(expenseDto.getEndDateString())) {
 			expense.setEndDate(DateUtil.getFormattedDate(expenseDto.getEndDateString()));
 		}
 		
@@ -44,10 +45,10 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
     		existingExpense.setDueDate(DateUtil.getFormattedDate(expenseDto.getDueDateString()));
     	}
     	
-    	if (expenseDto.getStartDateString() != null) {
+    	if (!StringUtils.isEmpty(expenseDto.getStartDateString())) {
     		existingExpense.setStartDate(DateUtil.getFormattedDate(expenseDto.getStartDateString()));
 		}
-		if (expenseDto.getEndDateString() != null) {
+		if (!StringUtils.isEmpty(expenseDto.getEndDateString())) {
 			existingExpense.setEndDate(DateUtil.getFormattedDate(expenseDto.getEndDateString()));
 		}
 		
