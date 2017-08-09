@@ -11,11 +11,12 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
+import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Income;
 
 @Repository
 @Transactional
-public class IncomeDao {
+public class IncomeDao implements TransactionDao<Income> {
 	
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -88,7 +89,7 @@ public class IncomeDao {
 		return query.getResultList();
 	}
 
-	public void deleteIncomes(Long recurringTransactionId) {
+	public void deleteTransactions(Long recurringTransactionId) {
 		entityManager.createQuery("delete from Income where recurringTransaction.id = " + recurringTransactionId
 				+ " AND dueDate > to_date('" + LocalDate.now().format(FORMATTER) + "', 'yyyy-mm-dd')")
 				.executeUpdate();
@@ -100,5 +101,11 @@ public class IncomeDao {
 	// setup on DatabaseConfig class.
 	@PersistenceContext
 	private EntityManager entityManager;
+
+	@Override
+	public List<Expense> getUnpaidBeforeWeek(LocalDate weekStartDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

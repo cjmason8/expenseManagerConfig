@@ -2,6 +2,8 @@ package au.com.mason.expensemanager.util;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
@@ -21,7 +23,10 @@ public class DateUtil {
 	}
 	
 	public static LocalDate getFormattedDate(String date) {
-		return LocalDate.parse(date, FORMATTER);
+		ZonedDateTime createdAtUTC = ZonedDateTime.parse(date);
+		ZonedDateTime createdAtMelb = createdAtUTC.withZoneSameInstant(ZoneId.of("Australia/Melbourne"));
+		
+		return createdAtMelb.toLocalDate();
 	}
 	
 	public static String getFormattedDateString(LocalDate date) {

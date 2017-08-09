@@ -9,17 +9,18 @@ import au.com.mason.expensemanager.dto.IncomeDto;
 import au.com.mason.expensemanager.util.DateUtil;
 
 @Component
-public class IncomeMapperWrapper {
+public class IncomeMapperWrapper implements TransactionMapperWrapper<Income, IncomeDto> {
 	
 	private IncomeMapper incomeMapper = IncomeMapper.INSTANCE;
 	private RefDataMapper refDataMapper = RefDataMapper.INSTANCE;
 	
-	public Income incomeDtoToIncome(IncomeDto incomeDto) throws Exception {
+	public Income transactionDtoToTransaction(IncomeDto incomeDto) throws Exception {
 		Income income = incomeMapper.incomeDtoToIncome(incomeDto);
 		if (incomeDto.getDueDateString() != null) {
 			income.setDueDate(DateUtil.getFormattedDate(incomeDto.getDueDateString()));
 		}
-		income.setEntryType(refDataMapper.refDataDtoToRefData(incomeDto.getIncomeType()));
+		
+		income.setEntryType(refDataMapper.refDataDtoToRefData(incomeDto.getTransactionType()));
 		if (incomeDto.getRecurringType() != null) {
 			income.setRecurringType(refDataMapper.refDataDtoToRefData(incomeDto.getRecurringType()));
 		}
@@ -34,12 +35,13 @@ public class IncomeMapperWrapper {
 		return income;
 	}
     
-    public Income incomeDtoToIncome(IncomeDto incomeDto, Income income) throws Exception {
+    public Income transactionDtoToTransaction(IncomeDto incomeDto, Income income) throws Exception {
     	Income existingIncome = incomeMapper.incomeDtoToIncome(incomeDto, income);
     	if (incomeDto.getDueDateString() != null) {
     		existingIncome.setDueDate(DateUtil.getFormattedDate(incomeDto.getDueDateString()));
     	}
-    	existingIncome.setEntryType(refDataMapper.refDataDtoToRefData(incomeDto.getIncomeType()));
+    	
+	existingIncome.setEntryType(refDataMapper.refDataDtoToRefData(incomeDto.getTransactionType()));
     	if (incomeDto.getRecurringType() != null) {
     		existingIncome.setRecurringType(refDataMapper.refDataDtoToRefData(incomeDto.getRecurringType()));
     	}
@@ -54,9 +56,9 @@ public class IncomeMapperWrapper {
 		return existingIncome;    	
     }
     
-    public IncomeDto incomeToIncomeDto(Income income) throws Exception {
+    public IncomeDto transactionToTransactionDto(Income income) throws Exception {
     	IncomeDto incomeDto = incomeMapper.incomeToIncomeDto(income);
-    	incomeDto.setIncomeType(refDataMapper.refDataToRefDataDto(income.getEntryType()));
+    	incomeDto.setTransactionType(refDataMapper.refDataToRefDataDto(income.getEntryType()));
     	if (income.getDueDate() != null) {
     		incomeDto.setDueDateString(DateUtil.getFormattedDateString(income.getDueDate()));
     		incomeDto.setWeek(DateUtil.getFormattedDateString(income.getDueDate().with(DayOfWeek.MONDAY)));

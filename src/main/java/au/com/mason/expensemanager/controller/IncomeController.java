@@ -26,20 +26,20 @@ public class IncomeController {
 			consumes = "application/json", headers = "Accept=application/json")
 	IncomeDto addIncome(@RequestBody IncomeDto income) throws Exception {
 		
-		return incomeService.addIncome(income);
+		return incomeService.addTransaction(income);
     }
 	
 	@RequestMapping(value = "/incomes/{id}", method = RequestMethod.PUT, produces = "application/json", 
 			consumes = "application/json", headers = "Accept=application/json")
 	IncomeDto updateIncome(@RequestBody IncomeDto income, Long id) throws Exception {
-		return incomeService.updateIncome(income);
+		return incomeService.updateTransaction(income);
     }
 	
 	@RequestMapping(value = "/incomes/{id}", method = RequestMethod.DELETE, produces = "application/json",
 			consumes = "application/json", headers = "Accept=application/json")
 	String updateIncome(@PathVariable Long id) throws Exception {
 		
-		incomeService.deleteIncome(id);
+		incomeService.deleteTransaction(id);
 		
 		return "{\"status\":\"success\"}";
     }	

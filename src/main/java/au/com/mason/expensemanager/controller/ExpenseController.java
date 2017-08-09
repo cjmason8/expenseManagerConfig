@@ -26,20 +26,20 @@ public class ExpenseController {
 			consumes = "application/json", headers = "Accept=application/json")
 	ExpenseDto addExpense(@RequestBody ExpenseDto expense) throws Exception {
 		
-		return expenseService.addExpense(expense);
+		return expenseService.addTransaction(expense);
     }
 	
 	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.PUT, produces = "application/json", 
 			consumes = "application/json", headers = "Accept=application/json")
 	ExpenseDto updateExpense(@RequestBody ExpenseDto expense, Long id) throws Exception {
-		return expenseService.updateExpense(expense);
+		return expenseService.updateTransaction(expense);
     }
 	
 	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.DELETE, produces = "application/json",
 			consumes = "application/json", headers = "Accept=application/json")
 	String deleteExpense(@PathVariable Long id) throws Exception {
 		
-		expenseService.deleteExpense(id);
+		expenseService.deleteTransaction(id);
 		
 		return "{\"status\":\"success\"}";
     }	

@@ -15,7 +15,7 @@ import au.com.mason.expensemanager.domain.Expense;
 
 @Repository
 @Transactional
-public class ExpenseDao {
+public class ExpenseDao implements TransactionDao<Expense> {
 	
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -87,7 +87,7 @@ public class ExpenseDao {
 		return query.getResultList();
 	}
 
-	public void deleteExpenses(Long recurringTransactionId) {
+	public void deleteTransactions(Long recurringTransactionId) {
 		entityManager.createQuery("delete from Expense where recurringTransaction.id = " + recurringTransactionId
 				+ " AND dueDate > to_date('" + LocalDate.now().format(FORMATTER) + "', 'yyyy-mm-dd')")
 				.executeUpdate();
