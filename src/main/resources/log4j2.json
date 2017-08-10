@@ -4,8 +4,8 @@
       "appenders": {
          "RollingFile": {
             "name":"File",
-            "fileName":"/applogs/eventManager.log",
-            "filePattern":"/applogs/eventManager-backup-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz",
+            "fileName":"/applogs/expenseManager.log",
+            "filePattern":"/applogs/expenseManager-backup-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz",
             "PatternLayout": {
                "pattern":"{\"dateTime\":\"%d{yyyy-MM-dd HH:mm:ss}\", \"msg\":\"%-5p %c{1}:%L - %m%n\"}"
             },

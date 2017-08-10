@@ -1,5 +1,0 @@
-eventManager:
-  image: cjmason8/event-manager:latest
-  ports:
-    - "8083:8080"
-
