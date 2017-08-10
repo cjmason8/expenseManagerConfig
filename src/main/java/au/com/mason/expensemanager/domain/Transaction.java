@@ -3,6 +3,7 @@ package au.com.mason.expensemanager.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -13,9 +14,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+
+import au.com.mason.expensemanager.dao.JsonDataUserType;
+
 @Entity
 @Table(name="transactions")
 @DiscriminatorColumn(name = "transactionType")
+@TypeDef(name = "jsonDataUserType", typeClass = JsonDataUserType.class)
 public abstract class Transaction {
 	
 	public Transaction() {}
@@ -33,6 +40,9 @@ public abstract class Transaction {
 	private Date startDate;
 	private Date endDate;
 	private String notes;
+	
+	@Type(type = "jsonDataUserType")
+    private Map<String, String> metaData;
 	
 	@OneToOne
 	@JoinColumn(name = "entryTypeId")
@@ -124,6 +134,14 @@ public abstract class Transaction {
 		this.notes = notes;
 	}
 	
+	public Map<String, String> getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(Map<String, String> metaData) {
+		this.metaData = metaData;
+	}
+
 	public abstract void setRecurringTransaction(Transaction recurringTransaction);
 	
 	public abstract Transaction getRecurringTransaction();

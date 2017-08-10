@@ -1,9 +1,13 @@
 package au.com.mason.expensemanager.mapper;
 
 import java.time.DayOfWeek;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.dto.ExpenseDto;
@@ -14,6 +18,7 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
 	
 	private ExpenseMapper expenseMapper = ExpenseMapper.INSTANCE;
 	private RefDataMapper refDataMapper = RefDataMapper.INSTANCE;
+	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
 	public Expense transactionDtoToTransaction(ExpenseDto expenseDto) throws Exception {
 		Expense expense = expenseMapper.expenseDtoToExpense(expenseDto);
@@ -31,6 +36,7 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
 		if (!StringUtils.isEmpty(expenseDto.getEndDateString())) {
 			expense.setEndDate(DateUtil.getFormattedDate(expenseDto.getEndDateString()));
 		}
+		expense.setMetaData(gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
 		
 		return expense;
 	}
@@ -51,6 +57,7 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
 		if (!StringUtils.isEmpty(expenseDto.getEndDateString())) {
 			existingExpense.setEndDate(DateUtil.getFormattedDate(expenseDto.getEndDateString()));
 		}
+		existingExpense.setMetaData(gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
 		
 		return existingExpense;    	
     }
@@ -70,6 +77,7 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
     	if (expense.getEndDate() != null) {
     		expenseDto.setEndDateString(DateUtil.getFormattedDateString(expense.getEndDate()));
     	}
+    	expenseDto.setMetaDataChunk(gson.toJson(expense.getMetaData(), Map.class));
     	
     	return expenseDto;
     }

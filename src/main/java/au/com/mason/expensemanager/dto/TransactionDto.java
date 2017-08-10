@@ -12,6 +12,7 @@ public class TransactionDto {
 	private String endDateString;
 	private String week;
 	private String notes;
+	private String metaDataChunk;
 
 	public Long getId() {
 		return id;
@@ -83,6 +84,14 @@ public class TransactionDto {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	public String getMetaDataChunk() {
+		return metaDataChunk;
+	}
+
+	public void setMetaDataChunk(String metaDataChunk) {
+		this.metaDataChunk = metaDataChunk;
 	}
 
 }

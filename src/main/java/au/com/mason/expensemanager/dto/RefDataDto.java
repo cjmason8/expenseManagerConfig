@@ -7,6 +7,7 @@ public class RefDataDto {
 	private String type;
 	private String typeDescription;
 	private String description;
+	private String metaDataChunk;
 	
 	public Long getId() {
 		return id;
@@ -46,6 +47,14 @@ public class RefDataDto {
 
 	public void setTypeDescription(String typeDescription) {
 		this.typeDescription = typeDescription;
+	}
+
+	public String getMetaDataChunk() {
+		return metaDataChunk;
+	}
+
+	public void setMetaDataChunk(String metaDataChunk) {
+		this.metaDataChunk = metaDataChunk;
 	}
 	
 }
