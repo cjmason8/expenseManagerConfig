@@ -10,14 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-
-import au.com.mason.expensemanager.dao.JsonDataUserType;
-
 @Entity
 @Table(name="refdata")
-@TypeDef(name = "jsonDataUserType", typeClass = JsonDataUserType.class)
+//@TypeDef(name = "jsonDataUserType", typeClass = JsonDataUserType.class)
 public class RefData {
 	
 	@Id
@@ -28,8 +23,8 @@ public class RefData {
 	@Enumerated(EnumType.STRING)
 	private RefDataType type;
 	
-	@Type(type = "jsonDataUserType")
-    private Map<String, String> metaData;
+	//@Type(type = "jsonDataUserType")
+    //private Map<String, String> metaData;
 	
 	public long getId() {
 		return id;
@@ -59,12 +54,12 @@ public class RefData {
 		return description.toUpperCase().replace(" ", "_");
 	}
 
-	public Map<String, String> getMetaData() {
+	/*public Map<String, String> getMetaData() {
 		return metaData;
 	}
 
 	public void setMetaData(Map<String, String> metaData) {
 		this.metaData = metaData;
-	}
+	}*/
 	
 }

@@ -18,7 +18,7 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
 	
 	private ExpenseMapper expenseMapper = ExpenseMapper.INSTANCE;
 	private RefDataMapper refDataMapper = RefDataMapper.INSTANCE;
-	private Gson gson = new GsonBuilder().serializeNulls().create();
+	//private Gson gson = new GsonBuilder().serializeNulls().create();
 	
 	public Expense transactionDtoToTransaction(ExpenseDto expenseDto) throws Exception {
 		Expense expense = expenseMapper.expenseDtoToExpense(expenseDto);
@@ -36,7 +36,7 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
 		if (!StringUtils.isEmpty(expenseDto.getEndDateString())) {
 			expense.setEndDate(DateUtil.getFormattedDate(expenseDto.getEndDateString()));
 		}
-		expense.setMetaData(gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
+		//expense.setMetaData(gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
 		
 		return expense;
 	}
@@ -57,7 +57,7 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
 		if (!StringUtils.isEmpty(expenseDto.getEndDateString())) {
 			existingExpense.setEndDate(DateUtil.getFormattedDate(expenseDto.getEndDateString()));
 		}
-		existingExpense.setMetaData(gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
+		//existingExpense.setMetaData(gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
 		
 		return existingExpense;    	
     }
@@ -77,7 +77,7 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
     	if (expense.getEndDate() != null) {
     		expenseDto.setEndDateString(DateUtil.getFormattedDateString(expense.getEndDate()));
     	}
-    	expenseDto.setMetaDataChunk(gson.toJson(expense.getMetaData(), Map.class));
+    	//expenseDto.setMetaDataChunk(gson.toJson(expense.getMetaData(), Map.class));
     	
     	return expenseDto;
     }
