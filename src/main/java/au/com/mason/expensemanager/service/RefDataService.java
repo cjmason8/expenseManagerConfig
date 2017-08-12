@@ -40,6 +40,9 @@ public class RefDataService {
 		else if (type.equals("recurringType")) {
 			typeVal = RefDataType.RECURRING_TYPE.name();
 		}
+		else if (type.equals("cause")) {
+			typeVal = RefDataType.CAUSE.name();
+		}		
 		else if (type.equals("incomeType")) {
 			typeVal = RefDataType.INCOME_TYPE.name();
 		}		

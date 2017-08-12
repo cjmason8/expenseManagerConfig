@@ -2,7 +2,7 @@ package au.com.mason.expensemanager.domain;
 
 public enum RefDataType {
 	
-	EXPENSE_TYPE("Expense Type"), INCOME_TYPE("Income Type"), RECURRING_TYPE("Recurring Type");
+	CAUSE("Cause"), EXPENSE_TYPE("Expense Type"), INCOME_TYPE("Income Type"), RECURRING_TYPE("Recurring Type");
 	
 	private String description;
 

@@ -45,6 +45,7 @@ public class IncomeDao implements TransactionDao<Income> {
 	
 	@SuppressWarnings("unchecked")
 	public List<Income> getAllRecurring() {
+		
 		return entityManager.createQuery(
 				"from Income where recurringType IS NOT NULL AND deleted = false").getResultList();
 	}	

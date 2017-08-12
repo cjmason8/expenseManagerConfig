@@ -17,15 +17,10 @@ import au.com.mason.expensemanager.util.DateUtil;
 public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, ExpenseDto> {
 	
 	private ExpenseMapper expenseMapper = ExpenseMapper.INSTANCE;
-	private RefDataMapper refDataMapper = RefDataMapper.INSTANCE;
-	//private Gson gson = new GsonBuilder().serializeNulls().create();
+	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
 	public Expense transactionDtoToTransaction(ExpenseDto expenseDto) throws Exception {
 		Expense expense = expenseMapper.expenseDtoToExpense(expenseDto);
-		expense.setEntryType(refDataMapper.refDataDtoToRefData(expenseDto.getTransactionType()));
-		if (expenseDto.getRecurringType() != null) {
-			expense.setRecurringType(refDataMapper.refDataDtoToRefData(expenseDto.getRecurringType()));
-		}
 		if (!StringUtils.isEmpty(expenseDto.getDueDateString())) {
 			expense.setDueDate(DateUtil.getFormattedDate(expenseDto.getDueDateString()));
 		}
@@ -36,18 +31,14 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
 		if (!StringUtils.isEmpty(expenseDto.getEndDateString())) {
 			expense.setEndDate(DateUtil.getFormattedDate(expenseDto.getEndDateString()));
 		}
-		//expense.setMetaData(gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
+		expense.setMetaData(gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
 		
 		return expense;
 	}
     
 	public Expense transactionDtoToTransaction(ExpenseDto expenseDto, Expense expense) throws Exception {
     	Expense existingExpense = expenseMapper.expenseDtoToExpense(expenseDto, expense);
-    	existingExpense.setEntryType(refDataMapper.refDataDtoToRefData(expenseDto.getTransactionType()));
-    	if (expenseDto.getRecurringType() != null) {
-    		existingExpense.setRecurringType(refDataMapper.refDataDtoToRefData(expenseDto.getRecurringType()));
-    	}
-    	else {
+    	if (expenseDto.getRecurringType() == null) {
     		existingExpense.setDueDate(DateUtil.getFormattedDate(expenseDto.getDueDateString()));
     	}
     	
@@ -57,7 +48,7 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
 		if (!StringUtils.isEmpty(expenseDto.getEndDateString())) {
 			existingExpense.setEndDate(DateUtil.getFormattedDate(expenseDto.getEndDateString()));
 		}
-		//existingExpense.setMetaData(gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
+		existingExpense.setMetaData(gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
 		
 		return existingExpense;    	
     }
@@ -68,7 +59,6 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
     		expenseDto.setDueDateString(DateUtil.getFormattedDateString(expense.getDueDate()));
     		expenseDto.setWeek(DateUtil.getFormattedDateString(expense.getDueDate().with(DayOfWeek.MONDAY)));
     	}
-    	expenseDto.setTransactionType(refDataMapper.refDataToRefDataDto(expense.getEntryType()));
     	
     	if (expense.getStartDate() != null) {
     		expenseDto.setStartDateString(DateUtil.getFormattedDateString(expense.getStartDate()));
@@ -77,7 +67,7 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
     	if (expense.getEndDate() != null) {
     		expenseDto.setEndDateString(DateUtil.getFormattedDateString(expense.getEndDate()));
     	}
-    	//expenseDto.setMetaDataChunk(gson.toJson(expense.getMetaData(), Map.class));
+    	expenseDto.setMetaDataChunk(gson.toJson(expense.getMetaData(), Map.class));
     	
     	return expenseDto;
     }

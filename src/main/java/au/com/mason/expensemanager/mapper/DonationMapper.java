@@ -9,7 +9,7 @@ import au.com.mason.expensemanager.domain.Donation;
 import au.com.mason.expensemanager.dto.DonationDto;
 
 @Component
-@Mapper
+@Mapper(uses = {RefDataMapper.class})
 public interface DonationMapper {
 	
 	DonationMapper INSTANCE = Mappers.getMapper( DonationMapper.class );
