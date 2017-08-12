@@ -1,11 +1,6 @@
 package au.com.mason.expensemanager.mapper;
 
-import java.util.Map;
-
 import org.springframework.stereotype.Component;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import au.com.mason.expensemanager.domain.RefData;
 import au.com.mason.expensemanager.dto.RefDataDto;
@@ -14,17 +9,16 @@ import au.com.mason.expensemanager.dto.RefDataDto;
 public class RefDataMapperWrapper {
 	
 	private RefDataMapper refDataMapper = RefDataMapper.INSTANCE;
-	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
 	public RefData refDataDtoToRefData(RefDataDto refDataDto) throws Exception {
 		RefData refData = refDataMapper.refDataDtoToRefData(refDataDto);
-		refData.setMetaData(gson.fromJson(refDataDto.getMetaDataChunk(), Map.class));
+		refData.setMetaData(refDataDto.getMetaDataChunk());
 		return refData;
 	}
     
     public RefData refDataDtoToRefData(RefDataDto refDataDto, RefData refDataParam) throws Exception {
     	RefData refData = refDataMapper.refDataDtoToRefData(refDataDto, refDataParam);
-		refData.setMetaData(gson.fromJson(refDataDto.getMetaDataChunk(), Map.class));
+		refData.setMetaData(refDataDto.getMetaDataChunk());
     	
 		return refData;
     }
@@ -33,7 +27,7 @@ public class RefDataMapperWrapper {
     	RefDataDto refDataDto = refDataMapper.refDataToRefDataDto(refData);
     	refDataDto.setValue(String.valueOf(refData.getId()));
     	refDataDto.setTypeDescription(refData.getType().getDescription());
-    	refDataDto.setMetaDataChunk(gson.toJson(refData.getMetaData(), Map.class));
+    	refDataDto.setMetaDataChunk(refData.getMetaData());
     	 
 		return refDataDto;
     }

@@ -1,7 +1,5 @@
 package au.com.mason.expensemanager.domain;
 
-import java.util.Map;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -9,8 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name="refdata")
@@ -24,8 +20,7 @@ public class RefData {
 	@Enumerated(EnumType.STRING)
 	private RefDataType type;
 	
-	@Type(type = "jsonDataUserType")
-    private Map<String, String> metaData;
+    private String metaData;
 	
 	public long getId() {
 		return id;
@@ -55,11 +50,11 @@ public class RefData {
 		return description.toUpperCase().replace(" ", "_");
 	}
 
-	public Map<String, String> getMetaData() {
+	public String getMetaData() {
 		return metaData;
 	}
 
-	public void setMetaData(Map<String, String> metaData) {
+	public void setMetaData(String metaData) {
 		this.metaData = metaData;
 	}
 	

@@ -3,7 +3,6 @@ package au.com.mason.expensemanager.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.Map;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -13,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name="transactions")
@@ -37,8 +34,7 @@ public abstract class Transaction {
 	private Date endDate;
 	private String notes;
 	
-	@Type(type = "jsonDataUserType")
-    private Map<String, String> metaData;
+    private String metaData;
 	
 	@OneToOne
 	@JoinColumn(name = "entryTypeId")
@@ -130,11 +126,11 @@ public abstract class Transaction {
 		this.notes = notes;
 	}
 	
-	public Map<String, String> getMetaData() {
+	public String getMetaData() {
 		return metaData;
 	}
 
-	public void setMetaData(Map<String, String> metaData) {
+	public void setMetaData(String metaData) {
 		this.metaData = metaData;
 	}
 

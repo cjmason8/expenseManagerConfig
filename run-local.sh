@@ -5,7 +5,7 @@ DB_DRIVER=org.postgresql.Driver
 DB_PASS=postgres
 DB_URL=jdbc:postgresql://localhost:5432/expensemanager
 DB_USER=postgres
-HIBERNATE_DIALECT=au.com.mason.expensemanager.dao.CustomPostgreSqlDialect
+HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
 HIBERNATE_HBM2DDL_AUTO=update
 
 export DB_DRIVER
