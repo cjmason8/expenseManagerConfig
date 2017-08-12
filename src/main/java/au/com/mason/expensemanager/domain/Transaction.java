@@ -15,14 +15,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-
-import au.com.mason.expensemanager.dao.JsonDataUserType;
 
 @Entity
 @Table(name="transactions")
 @DiscriminatorColumn(name = "transactionType")
-@TypeDef(name = "jsonDataUserType", typeClass = JsonDataUserType.class)
 public abstract class Transaction {
 	
 	public Transaction() {}

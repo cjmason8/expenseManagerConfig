@@ -11,13 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-
-import au.com.mason.expensemanager.dao.JsonDataUserType;
 
 @Entity
 @Table(name="refdata")
-@TypeDef(name = "jsonDataUserType", typeClass = JsonDataUserType.class)
 public class RefData {
 	
 	@Id
