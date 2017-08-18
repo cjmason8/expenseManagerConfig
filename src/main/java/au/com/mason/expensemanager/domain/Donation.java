@@ -1,5 +1,8 @@
 package au.com.mason.expensemanager.domain;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +25,11 @@ public class Donation {
 	@JoinColumn(name = "causeId")
 	private RefData cause;
 	
+	private String description;
+	private Date dueDate;
+	private String notes;
+	private String documentationPath; 
+	
 	public long getId() {
 		return id;
 	}
@@ -36,6 +44,42 @@ public class Donation {
 
 	public void setCause(RefData cause) {
 		this.cause = cause;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public LocalDate getDueDate() {
+		if (dueDate != null) {
+			return new java.sql.Date(dueDate.getTime()).toLocalDate();
+		}
+	
+		return null;
+	}
+
+	public void setDueDate(LocalDate dueDate) {
+		this.dueDate = java.sql.Date.valueOf(dueDate);
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public String getDocumentationPath() {
+		return documentationPath;
+	}
+
+	public void setDocumentationPath(String documentationPath) {
+		this.documentationPath = documentationPath;
 	}
 
 }
