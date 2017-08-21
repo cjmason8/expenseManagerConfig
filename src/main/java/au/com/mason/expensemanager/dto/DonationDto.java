@@ -1,7 +1,5 @@
 package au.com.mason.expensemanager.dto;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public class DonationDto {
 
 	private Long id;
@@ -9,7 +7,7 @@ public class DonationDto {
 	private String description;
 	private String dueDateString;
 	private String notes;
-	private MultipartFile documentation;
+	private String documentationFilePath;
 	
 	public Long getId() {
 		return id;
@@ -51,12 +49,12 @@ public class DonationDto {
 		this.notes = notes;
 	}
 
-	public MultipartFile getDocumentation() {
-		return documentation;
+	public String getDocumentationFilePath() {
+		return documentationFilePath;
 	}
 
-	public void setDocumentation(MultipartFile documentation) {
-		this.documentation = documentation;
+	public void setDocumentationFilePath(String documentationFilePath) {
+		this.documentationFilePath = documentationFilePath;
 	}
 
 }

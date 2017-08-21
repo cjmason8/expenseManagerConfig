@@ -28,7 +28,7 @@ public class Donation {
 	private String description;
 	private Date dueDate;
 	private String notes;
-	private String documentationPath; 
+	private String documentationFilePath; 
 	
 	public long getId() {
 		return id;
@@ -74,12 +74,12 @@ public class Donation {
 		this.notes = notes;
 	}
 
-	public String getDocumentationPath() {
-		return documentationPath;
+	public String getDocumentationFilePath() {
+		return documentationFilePath;
 	}
 
-	public void setDocumentationPath(String documentationPath) {
-		this.documentationPath = documentationPath;
+	public void setDocumentationFilePath(String documentationFilePath) {
+		this.documentationFilePath = documentationFilePath;
 	}
 
 }
