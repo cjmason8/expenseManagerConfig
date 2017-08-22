@@ -22,6 +22,18 @@ public class ExpenseController {
         
     }
 	
+	@RequestMapping(value = "/expenses/pay/{id}", method = RequestMethod.GET, produces = "application/json")
+	ExpenseDto payExpense(@PathVariable Long id) throws Exception {
+		return expenseService.payExpense(id);
+        
+    }
+	
+	@RequestMapping(value = "/expenses/unpay/{id}", method = RequestMethod.GET, produces = "application/json")
+	ExpenseDto unPayExpense(@PathVariable Long id) throws Exception {
+		return expenseService.unPayExpense(id);
+        
+    }	
+	
 	@RequestMapping(value = "/expenses", method = RequestMethod.POST, produces = "application/json", 
 			consumes = "application/json", headers = "Accept=application/json")
 	ExpenseDto addExpense(@RequestBody ExpenseDto expense) throws Exception {

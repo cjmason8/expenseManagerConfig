@@ -57,4 +57,22 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 		return countForWeek(startOfWeek) + incomeService.countForWeek(startOfWeek);
 	}
 	
+	public ExpenseDto payExpense(Long id) throws Exception {
+		Expense expense = expenseDao.getById(id);
+		expense.setPaid(true);
+		
+		expenseDao.update(expense);
+		
+		return transactionMapperWrapper.transactionToTransactionDto(expense);
+	}
+	
+	public ExpenseDto unPayExpense(Long id) throws Exception {
+		Expense expense = expenseDao.getById(id);
+		expense.setPaid(false);
+		
+		expenseDao.update(expense);
+		
+		return transactionMapperWrapper.transactionToTransactionDto(expense);
+	}	
+	
 }
