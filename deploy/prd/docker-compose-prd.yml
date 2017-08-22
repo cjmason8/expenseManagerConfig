@@ -13,4 +13,5 @@ expenseManager:
     - "8083:8080"
   volumes:
     - /applogs:/applogs
+    - /docs:/docs
     
