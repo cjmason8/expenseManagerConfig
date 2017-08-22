@@ -13,6 +13,7 @@ public class TransactionDto {
 	private String week;
 	private String notes;
 	private String metaDataChunk;
+	private String documentationFilePath;
 
 	public Long getId() {
 		return id;
@@ -92,6 +93,14 @@ public class TransactionDto {
 
 	public void setMetaDataChunk(String metaDataChunk) {
 		this.metaDataChunk = metaDataChunk;
+	}
+
+	public String getDocumentationFilePath() {
+		return documentationFilePath;
+	}
+
+	public void setDocumentationFilePath(String documentationFilePath) {
+		this.documentationFilePath = documentationFilePath;
 	}
 
 }

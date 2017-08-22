@@ -26,6 +26,7 @@ public abstract class Transaction {
 
 	private BigDecimal amount;
 	private Date dueDate;
+	private String documentationFilePath;
 	
 	@OneToOne
 	@JoinColumn(name = "recurringTypeId")
@@ -132,6 +133,14 @@ public abstract class Transaction {
 
 	public void setMetaData(String metaData) {
 		this.metaData = metaData;
+	}
+	
+	public String getDocumentationFilePath() {
+		return documentationFilePath;
+	}
+
+	public void setDocumentationFilePath(String documentationFilePath) {
+		this.documentationFilePath = documentationFilePath;
 	}
 
 	public abstract void setRecurringTransaction(Transaction recurringTransaction);
