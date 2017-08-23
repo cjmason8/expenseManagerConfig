@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Income;
+import au.com.mason.expensemanager.domain.RefData;
 
 @Repository
 @Transactional
@@ -105,6 +106,12 @@ public class IncomeDao implements TransactionDao<Income> {
 
 	@Override
 	public List<Expense> getUnpaidBeforeWeek(LocalDate weekStartDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Expense> findExpenses(RefData expenseType) {
 		// TODO Auto-generated method stub
 		return null;
 	}

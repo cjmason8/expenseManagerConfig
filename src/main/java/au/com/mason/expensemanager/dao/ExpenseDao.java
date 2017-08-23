@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import au.com.mason.expensemanager.domain.Expense;
+import au.com.mason.expensemanager.domain.RefData;
 
 @Repository
 @Transactional
@@ -78,6 +79,14 @@ public class ExpenseDao implements TransactionDao<Expense> {
 
 		return query.getResultList();
 	}
+	
+	public List<Expense> findExpenses(RefData expenseType) {
+		String sql = "from Expense where entryType = :expenseType and recurringType IS NULL";
+		Query query = entityManager.createQuery(sql);
+		query.setParameter("expenseType", expenseType);
+
+		return query.getResultList();
+	}	
 	
 	public List<Expense> getForRecurring(Expense recurringExpense) {
 		String sql = "from Expense where recurringTransaction = :recurringTransaction";

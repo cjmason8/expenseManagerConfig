@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import au.com.mason.expensemanager.domain.Expense;
+import au.com.mason.expensemanager.domain.RefData;
 
 public interface TransactionDao<T> {
 	
@@ -18,4 +19,5 @@ public interface TransactionDao<T> {
 	public List<T> getForRecurring(T recurringTransation);
 	public void deleteTransactions(Long recurringTransactionId);
 	public List<Expense> getUnpaidBeforeWeek(LocalDate weekStartDate);
+	public List<Expense> findExpenses(RefData expenseType);
 }

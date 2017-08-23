@@ -1,5 +1,7 @@
 package au.com.mason.expensemanager.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import au.com.mason.expensemanager.dto.ExpenseDto;
+import au.com.mason.expensemanager.dto.RefDataDto;
 import au.com.mason.expensemanager.service.ExpenseService;
 
 @RestController
@@ -40,6 +43,13 @@ public class ExpenseController {
 		
 		return expenseService.addTransaction(expense);
     }
+	
+	@RequestMapping(value = "/expenses/search", method = RequestMethod.POST, produces = "application/json", 
+			consumes = "application/json", headers = "Accept=application/json")
+	List<ExpenseDto> findExpenses(@RequestBody RefDataDto expenseType) throws Exception {
+		
+		return expenseService.findExpenses(expenseType);
+    }	
 	
 	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.PUT, produces = "application/json", 
 			consumes = "application/json", headers = "Accept=application/json")

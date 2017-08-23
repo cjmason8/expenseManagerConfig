@@ -12,6 +12,8 @@ import au.com.mason.expensemanager.dao.TransactionDao;
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Transaction;
 import au.com.mason.expensemanager.dto.ExpenseDto;
+import au.com.mason.expensemanager.dto.RefDataDto;
+import au.com.mason.expensemanager.mapper.RefDataMapperWrapper;
 
 @Component
 public class ExpenseService extends TransactionService<ExpenseDto, Expense, ExpenseDao> {
@@ -21,6 +23,9 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 	
 	@Autowired
 	private TransactionDao<Expense> expenseDao;
+	
+	@Autowired
+	private RefDataMapperWrapper refDataMapperWrapper;
 	
 	@Override
 	Expense createTransaction() {
@@ -73,6 +78,18 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 		expenseDao.update(expense);
 		
 		return transactionMapperWrapper.transactionToTransactionDto(expense);
-	}	
+	}
+	
+	public List<ExpenseDto> findExpenses(RefDataDto expenseType) throws Exception {
+		List<Expense> expenses = expenseDao.findExpenses(refDataMapperWrapper.refDataDtoToRefData(expenseType));
+		
+		List<ExpenseDto> expenseDtos = new ArrayList<>();
+		
+		for (Expense expense : expenses) {
+			expenseDtos.add(transactionMapperWrapper.transactionToTransactionDto(expense));
+		}
+		
+		return expenseDtos;
+	}
 	
 }
