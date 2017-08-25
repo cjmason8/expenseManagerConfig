@@ -1,6 +1,7 @@
 package au.com.mason.expensemanager.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -9,12 +10,20 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.RefData;
 import au.com.mason.expensemanager.domain.RefDataType;
+import au.com.mason.expensemanager.dto.RefDataDto;
+import au.com.mason.expensemanager.util.DateUtil;
 
 @Repository
 @Transactional
 public class RefDataDao {
+	
+	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
 	@SuppressWarnings("unchecked")
 	public List<RefData> getAll(String type) {
@@ -53,6 +62,38 @@ public class RefDataDao {
 		RefData refData = entityManager.find(RefData.class, id);
 		entityManager.remove(refData);
 		return;
+	}
+	
+	public List<RefData> findRefDatas(RefDataDto refDataDto) {
+		String sql = "SELECT * from refdata where ";
+		boolean addAnd = false;
+		if (refDataDto.getType() != null) {
+			addAnd = true;
+			sql += " type = '" + refDataDto.getType() + "' ";
+		}
+		if (refDataDto.getDescription() != null) {
+			if (addAnd) {
+				sql += "AND";
+			}
+			addAnd = true;
+			sql += " LOWER(description) like '%" + refDataDto.getDescription().toLowerCase() + "%'";
+		}
+		if (refDataDto.getMetaDataChunk() != null) {
+			Map<String, String> metaData = gson.fromJson(refDataDto.getMetaDataChunk(), Map.class);
+			if (metaData != null) {
+				for (String val : metaData.keySet()) {
+					if (addAnd) {
+						sql += "AND";
+					}
+					addAnd = true;
+					sql += " metaData->>'" + val + "' = '" + metaData.get(val) + "' ";
+				}
+			}
+		}
+		sql += "ORDER BY type,description";
+		System.out.println(sql);
+
+		return entityManager.createNativeQuery(sql, RefData.class).getResultList();
 	}
 	
 	// Private fields

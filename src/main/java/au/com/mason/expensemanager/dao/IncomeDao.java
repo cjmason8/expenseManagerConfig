@@ -1,7 +1,6 @@
 package au.com.mason.expensemanager.dao;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -13,14 +12,12 @@ import org.springframework.stereotype.Repository;
 
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Income;
-import au.com.mason.expensemanager.domain.RefData;
+import au.com.mason.expensemanager.util.DateUtil;
 
 @Repository
 @Transactional
 public class IncomeDao implements TransactionDao<Income> {
 	
-	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
 	public Income create(Income income) {
 		entityManager.persist(income);
 
@@ -48,7 +45,8 @@ public class IncomeDao implements TransactionDao<Income> {
 	public List<Income> getAllRecurring() {
 		
 		return entityManager.createQuery(
-				"from Income where recurringType IS NOT NULL AND deleted = false").getResultList();
+				"from Income where recurringType IS NOT NULL AND deleted = false"
+				+ " ORDER BY dueDate DESC,entryType").getResultList();
 	}	
 	
 	public Income getById(long id) {
@@ -61,21 +59,22 @@ public class IncomeDao implements TransactionDao<Income> {
 
 	public List<Income> getForWeek(LocalDate weekStartDate) {
 		String sql = "from Income where recurringType IS NULL "
-				+ "AND dueDate >= to_date('" + weekStartDate.format(FORMATTER) + "', 'yyyy-mm-dd') "
-				+ "AND dueDate <= to_date('" + weekStartDate.plusDays(6).format(FORMATTER) + "', 'yyyy-mm-dd')";
+				+ "AND dueDate >= to_date('" + DateUtil.getFormattedDbDate(weekStartDate) + "', 'yyyy-mm-dd') "
+				+ "AND dueDate <= to_date('" + DateUtil.getFormattedDbDate(weekStartDate.plusDays(6)) + "', 'yyyy-mm-dd')"
+						+ " ORDER BY dueDate,entryType";
 
 		return entityManager.createQuery(sql).getResultList();
 	}
 
 	public List<Income> getPastDate(LocalDate date) {
 		String sql = "from Income where recurringType IS NULL"
-				+ " AND dueDate > to_date('" + date.format(FORMATTER) + "', 'yyyy-mm-dd')";
+				+ " AND dueDate > to_date('" + DateUtil.getFormattedDbDate(date) + "', 'yyyy-mm-dd')";
 
 		return entityManager.createQuery(sql).getResultList();
 	}
 
 	public List<Income> getPastDate(LocalDate date, Income recurringIncome) {
-		String sql = "from Income where dueDate > to_date('" + date.format(FORMATTER)
+		String sql = "from Income where dueDate > to_date('" + DateUtil.getFormattedDbDate(date)
 				+ "', 'yyyy-mm-dd') and recurringTransaction = :recurringTransaction";
 		Query query = entityManager.createQuery(sql);
 		query.setParameter("recurringTransaction", recurringIncome);
@@ -93,7 +92,7 @@ public class IncomeDao implements TransactionDao<Income> {
 
 	public void deleteTransactions(Long recurringTransactionId) {
 		entityManager.createQuery("delete from Income where recurringTransaction.id = " + recurringTransactionId
-				+ " AND dueDate > to_date('" + LocalDate.now().format(FORMATTER) + "', 'yyyy-mm-dd')")
+				+ " AND dueDate > to_date('" + DateUtil.getFormattedDbDate(LocalDate.now()) + "', 'yyyy-mm-dd')")
 				.executeUpdate();
 	}
 	
@@ -111,7 +110,7 @@ public class IncomeDao implements TransactionDao<Income> {
 	}
 
 	@Override
-	public List<Expense> findExpenses(RefData expenseType) {
+	public List<Expense> findExpenses(Expense expense) {
 		// TODO Auto-generated method stub
 		return null;
 	}

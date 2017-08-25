@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import au.com.mason.expensemanager.dto.DonationDto;
+import au.com.mason.expensemanager.dto.DonationSearchDto;
+import au.com.mason.expensemanager.dto.RefDataDto;
 import au.com.mason.expensemanager.service.DonationService;
 
 @RestController
@@ -49,6 +51,13 @@ public class DonationController {
 		donationService.deleteDonation(id);
 		
 		return "{\"status\":\"success\"}";
+    }
+	
+	@RequestMapping(value = "/donations/search", method = RequestMethod.POST, produces = "application/json", 
+			consumes = "application/json", headers = "Accept=application/json")
+	List<DonationDto> findRefDatas(@RequestBody DonationSearchDto donationSearchDto) throws Exception {
+		
+		return donationService.findDonations(donationSearchDto);
     }
 	
 }

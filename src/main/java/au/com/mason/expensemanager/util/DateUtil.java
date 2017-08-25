@@ -14,6 +14,7 @@ import au.com.mason.expensemanager.domain.Transaction;
 public class DateUtil {
 	
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	private static final DateTimeFormatter DB_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	public static LocalDate getMonday(LocalDate date) {
 		return date.with(DayOfWeek.MONDAY);
@@ -28,6 +29,22 @@ public class DateUtil {
 		}
 		else {
 			return LocalDate.parse(date, FORMATTER);
+		}
+	}
+	
+	public static String getFormattedDbDate(LocalDate date) {
+		return DB_FORMATTER.format(date);
+	}
+	
+	public static String getFormattedDbDate(String date) {
+		if (date.indexOf("Z") != -1) {
+			ZonedDateTime createdAtUTC = ZonedDateTime.parse(date);
+			ZonedDateTime createdAtMelb = createdAtUTC.withZoneSameInstant(ZoneId.of("Australia/Melbourne"));
+			
+			return DB_FORMATTER.format(createdAtMelb.toLocalDate());
+		}
+		else {
+			return LocalDate.parse(date, DB_FORMATTER).toString();
 		}
 	}
 	

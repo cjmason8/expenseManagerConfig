@@ -8,6 +8,7 @@ public class DonationDto {
 	private String dueDateString;
 	private String notes;
 	private String documentationFilePath;
+	private String metaDataChunk;
 	
 	public Long getId() {
 		return id;
@@ -55,6 +56,14 @@ public class DonationDto {
 
 	public void setDocumentationFilePath(String documentationFilePath) {
 		this.documentationFilePath = documentationFilePath;
+	}
+
+	public String getMetaDataChunk() {
+		return metaDataChunk;
+	}
+
+	public void setMetaDataChunk(String metaDataChunk) {
+		this.metaDataChunk = metaDataChunk;
 	}
 
 }

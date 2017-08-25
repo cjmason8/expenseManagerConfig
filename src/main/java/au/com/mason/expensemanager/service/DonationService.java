@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import au.com.mason.expensemanager.dao.DonationDao;
 import au.com.mason.expensemanager.domain.Donation;
 import au.com.mason.expensemanager.dto.DonationDto;
+import au.com.mason.expensemanager.dto.DonationSearchDto;
 import au.com.mason.expensemanager.mapper.DonationMapperWrapper;
 
 @Component
@@ -52,6 +53,18 @@ public class DonationService {
 		for(Donation donation : donationDao.getAll()) {
 			donationDtos.add(donationMapperWrapper.donationToDonationDto(donation));
 		};
+		
+		return donationDtos;
+	}
+	
+	public List<DonationDto> findDonations(DonationSearchDto donationSearchDto) throws Exception {
+		List<Donation> donations = donationDao.findDonations(donationSearchDto);
+		
+		List<DonationDto> donationDtos = new ArrayList<>();
+		
+		for (Donation donation : donations) {
+			donationDtos.add(donationMapperWrapper.donationToDonationDto(donation));
+		}
 		
 		return donationDtos;
 	}

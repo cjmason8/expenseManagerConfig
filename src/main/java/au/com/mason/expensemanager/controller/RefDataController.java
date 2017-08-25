@@ -56,4 +56,11 @@ public class RefDataController {
 		return "{\"status\":\"success\"}";
     }
 	
+	@RequestMapping(value = "/refDatas/search", method = RequestMethod.POST, produces = "application/json", 
+			consumes = "application/json", headers = "Accept=application/json")
+	List<RefDataDto> findRefDatas(@RequestBody RefDataDto refDataDto) throws Exception {
+		
+		return refDataService.findRefDatas(refDataDto);
+    }
+	
 }

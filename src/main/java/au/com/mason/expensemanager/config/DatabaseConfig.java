@@ -52,6 +52,7 @@ public class DatabaseConfig {
 		Properties additionalProperties = new Properties();
 		additionalProperties.put("hibernate.dialect", System.getenv().get("HIBERNATE_DIALECT"));
 		additionalProperties.put("hibernate.hbm2ddl.auto", System.getenv().get("HIBERNATE_HBM2DDL_AUTO"));
+		//additionalProperties.put("hibernate.temp.use_jdbc_metadata_defaults", false);
 		entityManagerFactory.setJpaProperties(additionalProperties);
 
 		return entityManagerFactory;

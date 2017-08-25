@@ -83,5 +83,17 @@ public class RefDataService {
 		
 		return refDataMapperWrapper.refDataToRefDataDto(refData);
 	}
+	
+	public List<RefDataDto> findRefDatas(RefDataDto refDataDto) throws Exception {
+		List<RefData> refDatas = refDataDao.findRefDatas(refDataDto);
+		
+		List<RefDataDto> refDataDtos = new ArrayList<>();
+		
+		for (RefData refData : refDatas) {
+			refDataDtos.add(refDataMapperWrapper.refDataToRefDataDto(refData));
+		}
+		
+		return refDataDtos;
+	}
 
 }

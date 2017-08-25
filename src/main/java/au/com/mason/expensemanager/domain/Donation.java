@@ -2,7 +2,9 @@ package au.com.mason.expensemanager.domain;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Map;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,8 +13,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+
+import au.com.mason.expensemanager.dao.MyJsonType;
+
 @Entity
 @Table(name="donations")
+@TypeDef(name = "MyJsonType", typeClass = MyJsonType.class)
 public class Donation {
 	
 	public Donation() {}
@@ -29,6 +37,10 @@ public class Donation {
 	private Date dueDate;
 	private String notes;
 	private String documentationFilePath; 
+	
+    @Column
+	@Type(type = "MyJsonType")
+    private Map<String, String> metaData;
 	
 	public long getId() {
 		return id;
@@ -80,6 +92,14 @@ public class Donation {
 
 	public void setDocumentationFilePath(String documentationFilePath) {
 		this.documentationFilePath = documentationFilePath;
+	}
+
+	public Map<String, String> getMetaData() {
+		return metaData;
+	}
+
+	public void setMetaData(Map<String, String> metaData) {
+		this.metaData = metaData;
 	}
 
 }
