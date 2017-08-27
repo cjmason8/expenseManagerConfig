@@ -1,8 +1,11 @@
 package au.com.mason.expensemanager.controller;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import au.com.mason.expensemanager.dto.DocumentDto;
 import au.com.mason.expensemanager.dto.DonationDto;
 import au.com.mason.expensemanager.dto.ExpenseDto;
 import au.com.mason.expensemanager.dto.IncomeDto;
@@ -26,7 +31,7 @@ import au.com.mason.expensemanager.service.ExpenseService;
 import au.com.mason.expensemanager.service.IncomeService;
 
 @RestController
-public class FileController {
+public class DocumentController {
 	
 	@Autowired
 	private DonationService donationService;
@@ -37,7 +42,7 @@ public class FileController {
 	@Autowired
 	private IncomeService incomeService;	
 	
-	@PostMapping(value = "/file/upload", consumes = {"multipart/form-data"})
+	@PostMapping(value = "/document/upload", consumes = {"multipart/form-data"})
 	String uploadFile(@RequestPart("uploadFile") MultipartFile file, @RequestParam String type) throws Exception {
 		
 		byte[] bytes = file.getBytes();
@@ -53,7 +58,7 @@ public class FileController {
         return "{\"filePath\":\"" + filePathString + "\"}";
     }
 	
-	@RequestMapping(value="/file/get/{type}/{id}", method = RequestMethod.GET)
+	@RequestMapping(value="/document/get/{type}/{id}", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getFile(@PathVariable Long id, @PathVariable String type) throws Exception {
 		
 		
@@ -85,6 +90,22 @@ public class FileController {
 		}
 		
 		return null;
+	}
+	
+	@RequestMapping(value="/document", method = RequestMethod.POST)
+	public List<DocumentDto> getFiles(@RequestBody String folder) throws Exception {
+		String folderPath = "/docs/expenseManager/filofax/" + ((folder.equals("."))?"":folder);
+		List<DocumentDto> documents = new ArrayList<>();
+		File reqFolder = new File(folderPath);
+		for (File file : reqFolder.listFiles()) {
+			DocumentDto document = new DocumentDto();
+			document.setFileName(file.getName());
+			document.setFolder(!file.isFile());
+			document.setFilePath(file.getAbsolutePath());
+			documents.add(document);
+		}
+		
+		return documents;
 	}
 	
 }
