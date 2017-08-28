@@ -94,7 +94,7 @@ public class DocumentController {
 	
 	@RequestMapping(value="/document", method = RequestMethod.POST)
 	public List<DocumentDto> getFiles(@RequestBody String folder) throws Exception {
-		String folderPath = "/docs/expenseManager/filofax/" + ((folder.equals("."))?"":folder);
+		String folderPath = "/docs/expenseManager/" + folder + "/";
 		List<DocumentDto> documents = new ArrayList<>();
 		File reqFolder = new File(folderPath);
 		for (File file : reqFolder.listFiles()) {
