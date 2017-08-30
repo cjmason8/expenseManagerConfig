@@ -72,6 +72,20 @@ public class DocumentController {
 				Files.readAllBytes(Paths.get(getPath(id, type))), headers, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value="/document/getByPath", method = RequestMethod.POST)
+	public ResponseEntity<byte[]> getFileByPath(@RequestBody String filePath) throws Exception {
+		
+		
+		HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.parseMediaType("application/pdf"));
+	    String filename = "output.pdf";
+	    headers.setContentDispositionFormData(filename, filename);
+	    headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+	    
+		return new ResponseEntity<byte[]>(
+				Files.readAllBytes(Paths.get(filePath)), headers, HttpStatus.OK);
+	}	
+	
 	private String getPath(Long id, String type) throws Exception {
 		if (type.equals("donations")) {
 			DonationDto donation = donationService.getById(id);
@@ -94,7 +108,10 @@ public class DocumentController {
 	
 	@RequestMapping(value="/document", method = RequestMethod.POST)
 	public List<DocumentDto> getFiles(@RequestBody String folder) throws Exception {
-		String folderPath = "/docs/expenseManager/filofax/" + ((folder.equals("."))?"":folder);
+		String folderPath = folder;
+		if ("root".equals(folder)) {
+			folderPath = "/docs/expenseManager/filofax/";
+		}
 		List<DocumentDto> documents = new ArrayList<>();
 		File reqFolder = new File(folderPath);
 		for (File file : reqFolder.listFiles()) {

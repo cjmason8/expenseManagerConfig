@@ -2,7 +2,9 @@ package au.com.mason.expensemanager.controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import org.apache.logging.log4j.Logger;
 
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,25 @@ public class HomeController {
 	private ExpenseService expenseService;
 	
 	@Autowired
-	private IncomeService incomeService;	
+	private IncomeService incomeService;
+	
+	private static Logger LOGGER = LogManager.getLogger(HomeController.class);
+	
+	@RequestMapping(value = "/logging", method = RequestMethod.GET)
+	String logging() throws Exception {
+
+		LOGGER.info("INFO MESSAGE!!!");
+		LOGGER.warn("WARN MESSAGE!!!");
+		LOGGER.debug("DEBUG MESSAGE!!!");
+		LOGGER.trace("TRACE MESSAGE!!!");
+		LOGGER.error("ERROR MESSAGE!!!");
+		
+		if (true) {
+			throw new RuntimeException("Aaaarrrhhh!!!");
+		}
+
+		return "success";
+    }
 	
 	@RequestMapping(value = "/week", method = RequestMethod.GET, produces = "application/json")
 	TransactionsForWeekDto expensesForWeek() throws Exception {
