@@ -43,10 +43,14 @@ public class DocumentController {
 	private IncomeService incomeService;	
 	
 	@PostMapping(value = "/document/upload", consumes = {"multipart/form-data"})
-	String uploadFile(@RequestPart("uploadFile") MultipartFile file, @RequestParam String type) throws Exception {
+	String uploadFile(@RequestPart("uploadFile") MultipartFile file, @RequestParam String type, 
+			@RequestParam(required=false) String path) throws Exception {
 		
 		byte[] bytes = file.getBytes();
 		String folderPathString = "/docs/expenseManager/" + type + "/";
+		if (path != null) {
+			folderPathString = path + "/";
+		}
         String filePathString = folderPathString + file.getOriginalFilename(); 
         Path folderPath = Paths.get(folderPathString);
         Path filePath = Paths.get(filePathString);
@@ -57,6 +61,23 @@ public class DocumentController {
         
         return "{\"filePath\":\"" + filePathString + "\"}";
     }
+	
+	@PostMapping(value = "/document/directory/create")
+	String createDirectory(@RequestBody String path) throws Exception {
+		
+		String folderPathString = "";
+		if (path.indexOf("root") != -1) {
+			folderPathString = "/docs/expenseManager/filofax/" + path.replace("root", "") + "/";
+		}
+		else {
+			folderPathString = path;
+		}
+		
+		File folder = new File(folderPathString);
+		folder.mkdir();
+        
+        return "{\"filePath\":\"" + folder.getPath() + "\"}";
+    }	
 	
 	@RequestMapping(value="/document/get/{type}/{id}", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getFile(@PathVariable Long id, @PathVariable String type) throws Exception {
