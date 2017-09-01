@@ -115,4 +115,10 @@ public class IncomeDao implements TransactionDao<Income> {
 		return null;
 	}
 
+	@Override
+	public List<Income> getAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

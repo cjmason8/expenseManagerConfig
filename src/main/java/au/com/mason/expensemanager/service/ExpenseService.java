@@ -88,4 +88,16 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 		return expenseDtos;
 	}
 	
+	public List<ExpenseDto> getAll() throws Exception {
+		List<Expense> expenses = expenseDao.getAll();
+		
+		List<ExpenseDto> expenseDtos = new ArrayList<>();
+		
+		for (Expense expense : expenses) {
+			expenseDtos.add(transactionMapperWrapper.transactionToTransactionDto(expense));
+		}
+		
+		return expenseDtos;
+	}	
+	
 }

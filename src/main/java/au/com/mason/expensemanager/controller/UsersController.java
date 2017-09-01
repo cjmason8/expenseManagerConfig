@@ -22,7 +22,7 @@ public class UsersController {
 		String status = json.getString("tokenStatus");
 
 		if (status.equals("valid")) {
-			return "{\"status\":\"success\"}";
+			return "{\"status\":\"success\",\"user\":\"" + json.getString("user") + "\"}";
 		} else {
 			return "{\"status\":\"failed\"}";
 		}

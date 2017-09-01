@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import au.com.mason.expensemanager.domain.Donation;
+import au.com.mason.expensemanager.domain.Statics;
 import au.com.mason.expensemanager.dto.DonationSearchDto;
 import au.com.mason.expensemanager.util.DateUtil;
 
@@ -23,7 +25,9 @@ public class DonationDao {
 	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
 	public List<Donation> getAll() {
-		return entityManager.createQuery("FROM Donation ORDER BY dueDate DESC, cause.description").getResultList();
+		Query query = entityManager.createQuery("FROM Donation ORDER BY dueDate DESC, cause.description");
+		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
+		return query.getResultList();
 	}
 	
 	public Donation create(Donation donation) {
@@ -92,7 +96,9 @@ public class DonationDao {
 		}
 		sql += " ORDER BY dueDate DESC,r.description";
 		
-		return entityManager.createNativeQuery(sql, Donation.class).getResultList();
+		Query query = entityManager.createNativeQuery(sql, Donation.class);
+		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
+		return query.getResultList();
 	}
 
 	// Private fields

@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import au.com.mason.expensemanager.domain.Expense;
+import au.com.mason.expensemanager.domain.Statics;
 import au.com.mason.expensemanager.util.DateUtil;
 
 @Repository
@@ -41,6 +42,15 @@ public class ExpenseDao implements TransactionDao<Expense> {
 		return entityManager.createQuery(
 				"from Expense where recurringType IS NOT NULL AND deleted = false"
 				+ " ORDER BY dueDate DESC,entryType").getResultList();
+	}	
+	
+	@SuppressWarnings("unchecked")
+	public List<Expense> getAll() {
+		Query query = entityManager.createQuery(
+				"from Expense ORDER BY dueDate DESC,entryType");
+		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
+
+		return query.getResultList();
 	}	
 	
 	public Expense getById(long id) {
@@ -104,7 +114,9 @@ public class ExpenseDao implements TransactionDao<Expense> {
 		sql += "ORDER BY e.dueDate DESC,r.description";
 		System.out.println(sql);
 
-		return entityManager.createNativeQuery(sql, Expense.class).getResultList();
+		Query query = entityManager.createNativeQuery(sql, Expense.class);
+		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
+		return query.getResultList();
 	}
 	
 	public List<Expense> getForRecurring(Expense recurringExpense) {

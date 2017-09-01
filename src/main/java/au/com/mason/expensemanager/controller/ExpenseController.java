@@ -18,6 +18,11 @@ public class ExpenseController {
 	@Autowired
 	private ExpenseService expenseService;
 	
+	@RequestMapping(value = "/expenses", method = RequestMethod.GET, produces = "application/json")
+	List<ExpenseDto> getExpenses() throws Exception {
+		return expenseService.getAll();
+    }
+	
 	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.GET, produces = "application/json")
 	ExpenseDto getExpense(@PathVariable Long id) throws Exception {
 		return expenseService.getById(id);

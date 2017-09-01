@@ -19,4 +19,5 @@ public interface TransactionDao<T> {
 	public void deleteTransactions(Long recurringTransactionId);
 	public List<Expense> getUnpaidBeforeWeek(LocalDate weekStartDate);
 	public List<Expense> findExpenses(Expense expense);
+	public List<T> getAll();
 }

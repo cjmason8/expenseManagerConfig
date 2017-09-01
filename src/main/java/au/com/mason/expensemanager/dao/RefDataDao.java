@@ -13,11 +13,10 @@ import org.springframework.stereotype.Repository;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.RefData;
 import au.com.mason.expensemanager.domain.RefDataType;
+import au.com.mason.expensemanager.domain.Statics;
 import au.com.mason.expensemanager.dto.RefDataDto;
-import au.com.mason.expensemanager.util.DateUtil;
 
 @Repository
 @Transactional
@@ -33,7 +32,10 @@ public class RefDataDao {
 	}
 	
 	public List<RefData> getAll() {
-		return entityManager.createQuery("FROM RefData ORDER BY type, description").getResultList();
+		Query query = entityManager.createQuery("FROM RefData ORDER BY type, description");
+		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
+
+		return query.getResultList();
 	}	
 	
 	public RefData getById(long id) {
@@ -91,9 +93,11 @@ public class RefDataDao {
 			}
 		}
 		sql += "ORDER BY type,description";
-		System.out.println(sql);
 
-		return entityManager.createNativeQuery(sql, RefData.class).getResultList();
+		Query query = entityManager.createNativeQuery(sql, RefData.class);
+		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
+
+		return query.getResultList();
 	}
 	
 	// Private fields

@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,16 +82,23 @@ public class DocumentController {
 	
 	@RequestMapping(value="/document/get/{type}/{id}", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getFile(@PathVariable Long id, @PathVariable String type) throws Exception {
-		
+		Path path = Paths.get(getPath(id, type));
+		String mediaType = "application/pdf";
+		if (path.getFileName().endsWith("doc") || path.getFileName().endsWith("docx")) {
+			mediaType = "application/msword";
+		}
+		else if(path.getFileName().endsWith("xls") || path.getFileName().endsWith("xlsx")) {
+			mediaType = "application/vnd.ms-excel";
+	    }
 		
 		HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.parseMediaType("application/pdf"));
-	    String filename = "output.pdf";
+	    headers.setContentType(MediaType.parseMediaType(mediaType));
+	    String filename = "output" + path.getFileName().toString().substring(path.getFileName().toString().lastIndexOf("."));
 	    headers.setContentDispositionFormData(filename, filename);
 	    headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-	    
+		
 		return new ResponseEntity<byte[]>(
-				Files.readAllBytes(Paths.get(getPath(id, type))), headers, HttpStatus.OK);
+				Files.readAllBytes(path), headers, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/document/getByPath", method = RequestMethod.POST)
@@ -142,6 +150,8 @@ public class DocumentController {
 			document.setFilePath(file.getAbsolutePath());
 			documents.add(document);
 		}
+		
+		Collections.sort(documents);
 		
 		return documents;
 	}
