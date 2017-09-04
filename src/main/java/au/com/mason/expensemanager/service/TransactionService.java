@@ -157,7 +157,7 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 			LocalDate dueDate = recurringExpense.getStartDate();
 			while (DateUtil.getMonday(dueDate).isBefore(startOfWeek)) {
 				RecurringUnit recurringUnit = 
-						RecurringUnit.valueOf(recurringExpense.getRecurringType().getDescription().toUpperCase());
+						RecurringUnit.valueOf(recurringExpense.getRecurringType().getDescriptionUpper());
 				dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
 			}
 			
