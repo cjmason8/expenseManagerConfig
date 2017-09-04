@@ -1,7 +1,9 @@
 package au.com.mason.expensemanager.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,9 @@ import au.com.mason.expensemanager.dao.TransactionDao;
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Transaction;
 import au.com.mason.expensemanager.dto.ExpenseDto;
+import au.com.mason.expensemanager.dto.ExpenseGraphDto;
+import au.com.mason.expensemanager.dto.ExpenseSearchDto;
+import au.com.mason.expensemanager.dto.GraphDto;
 
 @Component
 public class ExpenseService extends TransactionService<ExpenseDto, Expense, ExpenseDao> {
@@ -75,17 +80,25 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 		return transactionMapperWrapper.transactionToTransactionDto(expense);
 	}
 	
-	public List<ExpenseDto> findExpenses(ExpenseDto expenseDto) throws Exception {
+	public ExpenseSearchDto findExpenses(ExpenseDto expenseDto) throws Exception {
 		List<Expense> expenses = expenseDao.findExpenses(
 				transactionMapperWrapper.transactionDtoToTransaction(expenseDto));
 		
 		List<ExpenseDto> expenseDtos = new ArrayList<>();
+		String[] labels = new String[expenses.size()];
+		BigDecimal[] data = new BigDecimal[expenses.size()];
+		int count = 0;
 		
 		for (Expense expense : expenses) {
 			expenseDtos.add(transactionMapperWrapper.transactionToTransactionDto(expense));
+			labels[count] = expense.getDueDate().getMonthValue() + "/" + expense.getDueDate().getYear();
+			data[count++] = expense.getAmount();
 		}
 		
-		return expenseDtos;
+		GraphDto graphDto = new GraphDto(expenseDto.getTransactionType().getDescription(), data);
+		
+		return new ExpenseSearchDto(expenseDtos, 
+				new ExpenseGraphDto((String[]) labels, new GraphDto[] {graphDto}));
 	}
 	
 	public List<ExpenseDto> getAll() throws Exception {

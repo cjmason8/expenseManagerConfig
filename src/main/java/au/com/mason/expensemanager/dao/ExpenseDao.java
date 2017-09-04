@@ -10,9 +10,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Statics;
 import au.com.mason.expensemanager.util.DateUtil;
@@ -20,8 +17,6 @@ import au.com.mason.expensemanager.util.DateUtil;
 @Repository
 @Transactional
 public class ExpenseDao implements TransactionDao<Expense> {
-	
-	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
 	public Expense create(Expense expense) {
 		entityManager.persist(expense);
@@ -112,7 +107,6 @@ public class ExpenseDao implements TransactionDao<Expense> {
 			}
 		}
 		sql += "ORDER BY e.dueDate DESC,r.description";
-		System.out.println(sql);
 
 		Query query = entityManager.createNativeQuery(sql, Expense.class);
 		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
