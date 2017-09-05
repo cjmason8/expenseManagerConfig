@@ -91,7 +91,7 @@ public class ExpenseDao implements TransactionDao<Expense> {
 	
 	public List<Expense> findExpenses(Expense expense) {
 		String sql = "SELECT * FROM transactions e LEFT JOIN refdata r on e.entrytypeId = r.id "
-				+ "where transactiontype = 'EXPENSE' AND e.recurringtypeid IS NULL ";
+				+ "where transactiontype = 'EXPENSE' AND e.recurringtypeid IS NULL AND e.paid = true ";
 		if (expense.getEntryType() != null) {
 			sql += "AND r.description = '" + expense.getEntryType().getDescription() + "' ";
 		}
