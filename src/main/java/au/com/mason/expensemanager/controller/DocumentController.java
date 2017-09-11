@@ -50,7 +50,7 @@ public class DocumentController {
 		byte[] bytes = file.getBytes();
 		String folderPathString = "/docs/expenseManager/" + type + "/";
 		if (path != null) {
-			folderPathString = path + "/";
+			folderPathString = path.replace("root", "/docs/expenseManager/filofax") + "/";
 		}
         String filePathString = folderPathString + file.getOriginalFilename(); 
         Path folderPath = Paths.get(folderPathString);
