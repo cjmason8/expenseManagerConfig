@@ -83,13 +83,7 @@ public class DocumentController {
 	@RequestMapping(value="/document/get/{type}/{id}", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getFile(@PathVariable Long id, @PathVariable String type) throws Exception {
 		Path path = Paths.get(getPath(id, type));
-		String mediaType = "application/pdf";
-		if (path.getFileName().endsWith("doc") || path.getFileName().endsWith("docx")) {
-			mediaType = "application/msword";
-		}
-		else if(path.getFileName().endsWith("xls") || path.getFileName().endsWith("xlsx")) {
-			mediaType = "application/vnd.ms-excel";
-	    }
+		String mediaType = getContentType(path.getFileName().toString());
 		
 		HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.parseMediaType(mediaType));
@@ -100,13 +94,28 @@ public class DocumentController {
 		return new ResponseEntity<byte[]>(
 				Files.readAllBytes(path), headers, HttpStatus.OK);
 	}
+
+	private String getContentType(String path) {
+		String mediaType = "application/pdf";
+		if (path.endsWith("doc") || path.endsWith("docx")) {
+			mediaType = "application/msword";
+		}
+		if (path.endsWith("jpg") || path.endsWith("jpeg")) {
+			mediaType = "image/jpeg";
+		}
+		else if(path.endsWith("xls") || path.endsWith("xlsx")) {
+			mediaType = "application/vnd.ms-excel";
+	    }
+		return mediaType;
+	}
 	
 	@RequestMapping(value="/document/getByPath", method = RequestMethod.POST)
 	public ResponseEntity<byte[]> getFileByPath(@RequestBody String filePath) throws Exception {
 		
 		
 		HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.parseMediaType("application/pdf"));
+		String mediaType = getContentType(filePath);
+	    headers.setContentType(MediaType.parseMediaType(mediaType));
 	    String filename = "output.pdf";
 	    headers.setContentDispositionFormData(filename, filename);
 	    headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
