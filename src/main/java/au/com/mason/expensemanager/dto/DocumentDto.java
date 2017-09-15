@@ -4,10 +4,20 @@ import java.util.Comparator;
 
 public class DocumentDto implements Comparator<DocumentDto>, Comparable<DocumentDto> {
 
+	private Long id;
 	private String fileName;
 	private boolean isFolder;
 	private String filePath;
+	private String metaDataChunk;
 	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getFileName() {
 		return fileName;
 	}
@@ -30,6 +40,14 @@ public class DocumentDto implements Comparator<DocumentDto>, Comparable<Document
 	
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
+	}
+	
+	public String getMetaDataChunk() {
+		return metaDataChunk;
+	}
+
+	public void setMetaDataChunk(String metaDataChunk) {
+		this.metaDataChunk = metaDataChunk;
 	}
 
 	@Override

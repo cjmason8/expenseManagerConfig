@@ -24,7 +24,8 @@ public class Document {
 	private long id;
 
 	private String fileName;
-	private String folder;
+	private String filePath;
+	private boolean isFolder;
 	
     @Column
 	@Type(type = "MyJsonType")
@@ -46,12 +47,12 @@ public class Document {
 		this.fileName = fileName;
 	}
 
-	public String getFolder() {
-		return folder;
+	public String getFilePath() {
+		return filePath;
 	}
 
-	public void setFolder(String folder) {
-		this.folder = folder;
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 
 	public Map<String, String> getMetaData() {
@@ -60,6 +61,14 @@ public class Document {
 
 	public void setMetaData(Map<String, String> metaData) {
 		this.metaData = metaData;
+	}
+
+	public boolean isFolder() {
+		return isFolder;
+	}
+
+	public void setFolder(boolean isFolder) {
+		this.isFolder = isFolder;
 	}
 
 }

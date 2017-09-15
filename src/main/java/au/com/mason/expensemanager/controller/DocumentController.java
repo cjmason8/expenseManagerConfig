@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import au.com.mason.expensemanager.domain.Document;
 import au.com.mason.expensemanager.dto.DocumentDto;
 import au.com.mason.expensemanager.dto.DonationDto;
 import au.com.mason.expensemanager.dto.ExpenseDto;
 import au.com.mason.expensemanager.dto.IncomeDto;
+import au.com.mason.expensemanager.service.DocumentService;
 import au.com.mason.expensemanager.service.DonationService;
 import au.com.mason.expensemanager.service.ExpenseService;
 import au.com.mason.expensemanager.service.IncomeService;
@@ -36,6 +37,9 @@ public class DocumentController {
 	
 	@Autowired
 	private DonationService donationService;
+	
+	@Autowired
+	private DocumentService documentService;
 	
 	@Autowired
 	private ExpenseService expenseService;
@@ -60,6 +64,12 @@ public class DocumentController {
         }
         Files.write(filePath, bytes);
         
+        DocumentDto document = new DocumentDto();
+		document.setFileName(file.getOriginalFilename());
+		document.setFilePath(filePathString);
+		document.setFolder(true);
+		documentService.createDocument(document);
+        
         return "{\"filePath\":\"" + filePathString + "\"}";
     }
 	
@@ -76,6 +86,12 @@ public class DocumentController {
 		
 		File folder = new File(folderPathString);
 		folder.mkdir();
+		
+		DocumentDto document = new DocumentDto();
+		document.setFileName(folder.getName());
+		document.setFilePath(folderPathString);
+		document.setFolder(true);
+		documentService.createDocument(document);
         
         return "{\"filePath\":\"" + folder.getPath() + "\"}";
     }	
@@ -150,15 +166,7 @@ public class DocumentController {
 		if ("root".equals(folder)) {
 			folderPath = "/docs/expenseManager/filofax/";
 		}
-		List<DocumentDto> documents = new ArrayList<>();
-		File reqFolder = new File(folderPath);
-		for (File file : reqFolder.listFiles()) {
-			DocumentDto document = new DocumentDto();
-			document.setFileName(file.getName());
-			document.setFolder(!file.isFile());
-			document.setFilePath(file.getAbsolutePath());
-			documents.add(document);
-		}
+		List<DocumentDto> documents = documentService.getAll(folderPath);
 		
 		Collections.sort(documents);
 		
