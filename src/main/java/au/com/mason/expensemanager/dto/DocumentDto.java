@@ -9,6 +9,7 @@ public class DocumentDto implements Comparator<DocumentDto>, Comparable<Document
 	private boolean isFolder;
 	private String filePath;
 	private String metaDataChunk;
+	private String folderPath;
 	
 	public Long getId() {
 		return id;
@@ -42,6 +43,14 @@ public class DocumentDto implements Comparator<DocumentDto>, Comparable<Document
 		this.filePath = filePath;
 	}
 	
+	public String getFolderPath() {
+		return folderPath;
+	}
+
+	public void setFolderPath(String folderPath) {
+		this.folderPath = folderPath;
+	}
+
 	public String getMetaDataChunk() {
 		return metaDataChunk;
 	}

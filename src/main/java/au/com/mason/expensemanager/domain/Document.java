@@ -24,7 +24,7 @@ public class Document {
 	private long id;
 
 	private String fileName;
-	private String filePath;
+	private String folderPath;
 	private boolean isFolder;
 	
     @Column
@@ -47,14 +47,6 @@ public class Document {
 		this.fileName = fileName;
 	}
 
-	public String getFilePath() {
-		return filePath;
-	}
-
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
-
 	public Map<String, String> getMetaData() {
 		return metaData;
 	}
@@ -69,6 +61,14 @@ public class Document {
 
 	public void setFolder(boolean isFolder) {
 		this.isFolder = isFolder;
+	}
+
+	public String getFolderPath() {
+		return folderPath;
+	}
+
+	public void setFolderPath(String folderPath) {
+		this.folderPath = folderPath;
 	}
 
 }

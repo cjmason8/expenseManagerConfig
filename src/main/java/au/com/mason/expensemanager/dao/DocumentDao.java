@@ -9,9 +9,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import au.com.mason.expensemanager.domain.Document;
 import au.com.mason.expensemanager.domain.Statics;
 
@@ -19,11 +16,9 @@ import au.com.mason.expensemanager.domain.Statics;
 @Transactional
 public class DocumentDao {
 	
-	private Gson gson = new GsonBuilder().serializeNulls().create();
-	
-	public List<Document> getAll(String folder) {
-		Query query = entityManager.createQuery("FROM Document WHERE folder = :folder");
-		query.setParameter("folder", folder);
+	public List<Document> getAll(String folderPath) {
+		Query query = entityManager.createQuery("FROM Document WHERE folderPath = :folderPath");
+		query.setParameter("folderPath", folderPath);
 		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
 		return query.getResultList();
 	}

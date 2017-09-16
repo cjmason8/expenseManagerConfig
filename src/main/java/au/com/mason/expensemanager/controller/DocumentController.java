@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import au.com.mason.expensemanager.domain.Document;
 import au.com.mason.expensemanager.dto.DocumentDto;
 import au.com.mason.expensemanager.dto.DonationDto;
 import au.com.mason.expensemanager.dto.ExpenseDto;
@@ -66,8 +65,8 @@ public class DocumentController {
         
         DocumentDto document = new DocumentDto();
 		document.setFileName(file.getOriginalFilename());
-		document.setFilePath(filePathString);
-		document.setFolder(true);
+		document.setFolderPath(folderPathString.substring(0, folderPathString.length() - 1));
+		document.setFolder(false);
 		documentService.createDocument(document);
         
         return "{\"filePath\":\"" + filePathString + "\"}";
@@ -89,7 +88,7 @@ public class DocumentController {
 		
 		DocumentDto document = new DocumentDto();
 		document.setFileName(folder.getName());
-		document.setFilePath(folderPathString);
+		document.setFolderPath(folder.getParent());
 		document.setFolder(true);
 		documentService.createDocument(document);
         
@@ -164,7 +163,7 @@ public class DocumentController {
 	public List<DocumentDto> getFiles(@RequestBody String folder) throws Exception {
 		String folderPath = folder;
 		if ("root".equals(folder)) {
-			folderPath = "/docs/expenseManager/filofax/";
+			folderPath = "/docs/expenseManager/filofax";
 		}
 		List<DocumentDto> documents = documentService.getAll(folderPath);
 		
