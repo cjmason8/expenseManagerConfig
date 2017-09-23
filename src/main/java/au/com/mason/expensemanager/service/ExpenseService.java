@@ -97,7 +97,14 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 			}
 		}
 		
-		GraphDto graphDto = new GraphDto(expenseDto.getTransactionType().getDescription(), data);
+		String description = null;
+		if (expenseDto.getTransactionType() == null) {
+			description = expenseDto.getMetaDataChunk();
+		}
+		else {
+			description = expenseDto.getTransactionType().getDescription();
+		}
+		GraphDto graphDto = new GraphDto(description, data);
 		
 		return new ExpenseSearchDto(expenseDtos, 
 				new ExpenseGraphDto((String[]) labels, new GraphDto[] {graphDto}));
