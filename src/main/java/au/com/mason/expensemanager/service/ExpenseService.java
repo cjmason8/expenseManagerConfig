@@ -91,8 +91,10 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 		
 		for (Expense expense : expenses) {
 			expenseDtos.add(transactionMapperWrapper.transactionToTransactionDto(expense));
-			labels[count] = expense.getDueDate().getMonthValue() + "/" + expense.getDueDate().getYear();
-			data[count++] = expense.getAmount();
+			if (expense.getPaid()) {
+				labels[count] = expense.getDueDate().getMonthValue() + "/" + expense.getDueDate().getYear();
+				data[count++] = expense.getAmount();
+			}
 		}
 		
 		GraphDto graphDto = new GraphDto(expenseDto.getTransactionType().getDescription(), data);
