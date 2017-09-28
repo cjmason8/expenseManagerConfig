@@ -26,6 +26,10 @@ public class DocumentService {
 		
 		documentDao.update(updatedDocument);
 		
+		if (updatedDocument.isFolder() && !documentDto.getOriginalFileName().equals(documentDto.getFileName())) {
+			documentDao.updateDirectoryPaths(documentDto.getFolderPath() + "/" + documentDto.getOriginalFileName(), documentDto.getFolderPath() + "/" + documentDto.getFileName());
+		}
+		
 		return documentMapperWrapper.documentToDocumentDto(updatedDocument);
 	}
 	
@@ -37,8 +41,11 @@ public class DocumentService {
 		return documentDto;
 	}
 	
-	public void deleteDocument(Long id) {
-		documentDao.deleteById(id);
+	public void deleteDocument(DocumentDto documentDto) {
+		if (documentDto.getIsFolder()) {
+			documentDao.deleteDirectory(documentDto.getFolderPath() + "/" + documentDto.getFileName());
+		}
+		documentDao.deleteById(documentDto.getId());
 	}
 	
 	public DocumentDto getById(Long id) throws Exception {

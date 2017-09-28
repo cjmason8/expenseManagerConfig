@@ -51,6 +51,17 @@ public class DocumentDao {
 		return entityManager.merge(document);
 	}
 	
+	public void updateDirectoryPaths(String oldPath, String newPath) {
+		String sql = "UPDATE documents set folderPath = replace(folderPath, '" + oldPath + "', '" + newPath + "')";
+		entityManager.createNativeQuery(sql).executeUpdate();
+	}
+	
+	public void deleteDirectory(String folderPath) {
+		String sql = "DELETE from documents where folderPath LIKE '" + folderPath + "%'";
+		System.out.println(sql);
+		entityManager.createNativeQuery(sql).executeUpdate();
+	}
+	
 	// Private fields
 
 	// An EntityManager will be automatically injected from entityManagerFactory

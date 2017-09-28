@@ -6,6 +6,7 @@ public class DocumentDto implements Comparator<DocumentDto>, Comparable<Document
 
 	private Long id;
 	private String fileName;
+	private String originalFileName;
 	private boolean isFolder;
 	private String filePath;
 	private String metaDataChunk;
@@ -27,11 +28,11 @@ public class DocumentDto implements Comparator<DocumentDto>, Comparable<Document
 		this.fileName = fileName;
 	}
 	
-	public boolean isFolder() {
+	public boolean getIsFolder() {
 		return isFolder;
 	}
 	
-	public void setFolder(boolean isFolder) {
+	public void setIsFolder(boolean isFolder) {
 		this.isFolder = isFolder;
 	}
 	
@@ -58,13 +59,21 @@ public class DocumentDto implements Comparator<DocumentDto>, Comparable<Document
 	public void setMetaDataChunk(String metaDataChunk) {
 		this.metaDataChunk = metaDataChunk;
 	}
+	
+	public String getOriginalFileName() {
+		return originalFileName;
+	}
+
+	public void setOriginalFileName(String originalFileName) {
+		this.originalFileName = originalFileName;
+	}
 
 	@Override
 	public int compareTo(DocumentDto o) {
-		if (o.isFolder() == isFolder) {
+		if (o.getIsFolder() == isFolder) {
 			return fileName.toLowerCase().compareTo(o.getFileName().toLowerCase());
 		}
-		else if (o.isFolder()) {
+		else if (o.getIsFolder()) {
 			return 1;
 		}
 		else {
@@ -74,10 +83,10 @@ public class DocumentDto implements Comparator<DocumentDto>, Comparable<Document
 
 	@Override
 	public int compare(DocumentDto o1, DocumentDto o2) {
-		if (o1.isFolder() == o2.isFolder()) {
+		if (o1.getIsFolder() == o2.getIsFolder()) {
 			return o2.getFileName().toLowerCase().compareTo(o1.getFileName().toLowerCase());
 		}
-		else if (o1.isFolder()) {
+		else if (o1.getIsFolder()) {
 			return 1;
 		}
 		else {
