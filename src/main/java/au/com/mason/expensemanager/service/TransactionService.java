@@ -1,5 +1,8 @@
 package au.com.mason.expensemanager.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,9 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 	
 	@Autowired
 	protected D transactionDao;
+	
+	@Autowired
+	protected DocumentService documentService;
 	
 	public List<T> getAllRecurring() throws Exception {
 		List<V> expenses = transactionDao.getAllRecurring();
@@ -53,12 +59,25 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 	}
 	
 	public T addTransaction(T expenseDto) throws Exception {
+		
+		updateDocument(expenseDto);
+		
 		V expense = transactionMapperWrapper.transactionDtoToTransaction(expenseDto);
 		
 		createTransaction(expense);
 		handleRecurring(expense);
 		
 		return transactionMapperWrapper.transactionToTransactionDto(expense);
+	}
+
+	private void updateDocument(T expenseDto) throws IOException, Exception {
+		if (expenseDto.getDocumentDto() != null &&
+				!expenseDto.getDocumentDto().getOriginalFileName().equals(expenseDto.getDocumentDto().getFileName())) {
+			Files.move(Paths.get(expenseDto.getDocumentDto().getFolderPath() + "/" + expenseDto.getDocumentDto().getOriginalFileName()),
+					Paths.get(expenseDto.getDocumentDto().getFolderPath() + "/" + expenseDto.getDocumentDto().getFileName()));
+			
+			documentService.updateDocument(expenseDto.getDocumentDto());
+		}
 	}
 
 	private void handleRecurring(V expense) throws Exception {
@@ -110,6 +129,9 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 	}
 	
 	public T updateTransaction(T expenseDto) throws Exception {
+		
+		updateDocument(expenseDto);
+
 		V updatedExpense = transactionDao.getById(expenseDto.getId());
 		updatedExpense = transactionMapperWrapper.transactionDtoToTransaction(expenseDto, updatedExpense);
 		transactionDao.update(updatedExpense);

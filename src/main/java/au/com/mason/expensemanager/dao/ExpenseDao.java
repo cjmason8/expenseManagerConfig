@@ -2,6 +2,7 @@ package au.com.mason.expensemanager.dao;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -9,14 +10,21 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Statics;
+import au.com.mason.expensemanager.dto.SearchParamsDto;
 import au.com.mason.expensemanager.util.DateUtil;
 
 @Repository
 @Transactional
 public class ExpenseDao implements TransactionDao<Expense> {
+	
+	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
 	public Expense create(Expense expense) {
 		entityManager.persist(expense);
@@ -89,21 +97,29 @@ public class ExpenseDao implements TransactionDao<Expense> {
 		return query.getResultList();
 	}
 	
-	public List<Expense> findExpenses(Expense expense) {
+	public List<Expense> findExpenses(SearchParamsDto searchParamsDto) {
 		String sql = "SELECT * FROM transactions e LEFT JOIN refdata r on e.entrytypeId = r.id "
 				+ "where transactiontype = 'EXPENSE' AND e.recurringtypeid IS NULL ";
-		if (expense.getEntryType() != null) {
-			sql += "AND r.description = '" + expense.getEntryType().getDescription() + "' ";
+		if (!StringUtils.isEmpty(searchParamsDto.getTransactionType())) {
+			sql += "AND r.description = '" + searchParamsDto.getTransactionType().getDescription() + "' ";
 		}
-		if (expense.getStartDate() != null) {
-			sql += "AND e.dueDate >= to_date('" + DateUtil.getFormattedDbDate(expense.getStartDate()) + "', 'yyyy-mm-dd') ";
+		if (!StringUtils.isEmpty(searchParamsDto.getKeyWords())) {
+			sql += "AND r.notes LIKE '%" + searchParamsDto.getKeyWords() + "%' ";
 		}
-		if (expense.getEndDate() != null) {
-			sql += "AND e.dueDate <= to_date('" + DateUtil.getFormattedDbDate(expense.getEndDate()) + "', 'yyyy-mm-dd') ";
+		if (!StringUtils.isEmpty(searchParamsDto.getStartDateString())) {
+			sql += "AND e.dueDate >= to_date('" + DateUtil.getFormattedDbDate(searchParamsDto.getStartDateString()) + "', 'yyyy-mm-dd') ";
 		}
-		if (expense.getMetaData() != null) {
-			for (String val : expense.getMetaData().keySet()) {
-				sql += "AND e.metaData->>'" + val + "' = '" + expense.getMetaData().get(val) + "' ";
+		if (!StringUtils.isEmpty(searchParamsDto.getEndDateString())) {
+			sql += "AND e.dueDate <= to_date('" + DateUtil.getFormattedDbDate(searchParamsDto.getEndDateString()) + "', 'yyyy-mm-dd') ";
+		}
+		if (!StringUtils.isEmpty(searchParamsDto.getMetaDataChunk())) {
+			Map<String, String> metaData = (Map<String, String>) gson.fromJson(searchParamsDto.getMetaDataChunk(), Map.class);
+			for (String val : metaData.keySet()) {
+				sql += "AND (e.metaData->>'" + val + "' = '" + metaData.get(val) + "' ";
+				if (searchParamsDto.getKeyWords() != null) {
+					sql += "OR e.metaData->>'" + val + "' LIKE '%" + searchParamsDto.getKeyWords() + "%'";
+				}
+				sql += ") ";
 			}
 		}
 		sql += "ORDER BY e.dueDate DESC,r.description";

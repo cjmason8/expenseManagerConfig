@@ -37,6 +37,10 @@ public abstract class Transaction {
 	private String documentationFilePath;
 	
 	@OneToOne
+	@JoinColumn(name = "documentId")
+	private Document document;
+	
+	@OneToOne
 	@JoinColumn(name = "recurringTypeId")
 	private RefData recurringType;
 	private Date startDate;
@@ -151,6 +155,14 @@ public abstract class Transaction {
 
 	public void setDocumentationFilePath(String documentationFilePath) {
 		this.documentationFilePath = documentationFilePath;
+	}
+	
+	public Document getDocument() {
+		return document;
+	}
+
+	public void setDocument(Document document) {
+		this.document = document;
 	}
 
 	public abstract void setRecurringTransaction(Transaction recurringTransaction);

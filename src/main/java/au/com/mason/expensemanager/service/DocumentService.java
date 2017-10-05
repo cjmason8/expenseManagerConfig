@@ -36,9 +36,7 @@ public class DocumentService {
 	public DocumentDto createDocument(DocumentDto documentDto) throws Exception {
 		Document document = documentMapperWrapper.documentDtoToDocument(documentDto);
 		
-		documentDao.create(document);
-		
-		return documentDto;
+		return documentMapperWrapper.documentToDocumentDto(documentDao.create(document));
 	}
 	
 	public void deleteDocument(DocumentDto documentDto) {

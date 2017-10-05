@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import au.com.mason.expensemanager.domain.Document;
-import au.com.mason.expensemanager.dto.DirectoryDto;
 import au.com.mason.expensemanager.dto.DocumentDto;
 import au.com.mason.expensemanager.dto.DonationDto;
 import au.com.mason.expensemanager.dto.ExpenseDto;
@@ -50,23 +48,28 @@ public class DocumentController {
 	private IncomeService incomeService;
 
 	@PostMapping(value = "/documents/upload", consumes = { "multipart/form-data" })
-	String uploadFile(@RequestPart("uploadFile") MultipartFile file, @RequestParam String type,
+	DocumentDto uploadFile(@RequestPart("uploadFile") MultipartFile file, @RequestParam String type,
 			@RequestParam(required = false) String path) throws Exception {
 
 		byte[] bytes = file.getBytes();
-		String folderPathString = "/docs/expenseManager/" + type + "/";
+		String folderPathString = "/docs/expenseManager/" + type;
 		if (path != null) {
-			folderPathString = path.replace("root", "/docs/expenseManager/filofax") + "/";
+			folderPathString = path;
 		}
-		String filePathString = folderPathString + file.getOriginalFilename();
+		String filePathString = folderPathString + "/" + file.getOriginalFilename();
 		Path folderPath = Paths.get(folderPathString);
 		Path filePath = Paths.get(filePathString);
 		if (!Files.exists(folderPath)) {
 			Files.createDirectory(folderPath);
 		}
 		Files.write(filePath, bytes);
+		
+		DocumentDto document = new DocumentDto();
+		document.setFileName(file.getOriginalFilename());
+		document.setFolderPath(folderPathString);
+		document.setMetaDataChunk("{}");
 
-		return "{\"filePath\":\"" + filePathString + "\"}";
+		return documentService.createDocument(document);
 	}
 
 	@PostMapping(value = "/documents", produces = "application/json", consumes = "application/json")
@@ -77,7 +80,7 @@ public class DocumentController {
 					Paths.get(document.getFolderPath() + "/" + document.getFileName()));
 		}
 
-		documentService.createDocument(document);
+		documentService.updateDocument(document);
 
 		return "{\"filePath\":\"" + document.getFolderPath() + "\"}";
 	}
@@ -174,17 +177,19 @@ public class DocumentController {
 		return mediaType;
 	}
 
-	@RequestMapping(value = "/documents/getByPath", method = RequestMethod.POST)
-	public ResponseEntity<byte[]> getFileByPath(@RequestBody String filePath) throws Exception {
+	@RequestMapping(value = "/documents/get/{id}", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> getFileById(@PathVariable Long id) throws Exception {
 
+		DocumentDto document = documentService.getById(id);
+		
 		HttpHeaders headers = new HttpHeaders();
-		String mediaType = getContentType(filePath);
+		String mediaType = getContentType(document.getFileName());
 		headers.setContentType(MediaType.parseMediaType(mediaType));
 		String filename = "output.pdf";
 		headers.setContentDispositionFormData(filename, filename);
 		headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
-		return new ResponseEntity<byte[]>(Files.readAllBytes(Paths.get(filePath)), headers, HttpStatus.OK);
+		return new ResponseEntity<byte[]>(Files.readAllBytes(Paths.get(document.getFilePath())), headers, HttpStatus.OK);
 	}
 
 	private String getPath(Long id, String type) throws Exception {
@@ -195,11 +200,11 @@ public class DocumentController {
 		} else if (type.equals("expenses")) {
 			ExpenseDto expense = expenseService.getById(id);
 
-			return expense.getDocumentationFilePath();
+			return expense.getDocumentDto().getFilePath();
 		} else if (type.equals("incomes")) {
 			IncomeDto income = incomeService.getById(id);
 
-			return income.getDocumentationFilePath();
+			return income.getDocumentDto().getFilePath();
 		}
 
 		return null;
@@ -207,11 +212,7 @@ public class DocumentController {
 
 	@RequestMapping(value = "/documents/list", method = RequestMethod.POST)
 	public List<DocumentDto> getFiles(@RequestBody String folder) throws Exception {
-		String folderPath = folder;
-		if ("root".equals(folder)) {
-			folderPath = "/docs/expenseManager/filofax";
-		}
-		List<DocumentDto> documents = documentService.getAll(folderPath);
+		List<DocumentDto> documents = documentService.getAll(folder);
 
 		Collections.sort(documents);
 

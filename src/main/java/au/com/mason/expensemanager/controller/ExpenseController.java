@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import au.com.mason.expensemanager.dto.ExpenseDto;
-import au.com.mason.expensemanager.dto.ExpenseSearchDto;
 import au.com.mason.expensemanager.service.ExpenseService;
 
 @RestController
@@ -48,13 +47,6 @@ public class ExpenseController {
 		
 		return expenseService.addTransaction(expense);
     }
-	
-	@RequestMapping(value = "/expenses/search", method = RequestMethod.POST, produces = "application/json", 
-			consumes = "application/json", headers = "Accept=application/json")
-	ExpenseSearchDto findExpenses(@RequestBody ExpenseDto expense) throws Exception {
-		
-		return expenseService.findExpenses(expense);
-    }	
 	
 	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.PUT, produces = "application/json", 
 			consumes = "application/json", headers = "Accept=application/json")

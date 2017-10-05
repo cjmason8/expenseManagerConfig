@@ -3,6 +3,7 @@ package au.com.mason.expensemanager.mapper;
 import java.time.DayOfWeek;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -15,6 +16,9 @@ import au.com.mason.expensemanager.util.DateUtil;
 @Component
 public class IncomeMapperWrapper implements TransactionMapperWrapper<Income, IncomeDto> {
 	
+	@Autowired
+	private DocumentMapperWrapper documentMapperWrapper;
+
 	private IncomeMapper incomeMapper = IncomeMapper.INSTANCE;
 	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
@@ -32,6 +36,9 @@ public class IncomeMapperWrapper implements TransactionMapperWrapper<Income, Inc
 		}
 		//income.setMetaData(incomeDto.getMetaDataChunk());
 		income.setMetaData((Map<String, String>) gson.fromJson(incomeDto.getMetaDataChunk(), Map.class));
+		if (incomeDto.getDocumentDto() != null) {
+			income.setDocument(documentMapperWrapper.documentDtoToDocument(incomeDto.getDocumentDto()));
+		}
 		
 		return income;
 	}
@@ -50,6 +57,9 @@ public class IncomeMapperWrapper implements TransactionMapperWrapper<Income, Inc
 		}
 		//existingIncome.setMetaData(incomeDto.getMetaDataChunk());
 		income.setMetaData((Map<String, String>) gson.fromJson(incomeDto.getMetaDataChunk(), Map.class));
+		if (incomeDto.getDocumentDto() != null) {
+			income.setDocument(documentMapperWrapper.documentDtoToDocument(incomeDto.getDocumentDto()));
+		}
 		
 		return existingIncome;    	
     }
@@ -70,6 +80,9 @@ public class IncomeMapperWrapper implements TransactionMapperWrapper<Income, Inc
     	}
     	//incomeDto.setMetaDataChunk(income.getMetaData());
     	incomeDto.setMetaDataChunk(gson.toJson(income.getMetaData(), Map.class));
+    	if (income.getDocument() != null) {
+    		incomeDto.setDocumentDto(documentMapperWrapper.documentToDocumentDto(income.getDocument()));
+    	}
     	
     	return incomeDto;
     }

@@ -3,6 +3,7 @@ package au.com.mason.expensemanager.mapper;
 import java.time.DayOfWeek;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -15,6 +16,9 @@ import au.com.mason.expensemanager.util.DateUtil;
 
 @Component
 public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, ExpenseDto> {
+	
+	@Autowired
+	private DocumentMapperWrapper documentMapperWrapper;
 	
 	private ExpenseMapper expenseMapper = ExpenseMapper.INSTANCE;
 	private Gson gson = new GsonBuilder().serializeNulls().create();
@@ -32,6 +36,9 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
 			expense.setEndDate(DateUtil.getFormattedDate(expenseDto.getEndDateString()));
 		}
 		expense.setMetaData((Map<String, String>) gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
+		if (expenseDto.getDocumentDto() != null) {
+			expense.setDocument(documentMapperWrapper.documentDtoToDocument(expenseDto.getDocumentDto()));
+		}
 		
 		return expense;
 	}
@@ -49,6 +56,9 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
 			existingExpense.setEndDate(DateUtil.getFormattedDate(expenseDto.getEndDateString()));
 		}
 		existingExpense.setMetaData((Map<String, String>) gson.fromJson(expenseDto.getMetaDataChunk(), Map.class));
+		if (expenseDto.getDocumentDto() != null) {
+			existingExpense.setDocument(documentMapperWrapper.documentDtoToDocument(expenseDto.getDocumentDto()));
+		}
 		
 		return existingExpense;    	
     }
@@ -68,6 +78,9 @@ public class ExpenseMapperWrapper implements TransactionMapperWrapper<Expense, E
     		expenseDto.setEndDateString(DateUtil.getFormattedDateString(expense.getEndDate()));
     	}
     	expenseDto.setMetaDataChunk(gson.toJson(expense.getMetaData(), Map.class));
+    	if (expense.getDocument() != null) {
+    		expenseDto.setDocumentDto(documentMapperWrapper.documentToDocumentDto(expense.getDocument()));
+    	}
     	
     	return expenseDto;
     }

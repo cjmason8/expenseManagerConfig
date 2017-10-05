@@ -8,7 +8,6 @@ public class DocumentDto implements Comparator<DocumentDto>, Comparable<Document
 	private String fileName;
 	private String originalFileName;
 	private boolean isFolder;
-	private String filePath;
 	private String metaDataChunk;
 	private String folderPath;
 	
@@ -36,14 +35,6 @@ public class DocumentDto implements Comparator<DocumentDto>, Comparable<Document
 		this.isFolder = isFolder;
 	}
 	
-	public String getFilePath() {
-		return filePath;
-	}
-	
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
-	
 	public String getFolderPath() {
 		return folderPath;
 	}
@@ -66,6 +57,10 @@ public class DocumentDto implements Comparator<DocumentDto>, Comparable<Document
 
 	public void setOriginalFileName(String originalFileName) {
 		this.originalFileName = originalFileName;
+	}
+	
+	public String getFilePath() {
+		return folderPath + "/" + fileName;
 	}
 
 	@Override

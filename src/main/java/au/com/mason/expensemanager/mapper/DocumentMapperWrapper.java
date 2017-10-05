@@ -3,6 +3,7 @@ package au.com.mason.expensemanager.mapper;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,7 +19,9 @@ public class DocumentMapperWrapper {
 	
 	public Document documentDtoToDocument(DocumentDto documentDto) throws Exception {
 		Document document = documentMapper.documentDtoToDocument(documentDto);
-		document.setMetaData((Map<String, String>) gson.fromJson(documentDto.getMetaDataChunk(), Map.class));
+		if (!StringUtils.isEmpty(document.getMetaData())) {
+			document.setMetaData((Map<String, String>) gson.fromJson(documentDto.getMetaDataChunk(), Map.class));
+		}
 		document.setFolder(documentDto.getIsFolder());
 		
 		return document;
@@ -26,7 +29,9 @@ public class DocumentMapperWrapper {
 
     public Document documentDtoToDocument(DocumentDto documentDto, Document documentParam) throws Exception {
     	Document document = documentMapper.documentDtoToDocument(documentDto, documentParam);
-    	document.setMetaData((Map<String, String>) gson.fromJson(documentDto.getMetaDataChunk(), Map.class));
+    	if (!StringUtils.isEmpty(document.getMetaData())) {
+			document.setMetaData((Map<String, String>) gson.fromJson(documentDto.getMetaDataChunk(), Map.class));
+		}
     	document.setFolder(documentDto.getIsFolder());
     	
 		return document;
@@ -34,7 +39,9 @@ public class DocumentMapperWrapper {
     
     public DocumentDto documentToDocumentDto(Document document) throws Exception {
     	DocumentDto documentDto = documentMapper.documentToDocumentDto(document);
-    	documentDto.setMetaDataChunk(gson.toJson(document.getMetaData(), Map.class));
+    	if (document.getMetaData() != null) {
+    		documentDto.setMetaDataChunk(gson.toJson(document.getMetaData(), Map.class));
+    	}
     	documentDto.setOriginalFileName(documentDto.getFileName());
     	documentDto.setIsFolder(document.isFolder());
 

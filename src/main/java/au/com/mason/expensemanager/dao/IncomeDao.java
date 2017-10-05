@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Income;
+import au.com.mason.expensemanager.dto.SearchParamsDto;
 import au.com.mason.expensemanager.util.DateUtil;
 
 @Repository
@@ -110,13 +111,13 @@ public class IncomeDao implements TransactionDao<Income> {
 	}
 
 	@Override
-	public List<Expense> findExpenses(Expense expense) {
+	public List<Income> getAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Income> getAll() {
+	public List<Expense> findExpenses(SearchParamsDto searchParamsDto) {
 		// TODO Auto-generated method stub
 		return null;
 	}
