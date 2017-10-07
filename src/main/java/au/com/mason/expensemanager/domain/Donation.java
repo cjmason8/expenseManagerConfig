@@ -36,7 +36,9 @@ public class Donation {
 	private String description;
 	private Date dueDate;
 	private String notes;
-	private String documentationFilePath; 
+	@OneToOne
+	@JoinColumn(name = "documentId")
+	private Document document; 
 	
     @Column
 	@Type(type = "MyJsonType")
@@ -86,12 +88,12 @@ public class Donation {
 		this.notes = notes;
 	}
 
-	public String getDocumentationFilePath() {
-		return documentationFilePath;
+	public Document getDocument() {
+		return document;
 	}
 
-	public void setDocumentationFilePath(String documentationFilePath) {
-		this.documentationFilePath = documentationFilePath;
+	public void setDocument(Document document) {
+		this.document = document;
 	}
 
 	public Map<String, String> getMetaData() {

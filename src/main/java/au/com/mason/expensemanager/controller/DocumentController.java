@@ -196,7 +196,7 @@ public class DocumentController {
 		if (type.equals("donations")) {
 			DonationDto donation = donationService.getById(id);
 
-			return donation.getDocumentationFilePath();
+			return donation.getDocumentDto().getFilePath();
 		} else if (type.equals("expenses")) {
 			ExpenseDto expense = expenseService.getById(id);
 

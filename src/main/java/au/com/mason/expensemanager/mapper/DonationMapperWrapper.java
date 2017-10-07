@@ -2,6 +2,7 @@ package au.com.mason.expensemanager.mapper;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -14,6 +15,9 @@ import au.com.mason.expensemanager.util.DateUtil;
 @Component
 public class DonationMapperWrapper {
 	
+	@Autowired
+	private DocumentMapperWrapper documentMapperWrapper;	
+	
 	private DonationMapper donationMapper = DonationMapper.INSTANCE;
 	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
@@ -21,6 +25,9 @@ public class DonationMapperWrapper {
 		Donation donation = donationMapper.donationDtoToDonation(donationDto);
 		donation.setDueDate(DateUtil.getFormattedDate(donationDto.getDueDateString()));
 		donation.setMetaData((Map<String, String>) gson.fromJson(donationDto.getMetaDataChunk(), Map.class));
+		if (donationDto.getDocumentDto() != null) {
+			donation.setDocument(documentMapperWrapper.documentDtoToDocument(donationDto.getDocumentDto()));
+		}
 		
 		return donation;
 	}
@@ -29,6 +36,9 @@ public class DonationMapperWrapper {
     	Donation donation = donationMapper.donationDtoToDonation(donationDto, donationParam);
     	donation.setDueDate(DateUtil.getFormattedDate(donationDto.getDueDateString()));
     	donation.setMetaData((Map<String, String>) gson.fromJson(donationDto.getMetaDataChunk(), Map.class));
+		if (donationDto.getDocumentDto() != null) {
+			donation.setDocument(documentMapperWrapper.documentDtoToDocument(donationDto.getDocumentDto()));
+		}
     	
 		return donation;
     }
@@ -37,6 +47,9 @@ public class DonationMapperWrapper {
     	DonationDto donationDto = donationMapper.donationToDonationDto(donation);
     	donationDto.setDueDateString(DateUtil.getFormattedDateString(donation.getDueDate()));
     	donationDto.setMetaDataChunk(gson.toJson(donation.getMetaData(), Map.class));
+		if (donation.getDocument() != null) {
+			donationDto.setDocumentDto(documentMapperWrapper.documentToDocumentDto(donation.getDocument()));
+		}
 
 		return donationDto;
     }

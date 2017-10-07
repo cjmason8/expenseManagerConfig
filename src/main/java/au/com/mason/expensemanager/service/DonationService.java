@@ -1,5 +1,8 @@
 package au.com.mason.expensemanager.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +24,13 @@ public class DonationService {
 	@Autowired
 	private DonationDao donationDao;
 	
+	@Autowired
+	protected DocumentService documentService;
+	
 	public DonationDto updateDonation(DonationDto donationDto) throws Exception {
+		
+		updateDocument(donationDto);
+		
 		Donation updatedDonation = donationDao.getById(donationDto.getId());
 		updatedDonation = donationMapperWrapper.donationDtoToDonation(donationDto, updatedDonation);
 		
@@ -31,11 +40,24 @@ public class DonationService {
 	}
 	
 	public DonationDto createDonation(DonationDto donationDto) throws Exception {
+		
+		updateDocument(donationDto);
+		
 		Donation donation = donationMapperWrapper.donationDtoToDonation(donationDto);
 		
 		donationDao.create(donation);
 		
 		return donationDto;
+	}
+	
+	private void updateDocument(DonationDto donationDto) throws IOException, Exception {
+		if (donationDto.getDocumentDto() != null &&
+				!donationDto.getDocumentDto().getOriginalFileName().equals(donationDto.getDocumentDto().getFileName())) {
+			Files.move(Paths.get(donationDto.getDocumentDto().getFolderPath() + "/" + donationDto.getDocumentDto().getOriginalFileName()),
+					Paths.get(donationDto.getDocumentDto().getFolderPath() + "/" + donationDto.getDocumentDto().getFileName()));
+			
+			documentService.updateDocument(donationDto.getDocumentDto());
+		}
 	}
 	
 	public void deleteDonation(Long id) {
