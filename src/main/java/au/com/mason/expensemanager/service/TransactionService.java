@@ -60,7 +60,12 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 	
 	public T addTransaction(T expenseDto) throws Exception {
 		
-		updateDocument(expenseDto);
+		if (expenseDto.getDocumentDto() != null && expenseDto.getDocumentDto().getOriginalFileName() != null) {
+			updateDocument(expenseDto);
+		}
+		else {
+			expenseDto.setDocumentDto(null);
+		}
 		
 		V expense = transactionMapperWrapper.transactionDtoToTransaction(expenseDto);
 		
@@ -71,8 +76,7 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 	}
 
 	private void updateDocument(T expenseDto) throws IOException, Exception {
-		if (expenseDto.getDocumentDto() != null && expenseDto.getDocumentDto().getOriginalFileName() != null &&
-				!expenseDto.getDocumentDto().getOriginalFileName().equals(expenseDto.getDocumentDto().getFileName())) {
+		if (!expenseDto.getDocumentDto().getOriginalFileName().equals(expenseDto.getDocumentDto().getFileName())) {
 			Files.move(Paths.get(expenseDto.getDocumentDto().getFolderPath() + "/" + expenseDto.getDocumentDto().getOriginalFileName()),
 					Paths.get(expenseDto.getDocumentDto().getFolderPath() + "/" + expenseDto.getDocumentDto().getFileName()));
 			
