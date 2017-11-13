@@ -134,7 +134,9 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 	
 	public T updateTransaction(T expenseDto) throws Exception {
 		
-		updateDocument(expenseDto);
+		if (expenseDto.getDocumentDto() != null && expenseDto.getDocumentDto().getOriginalFileName() != null) {
+			updateDocument(expenseDto);
+		}
 
 		V updatedExpense = transactionDao.getById(expenseDto.getId());
 		updatedExpense = transactionMapperWrapper.transactionDtoToTransaction(expenseDto, updatedExpense);
