@@ -55,241 +55,176 @@ public class DocumentController {
 	DocumentDto uploadFile(@RequestPart("uploadFile") MultipartFile file, @RequestParam String type,
 			@RequestParam(required = false) String path) throws Exception {
 		
-		LOGGER.info("entering uploadFile");
+		LOGGER.info("entering DocumentController uploadFile");
 
-		try {
-			byte[] bytes = file.getBytes();
-			String folderPathString = "/docs/expenseManager/" + type;
-			if (path != null) {
-				folderPathString = path;
-			}
-			String filePathString = folderPathString + "/" + file.getOriginalFilename();
-			Path folderPath = Paths.get(folderPathString);
-			Path filePath = Paths.get(filePathString);
-			if (!Files.exists(folderPath)) {
-				Files.createDirectory(folderPath);
-			}
-			Files.write(filePath, bytes);
-			
-			DocumentDto document = new DocumentDto();
-			document.setFileName(file.getOriginalFilename());
-			document.setFolderPath(folderPathString);
-			document.setMetaDataChunk("{}");
-			
-			LOGGER.info("leaving uploadFile");
-	
-			return documentService.createDocument(document);
+		byte[] bytes = file.getBytes();
+		String folderPathString = "/docs/expenseManager/" + type;
+		if (path != null) {
+			folderPathString = path;
 		}
-		catch (Exception e) {
-			LOGGER.error("DocumentController uploadFile failed!!!", e);
-			
-			throw e;
+		String filePathString = folderPathString + "/" + file.getOriginalFilename();
+		Path folderPath = Paths.get(folderPathString);
+		Path filePath = Paths.get(filePathString);
+		if (!Files.exists(folderPath)) {
+			Files.createDirectory(folderPath);
 		}
+		Files.write(filePath, bytes);
+		
+		DocumentDto document = new DocumentDto();
+		document.setFileName(file.getOriginalFilename());
+		document.setFolderPath(folderPathString);
+		document.setMetaDataChunk("{}");
+		
+		LOGGER.info("leaving DocumentController uploadFile");
+
+		return documentService.createDocument(document);
 	}
 
 	@PostMapping(value = "/documents", produces = "application/json", consumes = "application/json")
 	String createFile(@RequestBody DocumentDto document) throws Exception {
 		
-		LOGGER.info("entering createFile");
+		LOGGER.info("entering DocumentController createFile - " + document.getFileName());
 		
-		try {
+		if (!document.getOriginalFileName().equals(document.getFileName())) {
+			Files.move(Paths.get(document.getFolderPath() + "/" + document.getOriginalFileName()),
+					Paths.get(document.getFolderPath() + "/" + document.getFileName()));
+		}
+		
+		LOGGER.info("leaving DocumentController createFile - " + document.getFileName());
 
-			if (!document.getOriginalFileName().equals(document.getFileName())) {
-				Files.move(Paths.get(document.getFolderPath() + "/" + document.getOriginalFileName()),
-						Paths.get(document.getFolderPath() + "/" + document.getFileName()));
-			}
-			
-			LOGGER.info("leaving createFile");
-	
-			documentService.updateDocument(document);
-	
-			return "{\"filePath\":\"" + document.getFolderPath() + "\"}";
-		}
-		catch (Exception e) {
-			LOGGER.error("DocumentController createFile failed!!!", e);
-			
-			throw e;
-		}
+		documentService.updateDocument(document);
+
+		return "{\"filePath\":\"" + document.getFolderPath() + "\"}";
 	}
 	
 	@RequestMapping(value = "/documents/{id}", method = RequestMethod.PUT, produces = "application/json", 
 			consumes = "application/json", headers = "Accept=application/json")
 	String updateFile(@RequestBody DocumentDto document, Long id) throws Exception {
 		
-		LOGGER.info("entering updateFile");
+		LOGGER.info("entering DocumentController updateFile - " + id);
 
-		try {
-			if (!document.getOriginalFileName().equals(document.getFileName())) {
-				Files.move(Paths.get(document.getFolderPath() + "/" + document.getOriginalFileName()),
-						Paths.get(document.getFolderPath() + "/" + document.getFileName()));
-			}
-	
-			documentService.updateDocument(document);
-			
-			LOGGER.info("leaving updateFile");
-	
-			return "{\"filePath\":\"" + document.getFolderPath() + "\"}";
+		if (!document.getOriginalFileName().equals(document.getFileName())) {
+			Files.move(Paths.get(document.getFolderPath() + "/" + document.getOriginalFileName()),
+					Paths.get(document.getFolderPath() + "/" + document.getFileName()));
 		}
-		catch (Exception e) {
-			LOGGER.error("DocumentController updateFile failed!!!", e);
-			
-			throw e;
-		}
+
+		documentService.updateDocument(document);
+		
+		LOGGER.info("leaving DocumentController updateFile - " + id);
+
+		return "{\"filePath\":\"" + document.getFolderPath() + "\"}";
 	}
 	
 	@PostMapping(value = "/documents/directory", produces = "application/json", consumes = "application/json")
 	String createDirectory(@RequestBody DocumentDto directory) throws Exception {
 
-		LOGGER.info("entering createDirectory");
+		LOGGER.info("entering DocumentController createDirectory - " + directory.getFileName());
 		
-		try {
-			String folderPathString = "";
-			if (directory.getFolderPath().indexOf("root") != -1) {
-				folderPathString = "/docs/expenseManager/filofax/" + directory.getFolderPath().replace("root", "") + "/";
-			} else {
-				folderPathString = directory.getFolderPath();
-			}
-	
-			File folder = new File(folderPathString + "/" + directory.getFileName());
-			folder.mkdir();
-	
-			DocumentDto document = new DocumentDto();
-			document.setFileName(folder.getName());
-			document.setFolderPath(folder.getParent());
-			document.setIsFolder(true);
-			documentService.createDocument(document);
-			
-			LOGGER.info("leaving createDirectory");
-	
-			return "{\"filePath\":\"" + folder.getPath() + "\"}";
+		String folderPathString = "";
+		if (directory.getFolderPath().indexOf("root") != -1) {
+			folderPathString = "/docs/expenseManager/filofax/" + directory.getFolderPath().replace("root", "") + "/";
+		} else {
+			folderPathString = directory.getFolderPath();
 		}
-		catch (Exception e) {
-			LOGGER.error("DocumentController createDirectory failed!!!", e);
-			
-			throw e;
-		}			
+
+		File folder = new File(folderPathString + "/" + directory.getFileName());
+		folder.mkdir();
+
+		DocumentDto document = new DocumentDto();
+		document.setFileName(folder.getName());
+		document.setFolderPath(folder.getParent());
+		document.setIsFolder(true);
+		documentService.createDocument(document);
+		
+		LOGGER.info("leaving DocumentController createDirectory - " + directory.getFileName());
+
+		return "{\"filePath\":\"" + folder.getPath() + "\"}";
 	}
 	
 	@RequestMapping(value = "/documents/directory", produces = "application/json", consumes = "application/json", method = RequestMethod.PUT)
 	String updateDocument(@RequestBody DocumentDto directory) throws Exception {
-		LOGGER.info("entering updateDocument");
+		LOGGER.info("entering DocumentController updateDocument - " + directory.getFileName());
 		
-		try {
-			Files.move(Paths.get(directory.getFolderPath() + "/" + directory.getOriginalFileName()),
-					Paths.get(directory.getFolderPath() + "/" + directory.getFileName()));
-			
-			documentService.updateDocument(directory);
-			
-			LOGGER.info("leaving updateDocument");
-			
-			return "{\"filePath\":\"" + directory.getFolderPath() + "\"}";
-		}
-		catch (Exception e) {
-			LOGGER.error("DocumentController updateDocument failed!!!", e);
-			
-			throw e;
-		}			
+		Files.move(Paths.get(directory.getFolderPath() + "/" + directory.getOriginalFileName()),
+				Paths.get(directory.getFolderPath() + "/" + directory.getFileName()));
+		
+		documentService.updateDocument(directory);
+		
+		LOGGER.info("leaving DocumentController updateDocument - " + directory.getFileName());
+		
+		return "{\"filePath\":\"" + directory.getFolderPath() + "\"}";
 	}
 	
 	@RequestMapping(value = "/documents/{id}", method = RequestMethod.DELETE, produces = "application/json",
 			consumes = "application/json", headers = "Accept=application/json")
 	String deleteDocument(@PathVariable Long id) throws Exception {
 		
-		LOGGER.info("entering deleteDocument");
+		LOGGER.info("entering DocumentController deleteDocument - " + id);
 		
-		try {
-		
-			DocumentDto document = documentService.getById(id);
-			String parentFolder = document.getFolderPath();
-			if (document.getIsFolder()) {
-				FileUtils.deleteDirectory(new File(document.getFolderPath() + "/" + document.getFileName()));
-			}
-			else {
-				Files.delete(Paths.get(document.getFolderPath() + "/" + document.getFileName()));
-			}
-			
-			documentService.deleteDocument(document);
-			
-			LOGGER.info("leaving deleteDocument");
-			
-			return "{\"filePath\":\"" + parentFolder + "\"}";
+		DocumentDto document = documentService.getById(id);
+		String parentFolder = document.getFolderPath();
+		if (document.getIsFolder()) {
+			FileUtils.deleteDirectory(new File(document.getFolderPath() + "/" + document.getFileName()));
 		}
-		catch (Exception e) {
-			LOGGER.error("DocumentController updateDocument failed!!!", e);
-			
-			throw e;
-		}			
+		else {
+			Files.delete(Paths.get(document.getFolderPath() + "/" + document.getFileName()));
+		}
+		
+		documentService.deleteDocument(document);
+		
+		LOGGER.info("leaving DocumentController deleteDocument - " + id);
+		
+		return "{\"filePath\":\"" + parentFolder + "\"}";
     }
 
 	@RequestMapping(value = "/documents/get/{type}/{id}", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getFile(@PathVariable Long id, @PathVariable String type) throws Exception {
-		LOGGER.info("entering getFile");
+		LOGGER.info("entering DocumentController getFile - " + id);
 
-		try {
-			Path path = Paths.get(getPath(id, type));
-			String mediaType = getContentType(path.getFileName().toString());
-	
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.parseMediaType(mediaType));
-			String filename = "output"
-					+ path.getFileName().toString().substring(path.getFileName().toString().lastIndexOf("."));
-			headers.setContentDispositionFormData(filename, filename);
-			headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-			
-			LOGGER.info("leaving getFile");
-	
-			return new ResponseEntity<byte[]>(Files.readAllBytes(path), headers, HttpStatus.OK);
-		}
-		catch (Exception e) {
-			LOGGER.error("DocumentController getFile failed!!!", e);
-			
-			throw e;
-		}			
+		Path path = Paths.get(getPath(id, type));
+		String mediaType = getContentType(path.getFileName().toString());
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.parseMediaType(mediaType));
+		String filename = "output"
+				+ path.getFileName().toString().substring(path.getFileName().toString().lastIndexOf("."));
+		headers.setContentDispositionFormData(filename, filename);
+		headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+		
+		LOGGER.info("leaving DocumentController getFile - " + id);
+
+		return new ResponseEntity<byte[]>(Files.readAllBytes(path), headers, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/documents/get/{id}", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> getFileById(@PathVariable Long id) throws Exception {
 		
-		LOGGER.info("enterting getFileById");
+		LOGGER.info("enterting DocumentController getFileById - " + id);
 		
-		try {
-			DocumentDto document = documentService.getById(id);
-			
-			HttpHeaders headers = new HttpHeaders();
-			String mediaType = getContentType(document.getFileName());
-			headers.setContentType(MediaType.parseMediaType(mediaType));
-			String filename = "output.pdf";
-			headers.setContentDispositionFormData(filename, filename);
-			headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-			
-			LOGGER.info("leaving getFileById");
+		DocumentDto document = documentService.getById(id);
+		
+		HttpHeaders headers = new HttpHeaders();
+		String mediaType = getContentType(document.getFileName());
+		headers.setContentType(MediaType.parseMediaType(mediaType));
+		String filename = "output.pdf";
+		headers.setContentDispositionFormData(filename, filename);
+		headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+		
+		LOGGER.info("leaving DocumentController getFileById - " + id);
 	
-			return new ResponseEntity<byte[]>(Files.readAllBytes(Paths.get(document.getFilePath())), headers, HttpStatus.OK);
-		}
-		catch (Exception e) {
-			LOGGER.error("DocumentController getFileById failed!!!", e);
-			
-			throw e;
-		}
+		return new ResponseEntity<byte[]>(Files.readAllBytes(Paths.get(document.getFilePath())), headers, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/documents/list", method = RequestMethod.POST)
 	public List<DocumentDto> getFiles(@RequestBody String folder) throws Exception {
-		LOGGER.info("entering getFiles");		
-		try {
-			List<DocumentDto> documents = documentService.getAll(folder);
+		LOGGER.info("entering DocumentController getFiles - " + folder);		
+		List<DocumentDto> documents = documentService.getAll(folder);
 
-			Collections.sort(documents);
+		Collections.sort(documents);
 
-			LOGGER.info("leaving getFiles");			
+		LOGGER.info("leaving DocumentController getFiles - " + folder);			
 
-			return documents;
-		}
-		catch (Exception e) {
-			LOGGER.error("DocumentController getFiles failed!!!", e);
-			
-			throw e;
-		}			
+		return documents;
 	}
 
 	private String getContentType(String path) {

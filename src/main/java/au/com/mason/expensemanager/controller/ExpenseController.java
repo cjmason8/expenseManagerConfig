@@ -24,123 +24,73 @@ public class ExpenseController {
 	
 	@RequestMapping(value = "/expenses", method = RequestMethod.GET, produces = "application/json")
 	List<ExpenseDto> getExpenses() throws Exception {
-		LOGGER.info("entering getExpenses");		
-		try {
-			List<ExpenseDto> results = expenseService.getAll();
-			
-			LOGGER.info("leaving getExpenses");
-			
-			return results;
-		}
-		catch (Exception e) {
-			LOGGER.error("ExpenseController getExpenses failed!!!", e);
-			
-			throw e;
-		}
+		LOGGER.info("entering ExpenseController getExpenses");		
+		List<ExpenseDto> results = expenseService.getAll();
+		
+		LOGGER.info("leaving ExpenseController getExpenses");
+		
+		return results;
     }
 	
 	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.GET, produces = "application/json")
 	ExpenseDto getExpense(@PathVariable Long id) throws Exception {
-		LOGGER.info("entering getExpense");		
-		try {
-			ExpenseDto result = expenseService.getById(id);
-			
-			LOGGER.info("leaving getExpense");
-			
-			return result;
-		}
-		catch (Exception e) {
-			LOGGER.error("ExpenseController getExpense failed for id - " + id, e);
-			
-			throw e;
-		}			
-        
+		LOGGER.info("entering ExpenseController getExpense - " + id);		
+		ExpenseDto result = expenseService.getById(id);
+		
+		LOGGER.info("leaving ExpenseController getExpense - " + id);
+		
+		return result;
     }
 	
 	@RequestMapping(value = "/expenses/pay/{id}", method = RequestMethod.GET, produces = "application/json")
 	ExpenseDto payExpense(@PathVariable Long id) throws Exception {
-		LOGGER.info("entering payExpense");		
-		try {
-			ExpenseDto result = expenseService.payExpense(id);
-			
-			LOGGER.info("leaving payExpense");
-			
-			return result;
-		}
-		catch (Exception e) {
-			LOGGER.error("ExpenseController payExpense failed for id - " + id, e);
-			
-			throw e;
-		}
+		LOGGER.info("entering ExpenseController payExpense - " + id);		
+		ExpenseDto result = expenseService.payExpense(id);
+		
+		LOGGER.info("leaving ExpenseController payExpense - " + id);
+		
+		return result;
     }
 	
 	@RequestMapping(value = "/expenses/unpay/{id}", method = RequestMethod.GET, produces = "application/json")
 	ExpenseDto unPayExpense(@PathVariable Long id) throws Exception {
-		LOGGER.info("entering unPayExpense");		
-		try {
-			ExpenseDto result = expenseService.unPayExpense(id);
-			
-			LOGGER.info("leaving unPayExpense");
-			
-			return result;
-		}
-		catch (Exception e) {
-			LOGGER.error("ExpenseController unPayExpense failed for id - " + id, e);
-			
-			throw e;
-		}
+		LOGGER.info("entering ExpenseController unPayExpense - " + id);
+		ExpenseDto result = expenseService.unPayExpense(id);
+		
+		LOGGER.info("leaving ExpenseController unPayExpense - " + id);
+		
+		return result;
     }	
 	
 	@RequestMapping(value = "/expenses", method = RequestMethod.POST, produces = "application/json", 
 			consumes = "application/json", headers = "Accept=application/json")
 	ExpenseDto addExpense(@RequestBody ExpenseDto expense) throws Exception {
-		LOGGER.info("entering addExpense");		
-		try {
-			ExpenseDto result = expenseService.addTransaction(expense);
-			
-			LOGGER.info("leaving addExpense");
-			
-			return result;
-		}
-		catch (Exception e) {
-			LOGGER.error("ExpenseController addExpense failed for type, amount - " + expense.getTransactionType() + ", " + expense.getAmount(), e);
-			
-			throw e;
-		}			
+		LOGGER.info("entering ExpenseController addExpense - " + expense.getTransactionType() + ", " + expense.getAmount());		
+		ExpenseDto result = expenseService.addTransaction(expense);
+		
+		LOGGER.info("leaving ExpenseController addExpense - " + expense.getTransactionType() + ", " + expense.getAmount());
+		
+		return result;
     }
 	
 	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.PUT, produces = "application/json", 
 			consumes = "application/json", headers = "Accept=application/json")
 	ExpenseDto updateExpense(@RequestBody ExpenseDto expense, Long id) throws Exception {
-		LOGGER.info("entering updateExpense");		
-		try {
-			ExpenseDto result = expenseService.updateTransaction(expense);
-			
-			LOGGER.info("leaving updateExpense");
+		LOGGER.info("entering ExpenseController updateExpense - " + id);		
+		ExpenseDto result = expenseService.updateTransaction(expense);
+		
+		LOGGER.info("leaving ExpenseController updateExpense - " + id);
 
-			return result;
-		}
-		catch (Exception e) {
-			LOGGER.error("ExpenseController updateExpense failed for id - " + expense.getId(), e);
-			
-			throw e;
-		}			
+		return result;
     }
 	
 	@RequestMapping(value = "/expenses/{id}", method = RequestMethod.DELETE, produces = "application/json",
 			consumes = "application/json", headers = "Accept=application/json")
 	String deleteExpense(@PathVariable Long id) throws Exception {
-		LOGGER.info("entering deleteExpense");		
-		try {
-			expenseService.deleteTransaction(id);
-			
-			LOGGER.info("leaving deleteExpense");
-		}
-		catch (Exception e) {
-			LOGGER.error("ExpenseController deleteExpense failed for id - " + id, e);
-			
-			throw e;
-		}			
+		LOGGER.info("entering ExpenseController deleteExpense - " + id);		
+		expenseService.deleteTransaction(id);
+		
+		LOGGER.info("leaving ExpenseController deleteExpense - " + id);
 		
 		return "{\"status\":\"success\"}";
     }	

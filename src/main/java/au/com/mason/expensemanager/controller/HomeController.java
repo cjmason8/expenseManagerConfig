@@ -4,9 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,62 +36,40 @@ public class HomeController {
 	@RequestMapping(value = "/week", method = RequestMethod.GET, produces = "application/json")
 	TransactionsForWeekDto expensesForWeek() throws Exception {
 		
-		LOGGER.info("entering expensesForWeek");
+		LOGGER.info("entering HomeController expensesForWeek");
 		
-		try {
-			LocalDate monday = DateUtil.getMonday(LocalDate.now());
-			expenseService.initialiseWeek(monday, null);
-			
-			LOGGER.info("leaving expensesForWeek");
-	
-			return getTransactionsForWeekDto(monday);
-		}
-		catch (Exception e) {
-			LOGGER.error("HomeController expensesForWeek failed!!", e);
-			
-			throw e;
-		}			
+		LocalDate monday = DateUtil.getMonday(LocalDate.now());
+		expenseService.initialiseWeek(monday, null);
+		
+		LOGGER.info("leaving HomeController expensesForWeek");
+
+		return getTransactionsForWeekDto(monday);
     }
 
 	@RequestMapping(value = "/week/{date}", method = RequestMethod.GET, produces = "application/json")
 	TransactionsForWeekDto expensesForSpecificWeek(@PathVariable String date) throws Exception {
-		LOGGER.info("entering expensesForSpecificWeek");
+		LOGGER.info("entering HomeController expensesForSpecificWeek - " + date);
 		
-		try {
-			LocalDate localDate = DateUtil.getMonday(LocalDate.parse(date, FORMATTER));
-			if (localDate.isAfter(LocalDate.now())) {
-				expenseService.initialiseWeek(localDate, null);
-			}
-			
-			LOGGER.info("leaving expensesForSpecificWeek");
-			
-			return getTransactionsForWeekDto(localDate);
+		LocalDate localDate = DateUtil.getMonday(LocalDate.parse(date, FORMATTER));
+		if (localDate.isAfter(LocalDate.now())) {
+			expenseService.initialiseWeek(localDate, null);
 		}
-		catch (Exception e) {
-			LOGGER.error("HomeController expensesForSpecificWeek failed!!", e);
-			
-			throw e;
-		}			
+		
+		LOGGER.info("leaving HomeController expensesForSpecificWeek - " + date);
+		
+		return getTransactionsForWeekDto(localDate);
     }
 	
 	@RequestMapping(value = "/recurring", method = RequestMethod.GET, produces = "application/json")
 	TransactionsDto getRecurring() throws Exception {
-		LOGGER.info("entering getRecurring");
+		LOGGER.info("entering HomeController getRecurring");
 		
-		try {
-			List<IncomeDto> allRecurringIncome = incomeService.getAllRecurring();
-			List<ExpenseDto> allRecurringExpenses = expenseService.getAllRecurring();
-			
-			LOGGER.info("leaving getRecurring");
-			
-			return new TransactionsDto(allRecurringIncome, allRecurringExpenses);
-		}
-		catch (Exception e) {
-			LOGGER.error("HomeController getRecurring failed!!", e);
-			
-			throw e;
-		}
-        
+		List<IncomeDto> allRecurringIncome = incomeService.getAllRecurring();
+		List<ExpenseDto> allRecurringExpenses = expenseService.getAllRecurring();
+		
+		LOGGER.info("leaving HomeController getRecurring");
+		
+		return new TransactionsDto(allRecurringIncome, allRecurringExpenses);
     }
 	
 	private TransactionsForWeekDto getTransactionsForWeekDto(LocalDate localDate) throws Exception {
