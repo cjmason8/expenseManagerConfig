@@ -28,7 +28,6 @@ public class DocumentDao {
 	public List<Document> getAll(String folderPath) {
 		Query query = entityManager.createQuery("FROM Document WHERE folderPath = :folderPath");
 		query.setParameter("folderPath", folderPath);
-		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
 		return query.getResultList();
 	}
 	
