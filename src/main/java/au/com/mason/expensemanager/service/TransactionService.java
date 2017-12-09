@@ -88,6 +88,7 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 		if (expense.getRecurringType() != null) {
 			V newExpenseForStartDate = createTransaction();
 			newExpenseForStartDate.setEntryType(expense.getEntryType());
+			newExpenseForStartDate.setMetaData(expense.getMetaData());
 			newExpenseForStartDate.setAmount(expense.getAmount());
 			newExpenseForStartDate.setDueDate(expense.getStartDate());
 			newExpenseForStartDate.setNotes(expense.getNotes());
@@ -116,6 +117,7 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 			if (countForWeekForAll(DateUtil.getMonday(dueDate)) > 0) {
 				V newExpenseForSubsequent = createTransaction();
 				newExpenseForSubsequent.setEntryType(newExpense.getEntryType());
+				newExpenseForSubsequent.setMetaData(newExpense.getMetaData());
 				newExpenseForSubsequent.setAmount(newExpense.getAmount());
 				newExpenseForSubsequent.setDueDate(dueDate);
 				newExpenseForSubsequent.setNotes(newExpense.getNotes());
@@ -195,6 +197,7 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 				newExpense.setAmount(recurringExpense.getAmount());
 				newExpense.setDueDate(dueDate);
 				newExpense.setRecurringTransaction(recurringExpense);
+				newExpense.setMetaData(recurringExpense.getMetaData());
 				
 				transactionDao.create(newExpense);
 			}
