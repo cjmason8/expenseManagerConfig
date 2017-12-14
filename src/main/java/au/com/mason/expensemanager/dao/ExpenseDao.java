@@ -104,7 +104,7 @@ public class ExpenseDao implements TransactionDao<Expense> {
 			sql += "AND r.description = '" + searchParamsDto.getTransactionType().getDescription() + "' ";
 		}
 		if (!StringUtils.isEmpty(searchParamsDto.getKeyWords())) {
-			sql += "AND r.notes LIKE '%" + searchParamsDto.getKeyWords() + "%' ";
+			sql += "AND e.notes LIKE '%" + searchParamsDto.getKeyWords() + "%' ";
 		}
 		if (!StringUtils.isEmpty(searchParamsDto.getStartDateString())) {
 			sql += "AND e.dueDate >= to_date('" + DateUtil.getFormattedDbDate(searchParamsDto.getStartDateString()) + "', 'yyyy-mm-dd') ";
