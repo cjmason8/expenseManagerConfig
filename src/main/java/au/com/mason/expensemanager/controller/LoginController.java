@@ -1,5 +1,9 @@
 package au.com.mason.expensemanager.controller;
 
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +35,25 @@ public class LoginController {
 			LOGGER.error("Error logging in", e);
 			return "{\"error\":\"" + e.getMessage() + "\"}";
 		}
+    }
+	
+	@RequestMapping(value = "/login", method = RequestMethod.GET, produces = "application/json")
+	String loginGet(HttpServletRequest request) {
+		LOGGER.error("Received invalid GET request for /login", new RuntimeException());
+		LOGGER.info("Method: " + request.getMethod());
+
+		Enumeration<String> headerNames = request.getHeaderNames();
+		while(headerNames.hasMoreElements()) {
+		  String headerName = headerNames.nextElement();
+		  LOGGER.info("Header Name - " + headerName + ", Value - " + request.getHeader(headerName));
+		}
+
+		Enumeration<String> params = request.getParameterNames(); 
+		while(params.hasMoreElements()){
+		 String paramName = params.nextElement();
+		 LOGGER.info("Parameter Name - "+paramName+", Value - "+request.getParameter(paramName));
+		}
+		
+		return "{\"error\":\"Invalid login\"}";
     }
 }
