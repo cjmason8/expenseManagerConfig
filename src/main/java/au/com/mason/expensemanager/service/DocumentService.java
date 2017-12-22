@@ -1,6 +1,10 @@
 package au.com.mason.expensemanager.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +63,24 @@ public class DocumentService {
 		};
 		
 		return documentDtos;
+	}
+	
+	public void moveFiles(String folderPath, Long[] files) {
+		Arrays.asList(files).forEach(fileId -> {
+			Document file = documentDao.getById(fileId);
+			
+			try {
+				Files.move(Paths.get(file.getFolderPath() + "/" + file.getFileName()),
+						Paths.get(folderPath + "/" + file.getFileName()));
+			}
+			catch (IOException e) {
+				throw new RuntimeException("error moving file", e);
+			}
+			
+			file.setFolderPath(folderPath);
+			documentDao.update(file);
+		});
+		
 	}
 	
 }

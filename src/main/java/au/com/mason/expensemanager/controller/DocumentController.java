@@ -29,6 +29,7 @@ import au.com.mason.expensemanager.dto.DocumentDto;
 import au.com.mason.expensemanager.dto.DonationDto;
 import au.com.mason.expensemanager.dto.ExpenseDto;
 import au.com.mason.expensemanager.dto.IncomeDto;
+import au.com.mason.expensemanager.dto.MoveFilesDto;
 import au.com.mason.expensemanager.service.DocumentService;
 import au.com.mason.expensemanager.service.DonationService;
 import au.com.mason.expensemanager.service.ExpenseService;
@@ -50,6 +51,14 @@ public class DocumentController {
 	private IncomeService incomeService;
 	
 	private static Logger LOGGER = LogManager.getLogger(DocumentController.class);
+	
+	@PostMapping(value = "/documents/move", consumes = { "application/json" })
+	String moveFiles(@RequestParam MoveFilesDto moveFilesDto) {
+		documentService.moveFiles(moveFilesDto.getDestDirectoryPath(), moveFilesDto.getFiles());
+		
+		return "{\"filePath\":\"" + moveFilesDto.getDestDirectoryPath() + "\"}";
+	}
+			
 
 	@PostMapping(value = "/documents/upload", consumes = { "multipart/form-data" })
 	DocumentDto uploadFile(@RequestPart("uploadFile") MultipartFile file, @RequestParam String type,

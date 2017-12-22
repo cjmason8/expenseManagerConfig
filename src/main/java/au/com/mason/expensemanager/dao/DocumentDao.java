@@ -31,6 +31,13 @@ public class DocumentDao {
 		return query.getResultList();
 	}
 	
+	public Document getFolder(String folderPath, String folderName) {
+		Query query = entityManager.createQuery("FROM Document WHERE folderPath = :folderPath AND fileName := folderName");
+		query.setParameter("folderPath", folderPath);
+		query.setParameter("fileName", folderName);
+		return (Document) query.getSingleResult();
+	}	
+	
 	public Document create(Document document) {
 		entityManager.persist(document);
 
