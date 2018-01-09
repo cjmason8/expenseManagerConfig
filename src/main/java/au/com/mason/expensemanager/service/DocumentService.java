@@ -61,17 +61,22 @@ public class DocumentService {
 		}
 		Files.write(filePath, bytes);
 		
+		Document document = new Document();
+		document.setFileName(file.getOriginalFilename());
+		document.setFolderPath(folderPathString);
+		if (type.equals("document")) {
+			setMetadata(path, document);
+		}
+		
+		return documentMapperWrapper.documentToDocumentDto(documentDao.create(document));
+	}
+
+	private void setMetadata(String path, Document document) {
 		String parentFolderPath = path.substring(0, path.lastIndexOf("/"));
 		String parentFolderName = path.substring(path.lastIndexOf("/") + 1);
 		
 		Document parent = documentDao.getFolder(parentFolderPath, parentFolderName);
-		
-		Document document = new Document();
-		document.setFileName(file.getOriginalFilename());
-		document.setFolderPath(folderPathString);
 		document.setMetaData(parent.getMetaData());
-		
-		return documentMapperWrapper.documentToDocumentDto(documentDao.create(document));
 	}
 	
 	public DocumentDto createDirectory(DocumentDto directoryDto) throws Exception {
