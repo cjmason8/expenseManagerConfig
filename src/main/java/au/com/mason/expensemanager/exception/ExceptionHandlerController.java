@@ -17,6 +17,6 @@ public class ExceptionHandlerController {
     	
     	LOGGER.error("Unhandled Exception - " + request.getContextPath() + ", " + request.getServletPath(), e);
     	
-    	return "{\"error\":\"failed\"}";
+    	return "error";
     }
 }

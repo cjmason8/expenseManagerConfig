@@ -32,7 +32,7 @@ public class DocumentDao {
 	}
 	
 	public Document getFolder(String folderPath, String folderName) {
-		Query query = entityManager.createQuery("FROM Document WHERE folderPath = :folderPath AND fileName := folderName");
+		Query query = entityManager.createQuery("FROM Document WHERE folderPath = :folderPath AND fileName = :fileName");
 		query.setParameter("folderPath", folderPath);
 		query.setParameter("fileName", folderName);
 		return (Document) query.getSingleResult();

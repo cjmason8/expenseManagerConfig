@@ -66,27 +66,11 @@ public class DocumentController {
 		
 		LOGGER.info("entering DocumentController uploadFile");
 
-		byte[] bytes = file.getBytes();
-		String folderPathString = "/docs/expenseManager/" + type;
-		if (path != null) {
-			folderPathString = path;
-		}
-		String filePathString = folderPathString + "/" + file.getOriginalFilename();
-		Path folderPath = Paths.get(folderPathString);
-		Path filePath = Paths.get(filePathString);
-		if (!Files.exists(folderPath)) {
-			Files.createDirectory(folderPath);
-		}
-		Files.write(filePath, bytes);
-		
-		DocumentDto document = new DocumentDto();
-		document.setFileName(file.getOriginalFilename());
-		document.setFolderPath(folderPathString);
-		document.setMetaDataChunk("{}");
+		DocumentDto document = documentService.createDocument(path, type, file);
 		
 		LOGGER.info("leaving DocumentController uploadFile");
-
-		return documentService.createDocument(document);
+		
+		return document;
 	}
 
 	@PostMapping(value = "/documents", produces = "application/json", consumes = "application/json")
@@ -129,25 +113,11 @@ public class DocumentController {
 
 		LOGGER.info("entering DocumentController createDirectory - " + directory.getFileName());
 		
-		String folderPathString = "";
-		if (directory.getFolderPath().indexOf("root") != -1) {
-			folderPathString = "/docs/expenseManager/filofax/" + directory.getFolderPath().replace("root", "") + "/";
-		} else {
-			folderPathString = directory.getFolderPath();
-		}
-
-		File folder = new File(folderPathString + "/" + directory.getFileName());
-		folder.mkdir();
-
-		DocumentDto document = new DocumentDto();
-		document.setFileName(folder.getName());
-		document.setFolderPath(folder.getParent());
-		document.setIsFolder(true);
-		documentService.createDocument(document);
+		documentService.createDirectory(directory);
 		
 		LOGGER.info("leaving DocumentController createDirectory - " + directory.getFileName());
 
-		return "{\"filePath\":\"" + folder.getPath() + "\"}";
+		return "{\"filePath\":\"" + directory.getFilePath() + "\"}";
 	}
 	
 	@RequestMapping(value = "/documents/directory", produces = "application/json", consumes = "application/json", method = RequestMethod.PUT)
