@@ -101,10 +101,10 @@ public class ExpenseDao implements TransactionDao<Expense> {
 		String sql = "SELECT * FROM transactions e LEFT JOIN refdata r on e.entrytypeId = r.id "
 				+ "where transactiontype = 'EXPENSE' AND e.recurringtypeid IS NULL ";
 		if (!StringUtils.isEmpty(searchParamsDto.getTransactionType())) {
-			sql += "AND r.description = '" + searchParamsDto.getTransactionType().getDescription() + "' ";
+			sql += "AND lower(r.description) = lower('" + searchParamsDto.getTransactionType().getDescription() + "') ";
 		}
 		if (!StringUtils.isEmpty(searchParamsDto.getKeyWords())) {
-			sql += "AND e.notes LIKE '%" + searchParamsDto.getKeyWords() + "%' ";
+			sql += "AND lower(e.notes) LIKE lower('%" + searchParamsDto.getKeyWords() + "%') ";
 		}
 		if (!StringUtils.isEmpty(searchParamsDto.getStartDateString())) {
 			sql += "AND e.dueDate >= to_date('" + DateUtil.getFormattedDbDate(searchParamsDto.getStartDateString()) + "', 'yyyy-mm-dd') ";
@@ -115,9 +115,9 @@ public class ExpenseDao implements TransactionDao<Expense> {
 		if (!StringUtils.isEmpty(searchParamsDto.getMetaDataChunk())) {
 			Map<String, String> metaData = (Map<String, String>) gson.fromJson(searchParamsDto.getMetaDataChunk(), Map.class);
 			for (String val : metaData.keySet()) {
-				sql += "AND (e.metaData->>'" + val + "' = '" + metaData.get(val) + "' ";
+				sql += "AND (lower(e.metaData->>'" + val + "') = lower('" + metaData.get(val) + "') ";
 				if (searchParamsDto.getKeyWords() != null) {
-					sql += "OR e.metaData->>'" + val + "' LIKE '%" + searchParamsDto.getKeyWords() + "%'";
+					sql += "OR lower(e.metaData->>'" + val + "') LIKE lower('%" + searchParamsDto.getKeyWords() + "%')";
 				}
 				sql += ") ";
 			}
