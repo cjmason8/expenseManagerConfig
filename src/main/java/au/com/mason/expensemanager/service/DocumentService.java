@@ -64,7 +64,7 @@ public class DocumentService {
 		Document document = new Document();
 		document.setFileName(file.getOriginalFilename());
 		document.setFolderPath(folderPathString);
-		if (type.equals("document")) {
+		if (type.equals("documents")) {
 			setMetadata(path, document);
 		}
 		
