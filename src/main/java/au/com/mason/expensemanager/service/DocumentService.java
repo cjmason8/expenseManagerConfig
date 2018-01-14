@@ -105,7 +105,9 @@ public class DocumentService {
 	private void setMetaData(DocumentDto directoryDto, String parentFolderPath, String parentFolderName,
 			Document document) {
 		Map<String, String> metaData = new HashMap<>();
-		metaData.putAll(gson.fromJson(directoryDto.getMetaDataChunk(), Map.class));
+		if (directoryDto.getMetaDataChunk() != null) {
+			metaData.putAll(gson.fromJson(directoryDto.getMetaDataChunk(), Map.class));
+		}
 		if (!parentFolderName.equals("filofax")) {
 			Document parent = documentDao.getFolder(parentFolderPath, parentFolderName);
 			metaData.putAll(parent.getMetaData());
@@ -135,19 +137,19 @@ public class DocumentService {
 		return documentDtos;
 	}
 	
-	public void moveFiles(String folderPath, Long[] files) {
+	public void moveFiles(String fullFolderPath, Long[] files) {
 		Arrays.asList(files).forEach(fileId -> {
 			Document file = documentDao.getById(fileId);
 			
 			try {
 				Files.move(Paths.get(file.getFolderPath() + "/" + file.getFileName()),
-						Paths.get(folderPath + "/" + file.getFileName()));
+						Paths.get(fullFolderPath + "/" + file.getFileName()));
 			}
 			catch (IOException e) {
 				throw new RuntimeException("error moving file", e);
 			}
 			
-			file.setFolderPath(folderPath);
+			file.setFolderPath(fullFolderPath);
 			documentDao.update(file);
 		});
 		

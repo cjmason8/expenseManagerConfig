@@ -53,10 +53,13 @@ public class DocumentController {
 	private static Logger LOGGER = LogManager.getLogger(DocumentController.class);
 	
 	@PostMapping(value = "/documents/move", consumes = { "application/json" })
-	String moveFiles(@RequestParam MoveFilesDto moveFilesDto) {
-		documentService.moveFiles(moveFilesDto.getDestDirectoryPath(), moveFilesDto.getFiles());
+	String moveFiles(@RequestBody MoveFilesDto moveFilesDto) {
+		LOGGER.info("entering DocumentController moveFiles for - " + moveFilesDto.getDirectoryTo());
+		String fullFolderPath = "/docs/expenseManager/filofax" + moveFilesDto.getDirectoryTo();
+		documentService.moveFiles(fullFolderPath, moveFilesDto.getFileIds());
+		LOGGER.info("leaving DocumentController moveFiles for - " + moveFilesDto.getDirectoryTo());
 		
-		return "{\"filePath\":\"" + moveFilesDto.getDestDirectoryPath() + "\"}";
+		return "{\"filePath\":\"" + fullFolderPath + "\"}";
 	}
 			
 

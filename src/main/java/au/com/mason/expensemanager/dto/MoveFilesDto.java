@@ -2,23 +2,23 @@ package au.com.mason.expensemanager.dto;
 
 public class MoveFilesDto {
 
-	private String destDirectoryPath;
-	private Long[] files;
+	private String directoryTo;
+	private Long[] fileIds;
 	
-	public String getDestDirectoryPath() {
-		return destDirectoryPath;
+	public String getDirectoryTo() {
+		return directoryTo;
 	}
 
-	public void setDestDirectoryPath(String destDirectoryName) {
-		this.destDirectoryPath = destDirectoryName;
+	public void setDirectoryTo(String directoryTo) {
+		this.directoryTo = directoryTo;
 	}
 
-	public Long[] getFiles() {
-		return files;
+	public Long[] getFileIds() {
+		return fileIds;
 	}
 
-	public void setFiles(Long[] files) {
-		this.files = files;
+	public void setFileIds(Long[] fileIds) {
+		this.fileIds = fileIds;
 	}
 	
 }
