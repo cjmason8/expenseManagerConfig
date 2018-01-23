@@ -1,5 +1,7 @@
 package au.com.mason.expensemanager.dto;
 
+import java.util.Date;
+
 public class DonationDto {
 
 	private Long id;

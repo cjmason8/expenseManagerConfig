@@ -41,7 +41,12 @@ public class DonationService {
 	
 	public DonationDto createDonation(DonationDto donationDto) throws Exception {
 		
-		updateDocument(donationDto);
+		if (donationDto.getDocumentDto() != null && donationDto.getDocumentDto().getOriginalFileName() != null) {
+			updateDocument(donationDto);
+		}
+		else {
+			donationDto.setDocumentDto(null);
+		}
 		
 		Donation donation = donationMapperWrapper.donationDtoToDonation(donationDto);
 		
@@ -51,8 +56,7 @@ public class DonationService {
 	}
 	
 	private void updateDocument(DonationDto donationDto) throws IOException, Exception {
-		if (donationDto.getDocumentDto() != null &&
-				!donationDto.getDocumentDto().getOriginalFileName().equals(donationDto.getDocumentDto().getFileName())) {
+		if (!donationDto.getDocumentDto().getOriginalFileName().equals(donationDto.getDocumentDto().getFileName())) {
 			Files.move(Paths.get(donationDto.getDocumentDto().getFolderPath() + "/" + donationDto.getDocumentDto().getOriginalFileName()),
 					Paths.get(donationDto.getDocumentDto().getFolderPath() + "/" + donationDto.getDocumentDto().getFileName()));
 			
