@@ -17,7 +17,7 @@ import au.com.mason.expensemanager.dao.MyJsonType;
 @Entity
 @Table(name="documents")
 @TypeDef(name = "MyJsonType", typeClass = MyJsonType.class)
-public class Document {
+public class Document implements Metadata {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,7 +29,7 @@ public class Document {
 	
     @Column
 	@Type(type = "MyJsonType")
-    private Map<String, String> metaData;
+    private Map<String, Object> metaData;
 
 	public long getId() {
 		return id;
@@ -47,11 +47,11 @@ public class Document {
 		this.fileName = fileName;
 	}
 
-	public Map<String, String> getMetaData() {
+	public Map<String, Object> getMetaData() {
 		return metaData;
 	}
 
-	public void setMetaData(Map<String, String> metaData) {
+	public void setMetaData(Map<String, Object> metaData) {
 		this.metaData = metaData;
 	}
 

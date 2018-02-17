@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.hibernate.HibernateException;
@@ -42,10 +44,17 @@ public class MyJsonType implements UserType {
             return null;
         }
  
-        Map<String, String> resultMap = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<>();
  
         Map<?, ?> tempMap = (Map<?, ?>) originalValue;
-        tempMap.forEach((key, value) -> resultMap.put((String) key, (String) value));
+        tempMap.forEach((key, value) -> {
+        	if (value instanceof ArrayList) {
+        		resultMap.put((String) key, (List) value);
+        	}
+        	else {
+        		resultMap.put((String) key, (String) value);
+        	}
+        });
  
         return resultMap;
     }
@@ -58,7 +67,7 @@ public class MyJsonType implements UserType {
             return gson.fromJson(o.getValue(), Map.class);
         }
  
-        return new HashMap<String, String>();
+        return new HashMap<String, Object>();
     }
  
     @Override

@@ -2,7 +2,7 @@ package au.com.mason.expensemanager.dao;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,9 +12,6 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Statics;
 import au.com.mason.expensemanager.dto.SearchParamsDto;
@@ -22,9 +19,7 @@ import au.com.mason.expensemanager.util.DateUtil;
 
 @Repository
 @Transactional
-public class ExpenseDao implements TransactionDao<Expense> {
-	
-	private Gson gson = new GsonBuilder().serializeNulls().create();
+public class ExpenseDao extends BaseDao<Expense> implements TransactionDao<Expense> {
 	
 	public Expense create(Expense expense) {
 		entityManager.persist(expense);
@@ -52,6 +47,13 @@ public class ExpenseDao implements TransactionDao<Expense> {
 		Query query = entityManager.createQuery(
 				"from Expense ORDER BY dueDate DESC,entryType");
 		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
+
+		return query.getResultList();
+	}	
+	
+	@SuppressWarnings("unchecked")
+	public List<Expense> findAll() {
+		Query query = entityManager.createQuery("from Expense");
 
 		return query.getResultList();
 	}	
@@ -112,23 +114,17 @@ public class ExpenseDao implements TransactionDao<Expense> {
 		if (!StringUtils.isEmpty(searchParamsDto.getEndDateString())) {
 			sql += "AND e.dueDate <= to_date('" + DateUtil.getFormattedDbDate(searchParamsDto.getEndDateString()) + "', 'yyyy-mm-dd') ";
 		}
-		if (!StringUtils.isEmpty(searchParamsDto.getMetaDataChunk())) {
-			Map<String, String> metaData = (Map<String, String>) gson.fromJson(searchParamsDto.getMetaDataChunk(), Map.class);
-			for (String val : metaData.keySet()) {
-				sql += "AND (lower(e.metaData->>'" + val + "') = lower('" + metaData.get(val) + "') ";
-				if (searchParamsDto.getKeyWords() != null) {
-					sql += "OR lower(e.metaData->>'" + val + "') LIKE lower('%" + searchParamsDto.getKeyWords() + "%')";
-				}
-				sql += ") ";
-			}
-		}
 		sql += "ORDER BY e.dueDate DESC,r.description";
-
 		Query query = entityManager.createNativeQuery(sql, Expense.class);
-		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
-		return query.getResultList();
+		List<Expense> results = query.getResultList();
+		if (!StringUtils.isEmpty(searchParamsDto.getMetaDataChunk())) {
+			return filterByMetadata(searchParamsDto, results);
+		}
+		
+		return results.stream().limit(Statics.MAX_RESULTS.getIntValue()).collect(Collectors.toList());
+		
 	}
-	
+
 	public List<Expense> getForRecurring(Expense recurringExpense) {
 		String sql = "from Expense where recurringTransaction = :recurringTransaction";
 		Query query = entityManager.createQuery(sql);

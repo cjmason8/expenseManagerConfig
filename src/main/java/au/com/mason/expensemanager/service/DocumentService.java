@@ -104,7 +104,7 @@ public class DocumentService {
 
 	private void setMetaData(DocumentDto directoryDto, String parentFolderPath, String parentFolderName,
 			Document document) {
-		Map<String, String> metaData = new HashMap<>();
+		Map<String, Object> metaData = new HashMap<>();
 		if (directoryDto.getMetaDataChunk() != null) {
 			metaData.putAll(gson.fromJson(directoryDto.getMetaDataChunk(), Map.class));
 		}

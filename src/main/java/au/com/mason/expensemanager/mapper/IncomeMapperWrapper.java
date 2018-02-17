@@ -35,7 +35,7 @@ public class IncomeMapperWrapper implements TransactionMapperWrapper<Income, Inc
 			income.setEndDate(DateUtil.getFormattedDate(incomeDto.getEndDateString()));
 		}
 		//income.setMetaData(incomeDto.getMetaDataChunk());
-		income.setMetaData((Map<String, String>) gson.fromJson(incomeDto.getMetaDataChunk(), Map.class));
+		income.setMetaData((Map<String, Object>) gson.fromJson(incomeDto.getMetaDataChunk(), Map.class));
 		if (incomeDto.getDocumentDto() != null) {
 			income.setDocument(documentMapperWrapper.documentDtoToDocument(incomeDto.getDocumentDto()));
 		}
@@ -56,7 +56,7 @@ public class IncomeMapperWrapper implements TransactionMapperWrapper<Income, Inc
 			existingIncome.setEndDate(DateUtil.getFormattedDate(incomeDto.getEndDateString()));
 		}
 		//existingIncome.setMetaData(incomeDto.getMetaDataChunk());
-		income.setMetaData((Map<String, String>) gson.fromJson(incomeDto.getMetaDataChunk(), Map.class));
+		income.setMetaData((Map<String, Object>) gson.fromJson(incomeDto.getMetaDataChunk(), Map.class));
 		if (incomeDto.getDocumentDto() != null) {
 			income.setDocument(documentMapperWrapper.documentDtoToDocument(incomeDto.getDocumentDto()));
 		}

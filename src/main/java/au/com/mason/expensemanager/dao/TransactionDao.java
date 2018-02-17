@@ -21,4 +21,5 @@ public interface TransactionDao<T> {
 	public List<Expense> getUnpaidBeforeWeek(LocalDate weekStartDate);
 	public List<Expense> findExpenses(SearchParamsDto searchParamsDto);
 	public List<T> getAll();
+	public List<T> findAll();
 }

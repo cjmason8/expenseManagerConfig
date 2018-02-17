@@ -24,7 +24,7 @@ import au.com.mason.expensemanager.dao.MyJsonType;
 @Table(name="transactions")
 @DiscriminatorColumn(name = "transactionType")
 @TypeDef(name = "MyJsonType", typeClass = MyJsonType.class)
-public abstract class Transaction {
+public abstract class Transaction implements Metadata {
 	
 	public Transaction() {}
 
@@ -49,7 +49,7 @@ public abstract class Transaction {
 	
     @Column
 	@Type(type = "MyJsonType")
-    private Map<String, String> metaData;
+    private Map<String, Object> metaData;
 	
 	@OneToOne
 	@JoinColumn(name = "entryTypeId")
@@ -141,11 +141,11 @@ public abstract class Transaction {
 		this.notes = notes;
 	}
 	
-	public Map<String, String> getMetaData() {
+	public Map<String, Object> getMetaData() {
 		return metaData;
 	}
 
-	public void setMetaData(Map<String, String> metaData) {
+	public void setMetaData(Map<String, Object> metaData) {
 		this.metaData = metaData;
 	}
 	

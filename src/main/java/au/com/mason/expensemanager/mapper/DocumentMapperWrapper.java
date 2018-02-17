@@ -20,7 +20,7 @@ public class DocumentMapperWrapper {
 	public Document documentDtoToDocument(DocumentDto documentDto) throws Exception {
 		Document document = documentMapper.documentDtoToDocument(documentDto);
 		if (!StringUtils.isEmpty(document.getMetaData())) {
-			document.setMetaData((Map<String, String>) gson.fromJson(documentDto.getMetaDataChunk(), Map.class));
+			document.setMetaData((Map<String, Object>) gson.fromJson(documentDto.getMetaDataChunk(), Map.class));
 		}
 		document.setFolder(documentDto.getIsFolder());
 		
@@ -30,7 +30,7 @@ public class DocumentMapperWrapper {
     public Document documentDtoToDocument(DocumentDto documentDto, Document documentParam) throws Exception {
     	Document document = documentMapper.documentDtoToDocument(documentDto, documentParam);
     	if (!StringUtils.isEmpty(document.getMetaData())) {
-			document.setMetaData((Map<String, String>) gson.fromJson(documentDto.getMetaDataChunk(), Map.class));
+			document.setMetaData((Map<String, Object>) gson.fromJson(documentDto.getMetaDataChunk(), Map.class));
 		}
     	document.setFolder(documentDto.getIsFolder());
     	

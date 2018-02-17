@@ -2,7 +2,7 @@ package au.com.mason.expensemanager.dao;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,13 +21,18 @@ import au.com.mason.expensemanager.dto.SearchParamsDto;
 
 @Repository
 @Transactional
-public class DocumentDao {
+public class DocumentDao extends BaseDao<Document> {
 	
 	private Gson gson = new GsonBuilder().serializeNulls().create();
 	
 	public List<Document> getAll(String folderPath) {
 		Query query = entityManager.createQuery("FROM Document WHERE folderPath = :folderPath");
 		query.setParameter("folderPath", folderPath);
+		return query.getResultList();
+	}
+	
+	public List<Document> findAll() {
+		Query query = entityManager.createQuery("FROM Document");
 		return query.getResultList();
 	}
 	
@@ -90,27 +95,14 @@ public class DocumentDao {
 			}
 			sql += "lower(fileName) LIKE '%" + searchParamsDto.getKeyWords().toLowerCase() + "%' ";			
 		}
+		Query query = entityManager.createNativeQuery(sql, Document.class);
+		List<Document> results = query.getResultList();
+		
 		if (!StringUtils.isEmpty(searchParamsDto.getMetaDataChunk())) {
-			Map<String, String> metaData = (Map<String, String>) gson.fromJson(searchParamsDto.getMetaDataChunk(), Map.class);
-			for (String val : metaData.keySet()) {
-				if (!hasWhere) {
-					hasWhere = true;
-					sql += "WHERE ";
-				}
-				else {
-					sql += "AND ";
-				}
-				sql += "(metaData->>'" + val + "' = '" + metaData.get(val) + "' ";
-				if (!StringUtils.isEmpty(searchParamsDto.getKeyWords())) {
-					sql += "OR lower(metaData->>'" + val + "') LIKE '%" + searchParamsDto.getKeyWords().toLowerCase() + "%'";
-				}
-				sql += ") ";
-			}
+			return filterByMetadata(searchParamsDto, results);
 		}
 
-		Query query = entityManager.createNativeQuery(sql, Document.class);
-		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
-		return query.getResultList();
+		return results.stream().limit(Statics.MAX_RESULTS.getIntValue()).collect(Collectors.toList());
 		
 	}
 	
