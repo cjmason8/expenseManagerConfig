@@ -191,7 +191,7 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 				dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
 			}
 			
-			if (DateUtil.getMonday(dueDate).isEqual(startOfWeek)) {
+			if (DateUtil.getMonday(dueDate).isEqual(startOfWeek) && checkEndDate(recurringExpense, dueDate)) {
 				V newExpense = createTransaction();
 				newExpense.setEntryType(recurringExpense.getEntryType());
 				newExpense.setAmount(recurringExpense.getAmount());
@@ -202,6 +202,10 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 				transactionDao.create(newExpense);
 			}
 		}
+	}
+
+	private boolean checkEndDate(V recurringExpense, LocalDate dueDate) {
+		return recurringExpense.getEndDate() == null || dueDate.isBefore(recurringExpense.getEndDate());
 	}
 	
 	public int countForWeek(LocalDate startOfWeek) throws Exception {
