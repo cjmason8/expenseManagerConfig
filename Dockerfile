@@ -1,4 +1,4 @@
-FROM cjmason8/ubuntu-java8:latest
+FROM openjdk:8u171-jdk-alpine3.8
 
 RUN mkdir /app
 COPY target/expensemanager-0.0.1-SNAPSHOT.jar /app/expenseManager.jar
