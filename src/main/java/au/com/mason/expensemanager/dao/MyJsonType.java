@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.SerializationException;
 import org.hibernate.usertype.UserType;
 import org.postgresql.util.PGobject;
@@ -23,16 +23,6 @@ import com.google.gson.GsonBuilder;
 public class MyJsonType implements UserType {
 	 
     private final Gson gson = new GsonBuilder().serializeNulls().create();
- 
-    @Override
-    public void nullSafeSet(PreparedStatement st, 
-    		Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
-        if (value == null) {
-            st.setNull(index, Types.OTHER);
-        } else {
-            st.setObject(index, gson.toJson(value, Map.class), Types.OTHER);
-        }
-    }
  
     @Override
     public Object deepCopy(Object originalValue) throws HibernateException {
@@ -57,17 +47,6 @@ public class MyJsonType implements UserType {
         });
  
         return resultMap;
-    }
- 
-    @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, 
-    		Object owner) throws HibernateException, SQLException {
-        PGobject o = (PGobject) rs.getObject(names[0]);
-        if (o != null && o.getValue() != null) {
-            return gson.fromJson(o.getValue(), Map.class);
-        }
- 
-        return new HashMap<String, Object>();
     }
  
     @Override
@@ -120,5 +99,26 @@ public class MyJsonType implements UserType {
     public int[] sqlTypes() {
         return new int[]{Types.JAVA_OBJECT};
     }
+
+	@Override
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor arg2, Object arg3)
+			throws HibernateException, SQLException {
+		PGobject o = (PGobject) rs.getObject(names[0]);
+        if (o != null && o.getValue() != null) {
+            return gson.fromJson(o.getValue(), Map.class);
+        }
  
+        return new HashMap<String, Object>();
+	}
+
+	@Override
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor arg3)
+			throws HibernateException, SQLException {
+		if (value == null) {
+            st.setNull(index, Types.OTHER);
+        } else {
+            st.setObject(index, gson.toJson(value, Map.class), Types.OTHER);
+        }
+	}
+	
 }

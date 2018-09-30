@@ -19,6 +19,9 @@ while getopts ":p:e:" opt; do
   esac
 done
 
+TAG_NAME=$(<../VERSION)
+echo -e "TAG_NAME=$TAG_NAME" > .env
+
 #echo "docker stop"
 #docker stop ${ENV}_expenseManager_1
 echo "docker login"

@@ -1,5 +1,10 @@
 expenseManager:
-  image: cjmason8/expense-manager:latest
+  environment:
+     INFO_APP_VERSION: ${TAG_NAME}
+  image: cjmason8/expense-manager:${TAG_NAME}
   ports:
     - "8083:8080"
+  volumes:
+    - /applogs:/applogs
+    - /docs:/docs
 
