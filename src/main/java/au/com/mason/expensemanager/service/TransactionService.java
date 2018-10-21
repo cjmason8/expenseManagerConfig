@@ -134,6 +134,14 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 		}
 	}
 	
+	public V update(V transaction) {
+		return transactionDao.update(transaction);
+	}
+	
+	public V create(V transaction) {
+		return transactionDao.create(transaction);
+	}
+	
 	public T updateTransaction(T expenseDto) throws Exception {
 		
 		if (expenseDto.getDocumentDto() != null && expenseDto.getDocumentDto().getOriginalFileName() != null) {
@@ -203,6 +211,30 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 			}
 		}
 	}
+	
+	public void createRecurringTransactions(LocalDate reqDate) {
+		List<V> recurringExpenses = transactionDao.getAllRecurring();
+		
+		for (V recurringExpense : recurringExpenses) {
+			LocalDate dueDate = recurringExpense.getStartDate();
+			while (DateUtil.getMonday(dueDate).isBefore(reqDate)) {
+				RecurringUnit recurringUnit = 
+						RecurringUnit.valueOf(recurringExpense.getRecurringType().getDescriptionUpper());
+				dueDate = dueDate.plus(recurringUnit.getUnits(), recurringUnit.getUnitType());
+			}
+			
+			if (DateUtil.getMonday(dueDate).isEqual(reqDate) && checkEndDate(recurringExpense, dueDate)) {
+				V newExpense = createTransaction();
+				newExpense.setEntryType(recurringExpense.getEntryType());
+				newExpense.setAmount(recurringExpense.getAmount());
+				newExpense.setDueDate(dueDate);
+				newExpense.setRecurringTransaction(recurringExpense);
+				newExpense.setMetaData(recurringExpense.getMetaData());
+				
+				transactionDao.create(newExpense);
+			}
+		}
+	}
 
 	private boolean checkEndDate(V recurringExpense, LocalDate dueDate) {
 		return recurringExpense.getEndDate() == null || dueDate.isBefore(recurringExpense.getEndDate());
@@ -221,6 +253,8 @@ public abstract class TransactionService<T extends TransactionDto, V extends Tra
 	abstract V createTransaction();
 	
 	abstract void initialiseWeek(LocalDate localDate, Transaction currentRecurringTransaction) throws Exception;
+	
+	abstract void initialiseWeek(LocalDate localDate) throws Exception;
 	
 	abstract int getPastDate(LocalDate date) throws Exception;
 	

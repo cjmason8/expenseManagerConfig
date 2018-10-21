@@ -32,6 +32,10 @@ public class RefData {
     @Column
 	@Type(type = "MyJsonType")
     private Map<String, String> metaData;
+    
+	private String emailKey;
+	
+	private String emailProcessor;
 	
 	public long getId() {
 		return id;
@@ -67,6 +71,22 @@ public class RefData {
 
 	public void setMetaData(Map<String, String> metaData) {
 		this.metaData = metaData;
+	}
+
+	public String getEmailKey() {
+		return emailKey;
+	}
+
+	public void setEmailKey(String emailKey) {
+		this.emailKey = emailKey;
+	}
+
+	public String getEmailProcessor() {
+		return emailProcessor;
+	}
+
+	public void setEmailProcessor(String emailProcessor) {
+		this.emailProcessor = emailProcessor;
 	}
 	
 }

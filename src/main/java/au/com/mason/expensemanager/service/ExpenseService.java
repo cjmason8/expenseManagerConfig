@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import au.com.mason.expensemanager.dao.ExpenseDao;
 import au.com.mason.expensemanager.dao.TransactionDao;
 import au.com.mason.expensemanager.domain.Expense;
+import au.com.mason.expensemanager.domain.RefData;
 import au.com.mason.expensemanager.domain.Transaction;
 import au.com.mason.expensemanager.dto.ExpenseDto;
 
@@ -32,6 +33,14 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 		if (countForWeekForAll(localDate) == 0) {
 			incomeService.createRecurringTransactions(localDate, currentRecurringTransaction);
 			createRecurringTransactions(localDate, currentRecurringTransaction);
+		}
+	}
+	
+	@Override
+	public void initialiseWeek(LocalDate localDate) throws Exception {
+		if (countForWeekForAll(localDate) == 0) {
+			incomeService.createRecurringTransactions(localDate);
+			createRecurringTransactions(localDate);
 		}
 	}
 	
@@ -85,6 +94,10 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 		}
 		
 		return expenseDtos;
-	}	
+	}
+	
+	public List<Expense> findExpense(RefData entryType) {
+		return expenseDao.findExpenses(entryType);
+	}
 	
 }

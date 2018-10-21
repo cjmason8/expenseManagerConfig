@@ -70,6 +70,23 @@ public class DocumentService {
 		
 		return documentMapperWrapper.documentToDocumentDto(documentDao.create(document));
 	}
+	
+	public Document createDocumentFromEmail(byte[] file, String fileName) throws Exception {
+		String folderPathString = "/docs/expenseManager/expenses";
+		String filePathString = folderPathString + "/" + fileName;
+		Path folderPath = Paths.get(folderPathString);
+		Path filePath = Paths.get(filePathString);
+		if (!Files.exists(folderPath)) {
+			Files.createDirectory(folderPath);
+		}
+		Files.write(filePath, file);
+		
+		Document document = new Document();
+		document.setFileName(fileName);
+		document.setFolderPath(folderPathString);
+		
+		return documentDao.create(document);
+	}
 
 	private void setMetadata(String path, Document document) {
 		String parentFolderPath = path.substring(0, path.lastIndexOf("/"));

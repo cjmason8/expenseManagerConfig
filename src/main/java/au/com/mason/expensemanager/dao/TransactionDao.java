@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import au.com.mason.expensemanager.domain.Expense;
+import au.com.mason.expensemanager.domain.RefData;
 import au.com.mason.expensemanager.dto.SearchParamsDto;
 
 public interface TransactionDao<T> {
@@ -22,4 +23,5 @@ public interface TransactionDao<T> {
 	public List<Expense> findExpenses(SearchParamsDto searchParamsDto);
 	public List<T> getAll();
 	public List<T> findAll();
+	public List<Expense> findExpenses(RefData entryType);
 }

@@ -95,5 +95,9 @@ public class RefDataService {
 		
 		return refDataDtos;
 	}
+	
+	public List<RefData> getAllWithEmailKey() {
+		return refDataDao.getAllWithEmailKey();
+	}
 
 }

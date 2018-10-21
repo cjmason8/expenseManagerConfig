@@ -38,6 +38,13 @@ public class RefDataDao {
 		return query.getResultList();
 	}	
 	
+	public List<RefData> getAllWithEmailKey() {
+		Query query = entityManager.createQuery("FROM RefData WHERE emailKey IS NOT NULL");
+		query.setMaxResults(Statics.MAX_RESULTS.getIntValue());
+
+		return query.getResultList();
+	}
+	
 	public RefData getById(long id) {
 		return entityManager.find(RefData.class, id);
 	}

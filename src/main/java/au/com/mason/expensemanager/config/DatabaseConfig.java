@@ -14,9 +14,14 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import au.com.mason.expensemanager.service.EncryptionService;
+
 @Configuration
 @EnableTransactionManagement
 public class DatabaseConfig {
+	
+	@Autowired
+	private EncryptionService encryptionService;
 
 	/**
 	 * DataSource definition for database connection. Settings are read from the
@@ -28,7 +33,7 @@ public class DatabaseConfig {
 		dataSource.setDriverClassName(System.getenv().get("DB_DRIVER"));
 		dataSource.setUrl(System.getenv().get("DB_URL"));
 		dataSource.setUsername(System.getenv().get("DB_USER"));
-		dataSource.setPassword(System.getenv().get("DB_PASS"));
+		dataSource.setPassword(encryptionService.decrypt(System.getenv().get("DB_PASS")));
 		return dataSource;
 	}
 

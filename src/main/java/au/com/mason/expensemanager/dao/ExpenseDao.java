@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import au.com.mason.expensemanager.domain.Expense;
+import au.com.mason.expensemanager.domain.RefData;
 import au.com.mason.expensemanager.domain.Statics;
 import au.com.mason.expensemanager.dto.SearchParamsDto;
 import au.com.mason.expensemanager.util.DateUtil;
@@ -137,6 +138,14 @@ public class ExpenseDao extends BaseDao<Expense> implements TransactionDao<Expen
 		entityManager.createQuery("delete from Expense where recurringTransaction.id = " + recurringTransactionId
 				+ " AND dueDate > to_date('" + DateUtil.getFormattedDbDate(LocalDate.now()) + "', 'yyyy-mm-dd')")
 				.executeUpdate();
+	}
+	
+	public List<Expense> findExpenses(RefData entryType) {
+		String sql = "from Expense where entryType = :entryType AND paid = false order by dueDate";
+		Query query = entityManager.createQuery(sql);
+		query.setParameter("entryType", entryType);
+
+		return query.getResultList();
 	}
 	
 	// Private fields
