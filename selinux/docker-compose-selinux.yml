@@ -1,0 +1,9 @@
+expenseManager:
+  extends:
+    file: ../lcl/docker-compose-lcl.yml
+    service: expenseManager
+  volumes:
+    - /applogs:/applogs:z
+    - /docs:/docs:z
+    - /resources:/resources:z
+    

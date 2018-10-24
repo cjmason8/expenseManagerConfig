@@ -2,12 +2,11 @@
 
 set -e
 
-ENV=lcl
+ENV=$1
 FULL_IMAGE_NAME="expense-manager"
 
 echo "Building version."
 TAG_NAME=0.0.1
-echo $TAG_NAME > VERSION
 echo -e "TAG_NAME=$TAG_NAME" > .env
 
 echo "Creating image: ${FULL_IMAGE_NAME}:${TAG_NAME}"
