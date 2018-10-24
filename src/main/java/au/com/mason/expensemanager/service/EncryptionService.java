@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 @PropertySource("file:/resources/required")
 public class EncryptionService {
 	
-	//@Value("${beta.key}")
-	private String betaKey = "CL0112JY1406ESSa";
+	@Value("${beta.key}")
+	private String betaKey;
 	
-	//@Value("${alpha.vec}")
-	private String alphaKey = "E66YYu84iW50GE66";
+	@Value("${alpha.vec}")
+	private String alphaKey;
 	
     public String encrypt(String value) {
         try {
