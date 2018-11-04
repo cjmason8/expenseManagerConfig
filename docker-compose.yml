@@ -2,8 +2,9 @@ expenseManager:
   environment:
      INFO_APP_VERSION: ${TAG_NAME}
   image: cjmason8/expense-manager:${TAG_NAME}
-  ports:
-    - "8083:8080"
+  external_links:
+    - postgres/postgres:postgres
+    - authService/authService:authService
   volumes:
     - /applogs:/applogs
     - /docs:/docs
