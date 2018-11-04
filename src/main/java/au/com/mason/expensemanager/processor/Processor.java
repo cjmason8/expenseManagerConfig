@@ -17,6 +17,7 @@ import au.com.mason.expensemanager.domain.RefData;
 import au.com.mason.expensemanager.service.DocumentService;
 import au.com.mason.expensemanager.service.ExpenseService;
 import au.com.mason.expensemanager.service.NotificationService;
+import au.com.mason.expensemanager.util.DateUtil;
 
 public abstract class Processor {
 	
@@ -53,9 +54,9 @@ public abstract class Processor {
 	}
 	
 	protected void updateExpense(RefData refData, LocalDate dueDate, String amount, Document document) throws Exception {
-		expenseService.initialiseWeek(dueDate);
-		expenseService.initialiseWeek(dueDate.minusDays(7));
-		expenseService.initialiseWeek(dueDate.plusDays(7));
+		expenseService.initialiseWeek(DateUtil.getMonday(dueDate), null);
+		expenseService.initialiseWeek(DateUtil.getMonday(dueDate.minusDays(7)), null);
+		expenseService.initialiseWeek(DateUtil.getMonday(dueDate.plusDays(7)), null);
 		List<Expense> expenses = expenseService.findExpense(refData);
 		Expense reqExpense = null;
 		if (expenses.size() > 0) {

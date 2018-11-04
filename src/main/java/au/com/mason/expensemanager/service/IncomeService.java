@@ -36,9 +36,4 @@ public class IncomeService extends TransactionService<IncomeDto, Income, IncomeD
 		return countForWeek(startOfWeek) + expenseService.countForWeek(startOfWeek);
 	}
 
-	@Override
-	void initialiseWeek(LocalDate localDate) throws Exception {
-		expenseService.initialiseWeek(localDate);
-	}
-	
 }

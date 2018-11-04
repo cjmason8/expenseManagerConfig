@@ -37,14 +37,6 @@ public class ExpenseService extends TransactionService<ExpenseDto, Expense, Expe
 	}
 	
 	@Override
-	public void initialiseWeek(LocalDate localDate) throws Exception {
-		if (countForWeekForAll(localDate) == 0) {
-			incomeService.createRecurringTransactions(localDate);
-			createRecurringTransactions(localDate);
-		}
-	}
-	
-	@Override
 	public int getPastDate(LocalDate startOfWeek) throws Exception {
 		return getPastDateList(startOfWeek).size() + incomeService.getPastDateList(startOfWeek).size();
 	}
