@@ -3,6 +3,7 @@ package au.com.mason.expensemanager.mapper;
 import org.springframework.stereotype.Component;
 
 import au.com.mason.expensemanager.domain.Notification;
+import au.com.mason.expensemanager.dto.ExpenseDto;
 import au.com.mason.expensemanager.dto.NotificationDto;
 import au.com.mason.expensemanager.util.DateUtil;
 
@@ -28,7 +29,12 @@ public class NotificationMapperWrapper {
     public NotificationDto notificationToNotificationDto(Notification notification) throws Exception {
     	NotificationDto notificationDto = notificationMapper.notificationToNotificationDto(notification);
     	notificationDto.setCreatedDateString(DateUtil.getFormattedDateString(notification.getCreated()));
-    	notificationDto.getExpense().setDueDateString(DateUtil.getFormattedDateString(notification.getExpense().getDueDate()));
+    	if (notification.getExpense() != null) {
+    		notificationDto.getExpense().setDueDateString(DateUtil.getFormattedDateString(notification.getExpense().getDueDate()));
+    	}
+    	else {
+    		notificationDto.setExpense(new ExpenseDto());
+    	}
 
 		return notificationDto;
     }

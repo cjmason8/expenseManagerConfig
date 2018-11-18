@@ -36,9 +36,9 @@ public abstract class Processor {
 		return expense.getDueDate().isAfter(dueDate.minusDays(10)) && expense.getDueDate().isBefore(dueDate.plusDays(10));
 	}
 	
-	protected void addExpense(LocalDate dueDate, String amount, Document document, Expense expense) {
+	protected void addExpense(LocalDate dueDate, BigDecimal amount, Document document, Expense expense) {
 		expense.setDueDate(dueDate);
-		expense.setAmount(new BigDecimal(amount));
+		expense.setAmount(amount);
 		if (document != null) {
 			expense.setDocument(document);
 		}
@@ -67,10 +67,11 @@ public abstract class Processor {
 				}
 			}
 		}
+		BigDecimal reqAmount = new BigDecimal(amount.replace("$", ""));
 		if (expenses.size() == 0 || reqExpense == null) {
 			Expense newExpense = new Expense();
 			newExpense.setDueDate(dueDate);
-			newExpense.setAmount(new BigDecimal(amount.replace("$", "")));
+			newExpense.setAmount(reqAmount);
 			if (document != null) {
 				newExpense.setDocument(document);
 			}
@@ -86,7 +87,7 @@ public abstract class Processor {
 			notificationService.create(notification);
 		}
 		else {
-			addExpense(dueDate, amount, document, expenses.get(0));
+			addExpense(dueDate, reqAmount, document, reqExpense);
 		}
 	}
 	

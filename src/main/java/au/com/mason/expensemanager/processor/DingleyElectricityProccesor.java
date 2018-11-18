@@ -2,6 +2,7 @@ package au.com.mason.expensemanager.processor;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -36,7 +37,7 @@ public class DingleyElectricityProccesor extends Processor {
 		            amount = body.substring(body.indexOf(">$") + 2, body.indexOf("<", body.indexOf(">$"))).trim();
 		            int startIndex = body.indexOf("padding-bottom:9px;\">") + 21;
 		            String dueDateString = body.substring(startIndex, body.indexOf("<", startIndex)).trim();
-		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy");
+		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy").localizedBy(Locale.ENGLISH);
 		            dueDate = LocalDate.parse(dueDateString, formatter);
 		            
 		        } else if (bodyPart.isMimeType("application/octet-stream")) {

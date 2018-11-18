@@ -141,7 +141,7 @@ public class ExpenseDao extends BaseDao<Expense> implements TransactionDao<Expen
 	}
 	
 	public List<Expense> findExpenses(RefData entryType) {
-		String sql = "from Expense where entryType = :entryType AND paid = false order by dueDate";
+		String sql = "from Expense where entryType = :entryType AND paid = false AND recurringType is null order by dueDate";
 		Query query = entityManager.createQuery(sql);
 		query.setParameter("entryType", entryType);
 

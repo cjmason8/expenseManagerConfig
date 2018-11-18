@@ -10,16 +10,19 @@ import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.internet.MimeMessage;
 import javax.mail.search.FlagTerm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import au.com.mason.expensemanager.domain.Notification;
 import au.com.mason.expensemanager.domain.RefData;
 import au.com.mason.expensemanager.processor.Processor;
 import au.com.mason.expensemanager.processor.ProcessorFactory;
 import au.com.mason.expensemanager.service.EncryptionService;
+import au.com.mason.expensemanager.service.NotificationService;
 import au.com.mason.expensemanager.service.RefDataService;
 
 @Component
@@ -33,6 +36,9 @@ public class EmailTrawler {
 	
 	@Autowired
 	private ProcessorFactory processorFactory;
+	
+	@Autowired
+	protected NotificationService notificationService;
 	
 	@Value("${required.info}")
 	private String requiredKey;
@@ -71,8 +77,14 @@ public class EmailTrawler {
 						processor.execute(message, refData);
 					}
 					else {
-						//marks read and notify
+						Notification notification = new Notification();
+						notification.setMessage("Unhandled Email with title - " + message.getSubject());
+						notificationService.create(notification);
 					}
+					//mark as read
+					message.getContent();
+					MimeMessage source = (MimeMessage) message;
+					MimeMessage copy = new MimeMessage(source);
 					System.out.println("Subject: " + message.getSubject());
 				}
 			}

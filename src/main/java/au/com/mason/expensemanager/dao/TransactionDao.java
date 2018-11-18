@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import au.com.mason.expensemanager.domain.Expense;
+import au.com.mason.expensemanager.domain.Income;
 import au.com.mason.expensemanager.domain.RefData;
 import au.com.mason.expensemanager.dto.SearchParamsDto;
 
@@ -19,9 +20,29 @@ public interface TransactionDao<T> {
 	public List<T> getPastDate(LocalDate date, T recurringTransation);
 	public List<T> getForRecurring(T recurringTransation);
 	public void deleteTransactions(Long recurringTransactionId);
-	public List<Expense> getUnpaidBeforeWeek(LocalDate weekStartDate);
-	public List<Expense> findExpenses(SearchParamsDto searchParamsDto);
-	public List<T> getAll();
-	public List<T> findAll();
-	public List<Expense> findExpenses(RefData entryType);
+	
+	default List<T> getUnpaidBeforeWeek(LocalDate weekStartDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	default List<T> getAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	default List<T> findExpenses(SearchParamsDto searchParamsDto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	default List<T> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	default List<Expense> findExpenses(RefData entryType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

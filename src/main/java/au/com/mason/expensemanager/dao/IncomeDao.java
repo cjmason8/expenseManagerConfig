@@ -10,10 +10,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
-import au.com.mason.expensemanager.domain.Expense;
 import au.com.mason.expensemanager.domain.Income;
-import au.com.mason.expensemanager.domain.RefData;
-import au.com.mason.expensemanager.dto.SearchParamsDto;
 import au.com.mason.expensemanager.util.DateUtil;
 
 @Repository
@@ -104,35 +101,5 @@ public class IncomeDao implements TransactionDao<Income> {
 	// setup on DatabaseConfig class.
 	@PersistenceContext
 	private EntityManager entityManager;
-
-	@Override
-	public List<Expense> getUnpaidBeforeWeek(LocalDate weekStartDate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Income> getAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Expense> findExpenses(SearchParamsDto searchParamsDto) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Income> findAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Expense> findExpenses(RefData entryType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }
