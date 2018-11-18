@@ -9,8 +9,28 @@ if [ -z $ENV ]; then
   ENV=lcl
 fi
 
-echo "Building version."
-TAG_NAME=0.0.1
+git checkout master
+git pull origin master
+
+if [ $ENV != "lcl" ]; then
+  echo "Building version."
+  TAG_NAME=$(<VERSION)
+  TAG_NAME="${TAG_NAME%.*}.$((${TAG_NAME##*.}+1))"
+  echo $TAG_NAME > VERSION
+
+  echo "commiting bump version"
+  git config user.name "Release Manager"
+  git config user.email "Release.Manager@jenkins.com.au"
+  git add --all
+  git commit -m "bump version"
+  git push
+else
+  echo "Building version."
+  TAG_NAME=$(<LOCAL)
+  TAG_NAME="${TAG_NAME%.*}.$((${TAG_NAME##*.}+1))"
+  echo $TAG_NAME > LOCAL
+fi
+
 echo -e "TAG_NAME=$TAG_NAME" > .env
 
 echo "Creating image: ${FULL_IMAGE_NAME}:${TAG_NAME}"
