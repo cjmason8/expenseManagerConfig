@@ -17,7 +17,7 @@ import au.com.mason.expensemanager.dto.LoginInput;
 import au.com.mason.expensemanager.service.UserAuthenticationService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8084")
+@CrossOrigin
 public class LoginController {
 	
 	@Autowired

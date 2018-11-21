@@ -22,7 +22,7 @@ import au.com.mason.expensemanager.service.IncomeService;
 import au.com.mason.expensemanager.util.DateUtil;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8084")
+@CrossOrigin
 public class HomeController {
 	
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
