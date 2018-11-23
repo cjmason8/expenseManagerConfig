@@ -10,6 +10,7 @@ import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.search.FlagTerm;
 
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import au.com.mason.expensemanager.domain.Notification;
 import au.com.mason.expensemanager.domain.RefData;
+import au.com.mason.expensemanager.processor.EmailProcessor;
 import au.com.mason.expensemanager.processor.Processor;
 import au.com.mason.expensemanager.processor.ProcessorFactory;
 import au.com.mason.expensemanager.service.EncryptionService;
@@ -71,22 +73,26 @@ public class EmailTrawler {
 			List<RefData> refDatas = refDataService.getAllWithEmailKey(); 
 
 			for (Message message : messages) {
+				boolean foundIt = false;
 				for (RefData refData : refDatas) {
-					if (message.getSubject().startsWith(refData.getEmailKey())) {
+					if (refDataMatch(message, refData)) {
 						Processor processor = processorFactory.getProcessor(refData.getEmailProcessor());
 						processor.execute(message, refData);
+						foundIt = true;
 					}
-					else {
-						Notification notification = new Notification();
-						notification.setMessage("Unhandled Email with title - " + message.getSubject());
-						notificationService.create(notification);
-					}
-					//mark as read
-					message.getContent();
-					MimeMessage source = (MimeMessage) message;
-					MimeMessage copy = new MimeMessage(source);
-					System.out.println("Subject: " + message.getSubject());
 				}
+				
+				if (!foundIt) {
+					Notification notification = new Notification();
+					notification.setMessage("Unhandled Email with title - " + message.getSubject());
+					notificationService.create(notification);
+				}
+				
+				//mark as read
+				message.getContent();
+				MimeMessage source = (MimeMessage) message;
+				MimeMessage copy = new MimeMessage(source);
+				System.out.println("Subject: " + message.getSubject());
 			}
 
 			// close the store and folder objects
@@ -100,6 +106,16 @@ public class EmailTrawler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private boolean refDataMatch(Message message, RefData refData) throws MessagingException {
+		if (refData.getEmailProcessor().equals(EmailProcessor.RACV_MEMBERSHIP.name())) {
+			String fromAddress = ((InternetAddress) message.getFrom()[0]).getAddress();
+			
+			return message.getSubject().startsWith(refData.getEmailKey()) && fromAddress.startsWith("racvrenewal_noreply");
+		}
+
+		return message.getSubject().startsWith(refData.getEmailKey());
 	}
 	
 	public Message[] fetchMessages(String host, String user, String password, boolean read) throws Exception {

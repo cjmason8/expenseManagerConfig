@@ -14,6 +14,9 @@ public class ProcessorFactory {
 	
 	@Autowired
 	private SouthKingsvilleRatesProccesor southKingsvilleRatesProccesor;
+	
+	@Autowired
+	private RACVMembershipProccesor racvMembershipProccesor;	
 
 	public Processor getProcessor(String processorKey) {
 		if (processorKey.equals(EmailProcessor.DINGLEY_ELECTRICITY.name())) {
@@ -24,6 +27,9 @@ public class ProcessorFactory {
 		}
 		else if (processorKey.equals(EmailProcessor.SOUTH_KINGSVILLE_RATES.name())) {
 			return southKingsvilleRatesProccesor;
+		}
+		else if (processorKey.equals(EmailProcessor.RACV_MEMBERSHIP.name())) {
+			return racvMembershipProccesor;
 		}
 		
 		return null;
