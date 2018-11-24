@@ -15,6 +15,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import au.com.mason.expensemanager.dao.MyJsonType;
+import au.com.mason.expensemanager.processor.EmailProcessor;
 
 @Entity
 @Table(name="refdata")
@@ -35,7 +36,8 @@ public class RefData {
     
 	private String emailKey;
 	
-	private String emailProcessor;
+	@Enumerated(EnumType.STRING)
+	private EmailProcessor emailProcessor;
 	
 	public long getId() {
 		return id;
@@ -81,11 +83,11 @@ public class RefData {
 		this.emailKey = emailKey;
 	}
 
-	public String getEmailProcessor() {
+	public EmailProcessor getEmailProcessor() {
 		return emailProcessor;
 	}
 
-	public void setEmailProcessor(String emailProcessor) {
+	public void setEmailProcessor(EmailProcessor emailProcessor) {
 		this.emailProcessor = emailProcessor;
 	}
 	

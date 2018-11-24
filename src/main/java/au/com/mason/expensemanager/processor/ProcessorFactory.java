@@ -17,6 +17,12 @@ public class ProcessorFactory {
 	
 	@Autowired
 	private RACVMembershipProccesor racvMembershipProccesor;	
+	
+	@Autowired
+	private DingleyGasProccesor dingleyGasProccesor;
+	
+	@Autowired
+	private CamryInsuranceProccesor camryInsuranceProccesor;
 
 	public Processor getProcessor(String processorKey) {
 		if (processorKey.equals(EmailProcessor.DINGLEY_ELECTRICITY.name())) {
@@ -30,6 +36,12 @@ public class ProcessorFactory {
 		}
 		else if (processorKey.equals(EmailProcessor.RACV_MEMBERSHIP.name())) {
 			return racvMembershipProccesor;
+		}
+		else if (processorKey.equals(EmailProcessor.DINGLEY_GAS.name())) {
+			return dingleyGasProccesor;
+		}
+		else if (processorKey.equals(EmailProcessor.CAMRY_INSURANCE.name())) {
+			return camryInsuranceProccesor;
 		}
 		
 		return null;

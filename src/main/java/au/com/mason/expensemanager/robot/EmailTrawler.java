@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 import au.com.mason.expensemanager.domain.Notification;
 import au.com.mason.expensemanager.domain.RefData;
 import au.com.mason.expensemanager.processor.EmailProcessor;
-import au.com.mason.expensemanager.processor.Processor;
 import au.com.mason.expensemanager.processor.ProcessorFactory;
 import au.com.mason.expensemanager.service.EncryptionService;
 import au.com.mason.expensemanager.service.NotificationService;
@@ -76,8 +75,7 @@ public class EmailTrawler {
 				boolean foundIt = false;
 				for (RefData refData : refDatas) {
 					if (refDataMatch(message, refData)) {
-						Processor processor = processorFactory.getProcessor(refData.getEmailProcessor());
-						processor.execute(message, refData);
+						refData.getEmailProcessor().getProcessor().execute(message, refData);
 						foundIt = true;
 					}
 				}

@@ -17,7 +17,7 @@ import au.com.mason.expensemanager.domain.Document;
 import au.com.mason.expensemanager.domain.RefData;
 
 @Component
-public class RACVMembershipProccesor extends Processor {
+public class CamryInsuranceProccesor extends Processor {
 	
 	@Override
 	public void execute(Message message, RefData refData) throws Exception {
@@ -30,6 +30,7 @@ public class RACVMembershipProccesor extends Processor {
 	        LocalDate dueDate = null;
 	        String amount = null;
 	        Document document = null;
+	        BodyPart pdfBodyPart = null;
 		    for (int i = 0; i < count; i++) {
 		        BodyPart bodyPart = mimeMultipart.getBodyPart(i);
 		        if (bodyPart.isMimeType("text/html")) {
@@ -41,13 +42,16 @@ public class RACVMembershipProccesor extends Processor {
 		            dueDate = LocalDate.parse(dueDateString, formatter);
 		            
 		        } else if (bodyPart.isMimeType("application/octet-stream")) {
-		        	BASE64DecoderStream base64DecoderStream = (BASE64DecoderStream) bodyPart.getContent();
-		        	byte[] byteArray = IOUtils.toByteArray(base64DecoderStream);
-		        	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
-		        	String fileName = "RACVMembership-" + formatter.format(dueDate) + ".pdf";
-					document = documentService.createDocumentFromEmail(byteArray, fileName);
+		        	pdfBodyPart = bodyPart;
 		        }
 		    }
+		    
+		    //There are 3 PDF's we want the last one
+		    BASE64DecoderStream base64DecoderStream = (BASE64DecoderStream) pdfBodyPart.getContent();
+		    byte[] byteArray = IOUtils.toByteArray(base64DecoderStream);
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+        	String fileName = "CamryInsurance-" + formatter.format(dueDate) + ".pdf";
+			document = documentService.createDocumentFromEmail(byteArray, fileName);
 		    
             updateExpense(refData, dueDate, amount, document);
 	    }

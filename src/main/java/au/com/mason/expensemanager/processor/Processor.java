@@ -53,7 +53,7 @@ public abstract class Processor {
 		notificationService.create(notification);
 	}
 	
-	protected void updateExpense(RefData refData, LocalDate dueDate, String amount, Document document) throws Exception {
+	protected void updateExpense(RefData refData, LocalDate dueDate, String amount, Document document, String notes) throws Exception {
 		expenseService.initialiseWeek(DateUtil.getMonday(dueDate), null);
 		expenseService.initialiseWeek(DateUtil.getMonday(dueDate.minusDays(7)), null);
 		expenseService.initialiseWeek(DateUtil.getMonday(dueDate.plusDays(7)), null);
@@ -76,6 +76,7 @@ public abstract class Processor {
 				newExpense.setDocument(document);
 			}
 			newExpense.setEntryType(refData);
+			newExpense.setNotes(notes);
 			expenseService.create(newExpense);
 			
 			Notification notification = new Notification();
@@ -87,8 +88,13 @@ public abstract class Processor {
 			notificationService.create(notification);
 		}
 		else {
+			reqExpense.setNotes(notes);
 			addExpense(dueDate, reqAmount, document, reqExpense);
-		}
+		}		
+	}
+	
+	protected void updateExpense(RefData refData, LocalDate dueDate, String amount, Document document) throws Exception {
+		updateExpense(refData, dueDate, amount, document, null);
 	}
 	
 	public abstract void execute(Message message, RefData refData) throws Exception;
