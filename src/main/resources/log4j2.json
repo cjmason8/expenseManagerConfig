@@ -10,11 +10,11 @@
             },
             "Policies": {
                "SizeBasedTriggeringPolicy": {
-                  "size":"10 MB"
+                  "size":"2 MB"
                }
             },
             "DefaultRolloverStrategy": {
-               "max":"10"
+               "max":"40"
             }
          }
       },
