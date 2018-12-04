@@ -7,6 +7,7 @@ public enum EmailProcessor {
 	DINGLEY_GAS(DingleyGasProccesor.class),
 	WODONGA_WATER(WodongaWaterProccesor.class),
 	SOUTH_KINGSVILLE_RATES(SouthKingsvilleRatesProccesor.class),
+	SOUTH_KINGSVILLE_WATER(SouthKingsvilleWaterProccesor.class),
 	RACV_MEMBERSHIP(RACVMembershipProccesor.class),
 	CAMRY_INSURANCE(CamryInsuranceProccesor.class),
 	TELSTRA(TelstraProccesor.class);
