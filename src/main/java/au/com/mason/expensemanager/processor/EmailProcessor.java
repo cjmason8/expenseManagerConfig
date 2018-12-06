@@ -10,7 +10,9 @@ public enum EmailProcessor {
 	SOUTH_KINGSVILLE_WATER(SouthKingsvilleWaterProccesor.class),
 	RACV_MEMBERSHIP(RACVMembershipProccesor.class),
 	CAMRY_INSURANCE(CamryInsuranceProccesor.class),
-	TELSTRA(TelstraProccesor.class);
+	TELSTRA(TelstraProccesor.class),
+	CAMRY_REGO(CamryRegoProcessor.class),
+	MAZDA_REGO(MazdaRegoProcessor.class);
 	
 	private Class processor;
 	
