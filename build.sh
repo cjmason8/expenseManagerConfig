@@ -52,17 +52,25 @@ if [[ "$(docker images -q ${FULL_IMAGE_NAME}:${TAG_NAME} 2> /dev/null)" == "" ]]
   cd expenseManager
   echo "git pull"
   git pull https://cjmason8:${GIT_PASS}@github.com/cjmason8/expenseManager.git
-  echo "maven"
-  docker run -v ~/.m2:/var/maven/.m2 -v "$(pwd)":/opt/maven -w /opt/maven --rm -u 110 -e MAVEN_CONFIG=/var/maven/.m2 maven:3.6-jdk-11 mvn -Duser.home=/var/maven clean install
-  cd ..
-  mkdir -p target
-  cp expenseManager/target/expensemanager-0.0.1-SNAPSHOT.jar target
-  
   if [ $ENV == "lcl" ]; then
-    docker build -f Dockerfile_lcl --no-cache --pull -t ${FULL_IMAGE_NAME}:${TAG_NAME} .
+    cp ../expenseManagerConfig/Dockerfile_lcl Dockerfile
+    cp ../expenseManagerConfig/runLocal.sh run.sh
   else
-    docker build --no-cache --pull -t ${FULL_IMAGE_NAME}:${TAG_NAME} .
+    cp ../expenseManagerConfig/Dockerfile Dockerfile
+    cp ../expenseManagerConfig/run.sh run.sh
   fi
+
+  #echo "maven"
+  #docker run -v ~/.m2:/var/maven/.m2 -v "$(pwd)":/opt/maven -w /opt/maven --rm -u 110 -e MAVEN_CONFIG=/var/maven/.m2 maven:3.6-jdk-11 mvn -Duser.home=/var/maven clean install
+  #cd ..
+  #mkdir -p target
+  #cp expenseManager/target/expensemanager-0.0.1-SNAPSHOT.jar target
+  
+  #if [ $ENV == "lcl" ]; then
+  #  docker build -f Dockerfile_lcl --no-cache --pull -t ${FULL_IMAGE_NAME}:${TAG_NAME} .
+  #else
+    docker build --no-cache --pull -t ${FULL_IMAGE_NAME}:${TAG_NAME} .
+  #fi
 fi
 
 echo "Beginning publish step."

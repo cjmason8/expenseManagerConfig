@@ -2,34 +2,16 @@
 
 set -e
 
-ENV=$1
+ENV=lcldoc
 FULL_IMAGE_NAME="expense-manager"
-
-if [ -z $ENV ]; then
-  ENV=lcl
-fi
 
 git checkout master
 git pull origin master
 
-if [ $ENV != "lcl" ]; then
-  echo "Building version."
-  TAG_NAME=$(<VERSION)
-  TAG_NAME="${TAG_NAME%.*}.$((${TAG_NAME##*.}+1))"
-  echo $TAG_NAME > VERSION
-
-  echo "commiting bump version"
-  git config user.name "Release Manager"
-  git config user.email "Release.Manager@jenkins.com.au"
-  git add --all
-  git commit -m "bump version"
-  git push
-else
-  echo "Building version."
-  TAG_NAME=$(<LOCAL)
-  TAG_NAME="${TAG_NAME%.*}.$((${TAG_NAME##*.}+1))"
-  echo $TAG_NAME > LOCAL
-fi
+echo "Building version."
+TAG_NAME=$(<LOCAL)
+TAG_NAME="${TAG_NAME%.*}.$((${TAG_NAME##*.}+1))"
+echo $TAG_NAME > LOCAL
 
 echo -e "TAG_NAME=$TAG_NAME" > .env
 
