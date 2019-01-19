@@ -12,7 +12,7 @@ RUN mkdir /app
 RUN chown localUser /app
 
 COPY --from=build /usr/src/app/target/expensemanager-0.0.1-SNAPSHOT.jar /app/expenseManager.jar
-COPY runLocal.sh /app/run.sh
+COPY run.sh /app/run.sh
 
 RUN chown localUser /app/expenseManager.jar
 RUN chown localUser /app/run.sh

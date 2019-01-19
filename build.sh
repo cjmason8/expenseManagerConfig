@@ -56,8 +56,8 @@ if [[ "$(docker images -q ${FULL_IMAGE_NAME}:${TAG_NAME} 2> /dev/null)" == "" ]]
     cp ../expenseManagerConfig/Dockerfile_lcl Dockerfile
     cp ../expenseManagerConfig/runLocal.sh run.sh
   else
-    cp ../expenseManagerConfig/Dockerfile Dockerfile
-    cp ../expenseManagerConfig/run.sh run.sh
+    cp ../Dockerfile Dockerfile
+    cp ../run.sh run.sh
   fi
 
   #echo "maven"
