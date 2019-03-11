@@ -1,3 +1,5 @@
+#!/usr/bin/groovy
+
 def project = "expenseManager"
 def version = -1
 def imageName = "expense-manager"
