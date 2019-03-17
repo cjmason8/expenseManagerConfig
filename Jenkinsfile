@@ -9,13 +9,13 @@ node {
         def file = new File("checkout.sh")
         if (!file.exists()) {
             git(
-                url: 'https://github.com/cjmason8/${project}Config.git',
+                url: 'https://github.com/cjmason8/' + $project + 'Config.git',
                 credentialsId: 'Github',
                 branch: "master"
             )
             dir($project) {
                 git(
-                    url: 'https://github.com/cjmason8/${project}.git',
+                    url: 'https://github.com/cjmason8/' + $project + '.git',
                     credentialsId: 'Github',
                     branch: "master"
                 )    
