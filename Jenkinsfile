@@ -6,6 +6,22 @@ def imageName = "expense-manager"
 
 node {
     stage('Checkout') {
+        def file = new File("checkout.sh")
+        if (!file.exists()) {
+            git(
+                url: 'https://github.com/cjmason8/${project}Config.git',
+                credentialsId: 'Github',
+                branch: "master"
+            )
+            dir($project) {
+                git(
+                    url: 'https://github.com/cjmason8/${project}.git',
+                    credentialsId: 'Github',
+                    branch: "master"
+                )    
+            }
+        }
+
         withCredentials([usernamePassword(credentialsId: 'Github', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
             sh './checkout.sh $PASSWORD $project'
         }
