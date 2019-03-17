@@ -42,4 +42,12 @@ node {
     stage('Tag and Push') {
         sh "./tagAndPush.sh $imageName $version"
     }
+
+    stage('Deploy') {
+        withCredentials([usernamePassword(credentialsId: 'Rancher', passwordVariable: 'ACCESSKEY', usernameVariable: 'SECRETKEY')]) {
+            sh './updateVersion.sh $ACCESSKEY $SECRTETKEY'
+        }
+
+        version = readFile('VERSION').trim()
+    }
 }
