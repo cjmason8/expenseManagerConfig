@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 RANCHER_ACCESS_KEY=$1
 RANCHER_SECRET_KEY=$2
