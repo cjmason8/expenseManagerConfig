@@ -15,15 +15,13 @@ if [ -z "${TAG_NAME}" ]; then
   echo "No tag name defined, unable to continue."
   exit 1
 fi
-if [[ "$(docker images -q ${FULL_IMAGE_NAME}:${TAG_NAME} 2> /dev/null)" == "" ]]; then
 
-  echo "Creating image: ${FULL_IMAGE_NAME}:${TAG_NAME}"
-  
-  #echo "maven"
-  mvn clean install
-  cd ..
-  mkdir -p target
-  cp expenseManager/target/expensemanager-0.0.1-SNAPSHOT.jar target
-  
-  docker build --no-cache --pull -t ${FULL_IMAGE_NAME}:${TAG_NAME} .
-fi
+echo "Creating image: ${FULL_IMAGE_NAME}:${TAG_NAME}"
+
+#echo "maven"
+mvn clean install
+cd ..
+mkdir -p target
+cp expenseManager/target/expensemanager-0.0.1-SNAPSHOT.jar target
+
+docker build --no-cache --pull -t ${FULL_IMAGE_NAME}:${TAG_NAME} .
