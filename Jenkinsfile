@@ -23,13 +23,13 @@ node {
         }
 
         withCredentials([usernamePassword(credentialsId: 'Github', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-            sh './checkout.sh $PASSWORD $project'
+            sh './checkout.sh $PASSWORD expenseManager'
         }
     }
 
     stage('Update Version') {
         withCredentials([usernamePassword(credentialsId: 'Github', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-            sh './updateVersion.sh $PASSWORD $project'
+            sh './updateVersion.sh $PASSWORD expenseManager'
         }
 
         version = readFile('VERSION').trim()
