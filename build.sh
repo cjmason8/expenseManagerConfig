@@ -19,6 +19,7 @@ fi
 echo "Creating image: ${FULL_IMAGE_NAME}:${TAG_NAME}"
 
 #echo "maven"
+cd expenseManager
 mvn clean install
 cd ..
 mkdir -p target
