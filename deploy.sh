@@ -8,10 +8,6 @@ PROJECT_NAME=expense-manager
 BASE_DIR=${PWD}
 TAG_NAME=$(<VERSION)
 
-if [ $ENV_NAME == "lcl" ]; then
-  TAG_NAME=$(<LOCAL)
-fi
-
 echo "VER=$TAG_NAME"
 
 echo -e "TAG_NAME=$TAG_NAME" > env.txt
