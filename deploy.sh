@@ -18,7 +18,7 @@ export COMPOSE_FILE
 echo "VER=$TAG_NAME"
 
 echo "Force pulling..."
-rancher-compose pull
+rancher-compose --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} pull
 
 echo "Starting deployment..."
 rancher-compose up --upgrade -d --pull --batch-size 1
