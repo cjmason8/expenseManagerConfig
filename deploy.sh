@@ -9,6 +9,9 @@ COMPOSE_FILE=${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml
 BASE_DIR=${PWD}
 TAG_NAME=$(<VERSION)
 
+export TAG_NAME
+export RANCHER_URL
+
 echo "VER=$TAG_NAME"
 
 echo "TAG_NAME=$TAG_NAME" > .env
