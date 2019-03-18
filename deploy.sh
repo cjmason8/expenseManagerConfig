@@ -13,15 +13,16 @@ echo "VER=$TAG_NAME"
 echo "TAG_NAME=$TAG_NAME" > .env
 
 echo "Force pulling..."
+echo "rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml pull"
 rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml pull
 
 echo "Starting deployment..."
-rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --rancher-file ${BASE_DIR}/rancher-compose.yml --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml up --upgrade -d --pull --batch-size 1
+#rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --rancher-file ${BASE_DIR}/rancher-compose.yml --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml up --upgrade -d --pull --batch-size 1
 
 if [ $? -eq 0 ]; then
   echo "Deploy success! Confirming..."
-  rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml up --confirm-upgrade -d --batch-size 1
+  #rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml up --confirm-upgrade -d --batch-size 1
 else
   echo "Deploy failed :( rolling back..."
-  rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml up --rollback -d --batch-size 1
+  #rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml up --rollback -d --batch-size 1
 fi
