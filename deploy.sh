@@ -4,7 +4,8 @@ RANCHER_ACCESS_KEY=$1
 RANCHER_SECRET_KEY=$2
 RANCHER_URL=http://80.241.221.122:8080/v2-beta/projects/1a5
 ENV_NAME=prd
-PROJECT_NAME=expense-manager
+COMPOSE_PROJECT_NAME=expense-manager
+COMPOSE_FILE=${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml
 BASE_DIR=${PWD}
 TAG_NAME=$(<VERSION)
 
@@ -13,8 +14,7 @@ echo "VER=$TAG_NAME"
 echo "TAG_NAME=$TAG_NAME" > .env
 
 echo "Force pulling..."
-echo "rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml pull"
-rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml pull
+rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} pull
 
 echo "Starting deployment..."
 #rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --rancher-file ${BASE_DIR}/rancher-compose.yml --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml up --upgrade -d --pull --batch-size 1
