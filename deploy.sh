@@ -14,7 +14,7 @@ echo "VER=$TAG_NAME"
 echo "TAG_NAME=$TAG_NAME" > .env
 
 echo "Force pulling..."
-rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} pull
+rancher-compose pull
 
 echo "Starting deployment..."
 #rancher-compose --url ${RANCHER_URL} --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --rancher-file ${BASE_DIR}/rancher-compose.yml --project-name expenseManager --file ${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml up --upgrade -d --pull --batch-size 1
