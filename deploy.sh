@@ -5,8 +5,7 @@ RANCHER_SECRET_KEY=$2
 RANCHER_URL=http://80.241.221.122:8080/v2-beta/projects/1a5
 ENV_NAME=prd
 COMPOSE_PROJECT_NAME=expense-manager
-COMPOSE_FILE=${BASE_DIR}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml
-BASE_DIR=${PWD}
+COMPOSE_FILE=${PWD}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml
 TAG_NAME=$(<VERSION)
 
 export TAG_NAME
