@@ -18,6 +18,7 @@ export COMPOSE_FILE
 echo "VER=$TAG_NAME"
 
 echo "Force pulling..."
+echo "rancher-compose --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --project-name ${COMPOSE_PROJECT_NAME} pull"
 rancher-compose --access-key ${RANCHER_ACCESS_KEY} --secret-key ${RANCHER_SECRET_KEY} --project-name ${COMPOSE_PROJECT_NAME} pull
 
 echo "Starting deployment..."
