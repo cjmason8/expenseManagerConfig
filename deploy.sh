@@ -21,12 +21,12 @@ echo "Force pulling..."
 rancher-compose pull
 
 echo "Starting deployment..."
-#rancher-compose up --upgrade -d --pull --batch-size 1
+rancher-compose up --upgrade -d --pull --batch-size 1
 
 if [ $? -eq 0 ]; then
   echo "Deploy success! Confirming..."
-#  rancher-compose up --confirm-upgrade -d --batch-size 1
+  rancher-compose up --confirm-upgrade -d --batch-size 1
 else
   echo "Deploy failed :( rolling back..."
-#  rancher-compose up --rollback -d --batch-size 1
+  rancher-compose up --rollback -d --batch-size 1
 fi
