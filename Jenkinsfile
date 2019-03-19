@@ -44,7 +44,7 @@ node {
     }
 
     stage('Deploy') {
-        withCredentials([usernamePassword(credentialsId: 'Rancher', passwordVariable: 'ACCESSKEY', usernameVariable: 'SECRETKEY')]) {
+        withCredentials([usernamePassword(credentialsId: 'Rancher', passwordVariable: 'SECRETKEY', usernameVariable: 'ACCESSKEY')]) {
             sh './deploy.sh $ACCESSKEY $SECRETKEY'
         }
     }
