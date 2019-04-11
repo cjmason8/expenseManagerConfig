@@ -1,13 +1,9 @@
-FROM adoptopenjdk/jdk-11.0.2.9-alpine-slim
+FROM cjmason8/alpine-openjdk:jre-12.33-alpine
 
-RUN adduser -D -u 1000 localUser
-
-RUN mkdir /app
-
-RUN chown localUser /app
-
-COPY --from=build /usr/src/app/target/expensemanager-0.0.1-SNAPSHOT.jar /app/expenseManager.jar
+COPY target/expensemanager-0.0.1-SNAPSHOT.jar /app/expenseManager.jar
 COPY run.sh /app/run.sh
+
+USER root
 
 RUN chown localUser /app/expenseManager.jar
 RUN chown localUser /app/run.sh
