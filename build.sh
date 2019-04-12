@@ -18,9 +18,11 @@ fi
 
 echo "Creating image: ${FULL_IMAGE_NAME}:${TAG_NAME}"
 
-#echo "maven"
-#mvn clean install
-docker run --rm -v "../expenseManager":/usr/src/mymaven -v "$HOME/.m2":/root/.m2 -w /usr/src/mymaven maven:3.6.0-jdk-12-alpine mvn clean install
+echo "maven"
+cd expenseManager
+echo "$PWD"
+docker run --rm -v "$PWD":/usr/src/mymaven -v "$HOME/.m2":/root/.m2 -w /usr/src/mymaven maven:3.6.0-jdk-12-alpine mvn clean install
+cd ..
 mkdir -p target
 cp expenseManager/target/expensemanager-0.0.1-SNAPSHOT.jar target
 
