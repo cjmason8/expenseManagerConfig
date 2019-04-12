@@ -17,7 +17,6 @@ echo -e "TAG_NAME=$TAG_NAME" > .env
 
 echo "Creating image: ${FULL_IMAGE_NAME}:${TAG_NAME}"
 cd ../expenseManager
-#mvn clean install
 docker run -it --rm -v "$PWD":/usr/src/mymaven -v "$HOME/.m2":/home/chris/.m2 -w /usr/src/mymaven maven:3.6.0-jdk-12-alpine mvn clean install
 
 cd ../expenseManagerConfig
