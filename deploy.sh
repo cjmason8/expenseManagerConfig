@@ -2,11 +2,15 @@
 
 RANCHER_ACCESS_KEY=$1
 RANCHER_SECRET_KEY=$2
-RANCHER_URL=http://80.241.221.122:8080/v2-beta/projects/1a5
-ENV_NAME=prd
+RANCHER_URL=$3
+ENV_NAME=$4
 COMPOSE_PROJECT_NAME=expenseManager
 COMPOSE_FILE=${PWD}/${ENV_NAME}/docker-compose-${ENV_NAME}.yml
 TAG_NAME=$(<VERSION)
+
+if [ $ENV_NAME = 'lcl' ]; then
+  TAG_NAME=$(<LOCAL)
+fi
 
 export TAG_NAME
 export RANCHER_URL
