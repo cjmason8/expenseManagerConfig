@@ -23,11 +23,7 @@ echo "Creating image: ${FULL_IMAGE_NAME}:${TAG_NAME}"
 
 #echo "maven"
 cd ../expenseManager
-<<<<<<< HEAD
-mvn clean install
-=======
 docker run --rm -v "$PWD":/usr/src/mymaven -v "$HOME/.m2":/root/.m2 -w /usr/src/mymaven maven:3.6.0-jdk-12-alpine mvn clean install
->>>>>>> c3b2a3ff76dd178a5faf171498b8987e44f21de8
 cd ../expenseManagerConfig
 mkdir -p target
 cp ../expenseManager/target/expensemanager-0.0.1-SNAPSHOT.jar target
@@ -37,8 +33,4 @@ docker build --no-cache --pull -t ${FULL_IMAGE_NAME}:${TAG_NAME} .
 docker tag ${FULL_IMAGE_NAME}:${TAG_NAME} cjmason8/${FULL_IMAGE_NAME}:${TAG_NAME}
 docker tag ${FULL_IMAGE_NAME}:${TAG_NAME} cjmason8/${FULL_IMAGE_NAME}:latest
 docker push cjmason8/${FULL_IMAGE_NAME}:latest
-<<<<<<< HEAD
 docker push cjmason8/${FULL_IMAGE_NAME}:${TAG_NAME}
-=======
-docker push cjmason8/${FULL_IMAGE_NAME}:${TAG_NAME}
->>>>>>> c3b2a3ff76dd178a5faf171498b8987e44f21de8
