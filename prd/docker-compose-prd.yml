@@ -3,6 +3,7 @@ expenseManager:
     file: ../docker-compose.yml
     service: expenseManager
   environment:
+    SPRING_PROFILES_ACTIVE: production
     DB_URL: jdbc:postgresql://postgres:5432/expensemanager
     DB_USER: postgres
     DB_PASS: fjFSVC3Pm+d0Miy0ry3EWQ==
@@ -15,5 +16,3 @@ expenseManager:
     RESOURCE_DIR: /resources
     REQ_ACCOUNT: icMZGRCb+RbYUKI5RX7HaM33C3mLyertwbUl2RhYdt8=  
     INFO_APP_VERSION: ${TAG_NAME}
-    #testing
-    
