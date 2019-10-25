@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FULL_IMAGE_NAME=expense-manager
+FULL_IMAGE_NAME=cjmason8/expense-manager
 TAG_NAME=$(<LOCAL)
 
 echo "Beginning cleanup step."
@@ -23,12 +23,10 @@ echo "Creating image: ${FULL_IMAGE_NAME}:${TAG_NAME}"
 
 #echo "maven"
 cd ../expenseManager
-docker run --rm -v "$PWD":/usr/src/mymaven -u 1000:1000 -v "$HOME/.m2":/var/maven/.m2 -e MAVEN_CONFIG=/var/maven/.m2 -w /usr/src/mymaven maven:3.6.1-jdk-12 mvn -Duser.home=/var/maven clean install --no-transfer-progress
+docker run --rm -v "$PWD":/usr/src/mymaven -u 1000:1000 -v "$HOME/.m2":/var/maven/.m2 -e MAVEN_CONFIG=/var/maven/.m2 -w /usr/src/mymaven maven:3.6.2-jdk-13 \
+      mvn -Duser.home=/var/maven clean install --no-transfer-progress
 cd ../expenseManagerConfig
 mkdir -p target
 cp ../expenseManager/target/expensemanager-0.0.1-SNAPSHOT.jar target
 
 docker build --no-cache --pull -t ${FULL_IMAGE_NAME}:${TAG_NAME} .
-
-docker tag ${FULL_IMAGE_NAME}:${TAG_NAME} cjmason8/${FULL_IMAGE_NAME}:${TAG_NAME}
-docker tag ${FULL_IMAGE_NAME}:${TAG_NAME} cjmason8/${FULL_IMAGE_NAME}:latest
