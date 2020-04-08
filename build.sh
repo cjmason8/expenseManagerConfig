@@ -22,7 +22,7 @@ echo "maven"
 cd expenseManager
 echo "$PWD"
 docker run --rm -v "/jenkinsHome/workspace/expense-manager-pipeline/expenseManager":/usr/src/mymaven -u 0:0 -v "$HOME/.m2":/var/maven/.m2 \
-    -e MAVEN_CONFIG=/var/maven/.m2 -w /usr/src/mymaven maven:3.6.2-jdk-13 mvn -Duser.home=/var/maven clean install --no-transfer-progress
+    -e MAVEN_CONFIG=/var/maven/.m2 -w /usr/src/mymaven maven:3.6.2-jdk-14 mvn -Duser.home=/var/maven clean install --no-transfer-progress
 cd ..
 mkdir -p target
 cp expenseManager/target/expensemanager-0.0.1-SNAPSHOT.jar target

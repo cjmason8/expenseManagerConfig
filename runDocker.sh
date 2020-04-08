@@ -2,7 +2,7 @@
 
 set -e
 
-ENV=lcldoc
+ENV=lcl
 FULL_IMAGE_NAME=cjmason8/expense-manager
 
 git checkout master
@@ -17,7 +17,7 @@ echo -e "TAG_NAME=$TAG_NAME" > .env
 
 echo "Creating image: ${FULL_IMAGE_NAME}:${TAG_NAME}"
 cd ../expenseManager
-docker run --rm -v "$PWD":/usr/src/mymaven -u 1000:1000 -v "$HOME/.m2":/var/maven/.m2 -e MAVEN_CONFIG=/var/maven/.m2 -w /usr/src/mymaven maven:3.6.2-jdk-13 \
+docker run --rm -v "$PWD":/usr/src/mymaven -u 1000:1000 -v "$HOME/.m2":/var/maven/.m2 -e MAVEN_CONFIG=/var/maven/.m2 -w /usr/src/mymaven maven:3.6.2-jdk-14 \
         mvn -Duser.home=/var/maven clean install --no-transfer-progress
 
 cd ../expenseManagerConfig
