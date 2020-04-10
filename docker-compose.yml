@@ -9,4 +9,5 @@ expenseManager:
     - /applogs:/applogs
     - /docs:/docs
     - /resources:/resources
+    - /etc/localtime:/etc/localtime
 
