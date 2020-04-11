@@ -1,6 +1,7 @@
 expenseManager:
   environment:
-     INFO_APP_VERSION: ${TAG_NAME}
+    INFO_APP_VERSION: ${TAG_NAME}
+    TZ: Australia/Melbourne
   image: cjmason8/expense-manager:${TAG_NAME}
   external_links:
     - postgres/postgres:postgres
