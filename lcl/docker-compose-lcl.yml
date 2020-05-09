@@ -3,6 +3,7 @@ expenseManager:
     file: ../docker-compose.yml
     service: expenseManager
   environment:
+    ENV: lcl
     DB_URL: jdbc:postgresql://postgres:5432/expensemanager
     DB_USER: postgres
     DB_PASS: CEZsmAWTbh0CnoagCJ/hRw==

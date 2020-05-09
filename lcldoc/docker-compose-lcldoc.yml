@@ -1,5 +1,6 @@
 expenseManager:
   environment:
+    ENV: lcl
     DB_URL: jdbc:postgresql://172.17.0.1:5444/expensemanager
     DB_USER: postgres
     DB_PASS: CEZsmAWTbh0CnoagCJ/hRw==

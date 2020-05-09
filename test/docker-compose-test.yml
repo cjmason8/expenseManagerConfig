@@ -1,6 +1,7 @@
 expenseManager:
   image: cjmason8/expense-manager:latest
   environment:
+    ENV: test
     DB_URL: jdbc:postgresql://172.17.0.1:5432/expensemanager
     DB_USER: postgres
     DB_PASS: jade76
