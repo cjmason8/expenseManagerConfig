@@ -6,7 +6,8 @@ def imageName = "expense-manager"
 
 node {
     stage('Checkout') {
-        sh './checkout.sh'
+        sh 'git clone git@github.com:cjmason8/expenseManagerConfig.git .'
+        sh 'git clone git@github.com:cjmason8/expenseManager.git'
     }
 
     stage('Update Version') {
