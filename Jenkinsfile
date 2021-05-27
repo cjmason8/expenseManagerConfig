@@ -6,31 +6,11 @@ def imageName = "expense-manager"
 
 node {
     stage('Checkout') {
-        def file = new File("checkout.sh")
-        if (!file.exists()) {
-            git(
-                url: 'https://github.com/cjmason8/expenseManagerConfig.git',
-                credentialsId: 'Github',
-                branch: "master"
-            )
-            dir('expenseManager') {
-                git(
-                    url: 'https://github.com/cjmason8/expenseManager.git',
-                    credentialsId: 'Github',
-                    branch: "master"
-                )    
-            }
-        }
-
-        withCredentials([usernamePassword(credentialsId: 'Github', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-            sh './checkout.sh $PASSWORD expenseManager'
-        }
+        sh './checkout.sh'
     }
 
     stage('Update Version') {
-        withCredentials([usernamePassword(credentialsId: 'Github', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-            sh './updateVersion.sh $PASSWORD expenseManager'
-        }
+        sh './updateVersion.sh'
 
         version = readFile('VERSION').trim()
     }
@@ -47,5 +27,9 @@ node {
         withCredentials([usernamePassword(credentialsId: 'Rancher', passwordVariable: 'SECRETKEY', usernameVariable: 'ACCESSKEY')]) {
             sh './deploy.sh $ACCESSKEY $SECRETKEY http://167.86.68.204:8080/v2-beta/projects/1a5 prd'
         }
+    }
+
+    stage('Delete Workspace') {
+        sh 'rm -rf {,.[!.],..?}*'
     }
 }

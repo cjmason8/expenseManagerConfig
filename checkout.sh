@@ -1,11 +1,4 @@
 #!/bin/bash
 
-GIT_PASS=$1
-PROJECT=$2
-
-git checkout master
-git pull origin master
-
-cd expenseManager
-echo "git pull"
-git pull https://cjmason8:${GIT_PASS}@github.com/cjmason8/${PROJECT}.git
+git clone git@github.com:cjmason8/expenseManagerConfig.git .
+git clone git@github.com:cjmason8/expenseManager.git
