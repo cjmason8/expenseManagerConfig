@@ -6,7 +6,7 @@ def imageName = "expense-manager"
 
 node {
     stage('Delete Workspace') {
-        sh 'rm -rf {,.[!.],..?}*'
+        sh 'rm -r *'
     }
 
     stage('Checkout') {
