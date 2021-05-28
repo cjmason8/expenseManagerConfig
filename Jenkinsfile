@@ -5,6 +5,10 @@ def version = -1
 def imageName = "expense-manager"
 
 node {
+    stage('Delete Workspace') {
+        sh 'rm -rf {,.[!.],..?}*'
+    }
+
     stage('Checkout') {
         sh 'git clone git@github.com:cjmason8/expenseManagerConfig.git .'
         sh 'git clone git@github.com:cjmason8/expenseManager.git'
@@ -30,7 +34,4 @@ node {
         }
     }
 
-    stage('Delete Workspace') {
-        sh 'rm -rf {,.[!.],..?}*'
-    }
 }
