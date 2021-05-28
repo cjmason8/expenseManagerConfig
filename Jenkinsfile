@@ -7,6 +7,8 @@ def imageName = "expense-manager"
 node {
     stage('Delete Workspace') {
         sh 'rm -r *'
+        sh 'rm -r .git'
+        sh 'rm .gitignore'
     }
 
     stage('Checkout') {
