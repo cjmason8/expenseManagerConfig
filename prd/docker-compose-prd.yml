@@ -12,7 +12,7 @@ expenseManager:
     HIBERNATE_DIALECT: au.com.mason.expensemanager.dao.MyPostgreSQL94Dialect
     HIBERNATE_HBM2DDL_AUTO: update
     AUTH_SERVICE_END_POINT: http://authService:8080
-    REQUIRED_INFO: fjFSVC3Pm+d0Miy0ry3EWQ==
+    REQUIRED_INFO: UCYEhbLWwC0ympKtWKxySA==
     ALPHA_VEC: E66YYu84iW50GE66
     RESOURCE_DIR: /resources
     REQ_ACCOUNT: icMZGRCb+RbYUKI5RX7HaM33C3mLyertwbUl2RhYdt8=  
