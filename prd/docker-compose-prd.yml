@@ -17,3 +17,6 @@ expenseManager:
     RESOURCE_DIR: /resources
     REQ_ACCOUNT: icMZGRCb+RbYUKI5RX7HaM33C3mLyertwbUl2RhYdt8=  
     INFO_APP_VERSION: ${TAG_NAME}
+    DOCS_LOCATION: /docs
+    LOG_DIR: /applogs
+
