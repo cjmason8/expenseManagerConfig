@@ -5,7 +5,7 @@ expenseManager:
   image: cjmason8/expense-manager:${TAG_NAME}
   external_links:
     - postgres/postgres:postgres
-    - authService/authService:authService
+    - authservice/authservice:authService
   volumes:
     - /applogs:/applogs
     - /docs:/docs
