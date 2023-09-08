@@ -14,9 +14,8 @@ expenseManager:
     AUTH_SERVICE_END_POINT: http://authService:8080
     REQUIRED_INFO: S4Eqz7962JO0qeRAfQdevwjQAfUilB86oZnyH0RD4zs= 
     ALPHA_VEC: E66YYu84iW50GE66
-    RESOURCE_DIR: /resources
+    RESOURCES_DIR: /resources
     REQ_ACCOUNT: icMZGRCb+RbYUKI5RX7HaM33C3mLyertwbUl2RhYdt8=  
     INFO_APP_VERSION: ${TAG_NAME}
     DOCS_LOCATION: /docs
     LOG_DIR: /applogs
-

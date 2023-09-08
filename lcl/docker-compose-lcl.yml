@@ -1,19 +1,25 @@
-expenseManager:
-  extends:
-    file: ../docker-compose.yml
-    service: expenseManager
-  environment:
-    ENV: lcl
-    DB_URL: jdbc:postgresql://postgres:5432/expensemanager
-    DB_USER: postgres
-    DB_PASS: CEZsmAWTbh0CnoagCJ/hRw==
-    DB_DRIVER: org.postgresql.Driver
-    HIBERNATE_DIALECT: au.com.mason.expensemanager.dao.MyPostgreSQL94Dialect
-    HIBERNATE_HBM2DDL_AUTO: update
-    AUTH_SERVICE_END_POINT: http://authService:8080
-    REQUIRED_INFO: KfImvSFjTU1LpgQd3F4l5w==
-    ALPHA_VEC: E66YYu84iW50GE66
-    RESOURCE_DIR: /resources
-    REQ_ACCOUNT: icMZGRCb+RbYUKI5RX7HaM33C3mLyertwbUl2RhYdt8=  
-    INFO_APP_VERSION: ${TAG_NAME}
-  image: cjmason8/expense-manager:${TAG_NAME}
+version: '2'
+services:
+  expenseManager:
+    extends:
+      file: ../docker-compose.yml
+      service: expenseManager
+    environment:
+      ENV: lcl
+      DB_URL: jdbc:postgresql://host.docker.internal:5430/expensemanager
+      DB_USER: postgres
+      DB_PASS: KfImvSFjTU1LpgQd3F4l5w==
+      DB_DRIVER: org.postgresql.Driver
+      HIBERNATE_DIALECT: au.com.mason.expensemanager.dao.MyPostgreSQL94Dialect
+      HIBERNATE_HBM2DDL_AUTO: update
+      AUTH_SERVICE_END_POINT: http://host.docker.internal:8082
+      REQUIRED_INFO: KfImvSFjTU1LpgQd3F4l5w==
+      ALPHA_VEC: E66YYu84iW50GE66
+      RESOURCE_DIR: /resources
+      REQ_ACCOUNT: icMZGRCb+RbYUKI5RX7HaM33C3mLyertwbUl2RhYdt8=  
+      INFO_APP_VERSION: 3.0.174
+      DOCS_LOCATION: /Users/chris/docs
+      LOG_DIR: /Users/chris/applogs
+    image: cjmason8/expense-manager:3.0.174
+    ports:
+      - 8083:8080
