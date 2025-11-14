@@ -1,9 +1,6 @@
 version: '2'
 services:
   expenseManager:
-    extends:
-      file: ../docker-compose.yml
-      service: expenseManager
     environment:
       ENV: lcl
       DB_URL: jdbc:postgresql://host.docker.internal:5430/expensemanager
@@ -15,11 +12,19 @@ services:
       AUTH_SERVICE_END_POINT: http://host.docker.internal:8082
       REQUIRED_INFO: KfImvSFjTU1LpgQd3F4l5w==
       ALPHA_VEC: E66YYu84iW50GE66
-      RESOURCE_DIR: /resources
+      RESOURCES_DIR: /resources
       REQ_ACCOUNT: icMZGRCb+RbYUKI5RX7HaM33C3mLyertwbUl2RhYdt8=  
-      INFO_APP_VERSION: 3.0.174
-      DOCS_LOCATION: /Users/chris/docs
-      LOG_DIR: /Users/chris/applogs
-    image: cjmason8/expense-manager:3.0.174
+      INFO_APP_VERSION: ${TAG_NAME}
+      DOCS_LOCATION: /docs
+      LOG_DIR: /applogs
+    image: cjmason8/expense-manager:${TAG_NAME}
+    external_links:
+      - postgres/postgres:postgres
+      - authservice/authservice:authService
+    volumes:
+      - /Users/chris/applogs:/applogs
+      - /Users/chris/docs:/docs
+      - /Users/chris/resources:/resources
+      - /etc/localtime:/etc/localtime
     ports:
       - 8083:8080
