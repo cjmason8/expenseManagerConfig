@@ -7,8 +7,7 @@ expenseManager:
     - postgres/postgres:postgres
     - authservice/authservice:authService
   volumes:
-    - /Users/chris/applogs:/applogs
-    - /Users/chris/docs:/docs
-    - /Users/chris/resources:/resources
+    - /applogs:/applogs
+    - /docs:/docs
+    - /resources:/resources
     - /etc/localtime:/etc/localtime
-
