@@ -5,14 +5,17 @@ def version = -1
 def imageName = "expense-manager"
 
 node {
-    stage('Delete Workspace') {
-        sh 'rm -rf *'
-        sh 'rm -rf .git'
-        sh 'rm -f .gitignore'
-    }
-
     stage('Checkout') {
-        sh 'git clone git@github.com:cjmason8/expenseManagerConfig.git .'
+        // Clean up old files but preserve .env file
+        sh '''
+            # Remove all files except .env
+            find . -mindepth 1 -maxdepth 1 ! -name '.env' -exec rm -rf {} +
+        '''
+        
+        sh 'git clone git@github.com:cjmason8/expenseManagerConfig.git tmp_config'
+        sh 'mv tmp_config/* tmp_config/.git* . 2>/dev/null || true'
+        sh 'rm -rf tmp_config'
+        
         sh 'git clone git@github.com:cjmason8/expenseManager.git'
     }
 
