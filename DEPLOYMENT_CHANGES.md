@@ -1,148 +1,211 @@
-# Deployment Changes Summary
+# Deployment Changes - AWS Secrets Manager Migration
 
-## What Changed
+## Changes Made
 
-The docker-compose configurations have been updated to use AWS Secrets Manager for database credentials instead of hardcoded values.
+### 1. Removed Environment Variables
+The following encrypted environment variables are **no longer used**:
+- `REQUIRED_INFO` - Email password
+- `REQ_ACCOUNT` - Email account  
+- `ALPHA_VEC` - Encryption key
+- `DB_USER` - Database username (when commented out)
+- `DB_PASS` - Database password (when commented out)
 
-## Quick Reference
+### 2. Required AWS Environment Variables
+These must be set in Jenkins or deployment environment:
+- `AWS_ACCESS_KEY_ID` - AWS credentials for Secrets Manager access
+- `AWS_SECRET_ACCESS_KEY` - AWS secret key for Secrets Manager access
 
-### Local Deployment (No Changes to Commands)
-```bash
-cd lcl/
-docker-compose -f docker-compose-lcl.yml up -d
-```
-
-### Production Deployment (No Changes to Commands)
-```bash
-cd prd/
-docker-compose -f docker-compose-prd.yml up -d
-```
-
-**Note:** The `.env` file with AWS credentials is already set up locally. For production on VPN, you need to copy or create the `.env` file on the server.
-
-## What Was Removed from Docker Compose
-
+### 3. Application Configuration
+Added to `prd/docker-compose-prd.yml`:
 ```yaml
-# REMOVED - no longer in docker-compose files:
-DB_USER: postgres
-DB_PASS: 29XCSdu61eixtdTi2WIkiQ==
-```
-
-## What Was Added to Docker Compose
-
-```yaml
-# ADDED - new environment variables:
-ENV: prd  # or 'local' for lcl
-AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
 AWS_SECRETS_ENABLED: true
 AWS_SECRETS_REGION: ap-southeast-2
 ```
 
-These values come from the `.env` file in the root directory.
+### 4. Required AWS Secrets
 
-## Production VPN Deployment
+Create these secrets in AWS Secrets Manager (ap-southeast-2 region):
 
-**One-time setup on VPN server:**
-
+#### `email-credentials`
 ```bash
-# Option 1: Copy .env from local
-scp .env user@vpn-server:/path/to/expenseManagerConfig/
-
-# Option 2: Create .env on server
-ssh user@vpn-server
-cd /path/to/expenseManagerConfig
-cat > .env << 'EOF'
-AWS_ACCESS_KEY_ID=your-aws-access-key-id
-AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
-EOF
-chmod 600 .env
+aws secretsmanager create-secret \
+    --name email-credentials \
+    --description "Email credentials for EmailTrawler" \
+    --secret-string '{
+        "USER_NAME": "cjmason8bills@gmail.com",
+        "PASSWORD": "uqloyrigcyqyncbh"
+    }' \
+    --region ap-southeast-2
 ```
 
-**Then deploy normally:**
+#### `prod-database-credentials`
 ```bash
-cd prd/
-docker-compose -f docker-compose-prd.yml up -d
+aws secretsmanager create-secret \
+    --name prod-database-credentials \
+    --description "Production database credentials" \
+    --secret-string '{
+        "USER_NAME": "postgres",
+        "PASSWORD": "postgres2"
+    }' \
+    --region ap-southeast-2
+```
+
+#### `local-database-credentials`
+```bash
+aws secretsmanager create-secret \
+    --name local-database-credentials \
+    --description "Local/dev database credentials" \
+    --secret-string '{
+        "USER_NAME": "postgres",
+        "PASSWORD": "Yoke1976%"
+    }' \
+    --region ap-southeast-2
+```
+
+## Jenkins Configuration
+
+### Required Jenkins Credentials/Environment Variables
+
+Set these in Jenkins (Manage Jenkins > Configure System > Global Properties > Environment variables):
+
+1. **AWS_ACCESS_KEY_ID** - IAM user access key with Secrets Manager permissions
+2. **AWS_SECRET_ACCESS_KEY** - Corresponding secret key
+
+Or add to Jenkins credentials and inject in pipeline.
+
+### IAM Permissions Required
+
+The IAM user/role needs these permissions:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret"
+            ],
+            "Resource": [
+                "arn:aws:secretsmanager:ap-southeast-2:*:secret:email-credentials*",
+                "arn:aws:secretsmanager:ap-southeast-2:*:secret:prod-database-credentials*",
+                "arn:aws:secretsmanager:ap-southeast-2:*:secret:local-database-credentials*"
+            ]
+        }
+    ]
+}
+```
+
+## Deployment Process
+
+1. **Ensure AWS Secrets exist** (run commands above)
+2. **Set AWS credentials in Jenkins**
+3. **Run Jenkins pipeline** - it will build and deploy with new version
+4. **Verify application starts** and can access secrets
+
+## Troubleshooting
+
+### Error: "Could not parse config for project"
+**Cause**: Invalid docker-compose syntax (like `${VAR:-default}`)
+**Fix**: Use simple `${VAR}` syntax only
+
+### Error: "The AWS_ACCESS_KEY_ID variable is not set"
+**Cause**: AWS credentials not set in Jenkins
+**Fix**: Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY to Jenkins environment
+
+### Error: "Cannot access secret: email-credentials"
+**Cause**: Secret doesn't exist or wrong AWS permissions
+**Fix**: 
+1. Verify secret exists: `aws secretsmanager list-secrets --region ap-southeast-2`
+2. Check IAM permissions
+3. Create secret if missing
+
+### Error: "Null input buffer" or "EncryptionService.decrypt"
+**Cause**: Old Docker image still has EncryptionService
+**Fix**: Rebuild and redeploy (Jenkins will handle this automatically)
+
+## Docker Compose Syntax Notes
+
+**DON'T USE** (not supported):
+```yaml
+AWS_S3_BUCKET: ${AWS_S3_BUCKET:-expense-manager-documents}  # ❌ Bash-style defaults
+```
+
+**USE INSTEAD**:
+```yaml
+AWS_S3_BUCKET: ${AWS_S3_BUCKET}  # ✅ Simple variable
+```
+
+Or set a default in the application:
+```java
+@Value("${aws.s3.bucket:expense-manager-documents}")
+private String bucket;
+```
+
+## Rollback Procedure
+
+If deployment fails and you need to rollback:
+
+1. **Quick rollback** to previous version:
+   ```bash
+   cd /path/to/expenseManagerConfig
+   export TAG_NAME=<previous-version>
+   ./deploy.sh
+   ```
+
+2. **Temporary fix** - Re-add encrypted environment variables to `prd/docker-compose-prd.yml`:
+   ```yaml
+   DB_USER: postgres
+   DB_PASS: 29XCSdu61eixtdTi2WIkiQ==  # Encrypted password
+   REQUIRED_INFO: S4Eqz7962JO0qeRAfQdevwjQAfUilB86oZnyH0RD4zs=
+   REQ_ACCOUNT: icMZGRCb+RbYUKI5RX7HaM33C3mLyertwbUl2RhYdt8=
+   ALPHA_VEC: E66YYu84iW50GE66
+   ```
+
+3. **Restore EncryptionService** in code (from git history)
+
+## Verification Commands
+
+After deployment, verify everything works:
+
+```bash
+# Check container is running
+docker ps | grep expense-manager
+
+# Check logs for errors
+docker logs expense-manager 2>&1 | grep -i "error\|exception" | tail -20
+
+# Verify AWS Secrets Manager connection
+docker logs expense-manager 2>&1 | grep -i "secret"
+
+# Check database connection
+docker logs expense-manager 2>&1 | grep -i "database"
+
+# Health check
+curl http://localhost:8080/health
 ```
 
 ## Files Changed
 
-### expenseManagerConfig
-- ✅ `prd/docker-compose-prd.yml` - Removed DB_USER/DB_PASS, added AWS env vars
-- ✅ `lcl/docker-compose-lcl.yml` - Removed DB_USER/DB_PASS, added AWS env vars
-- ✅ `.env` - Created with AWS credentials (already in .gitignore)
-- ✅ `.env.example` - Template for reference
+### In expenseManager repo:
+- Removed: `src/main/java/.../service/EncryptionService.java`
+- Updated: `src/main/java/.../config/DatabaseConfig.java`
+- Updated: `src/main/java/.../robot/EmailTrawler.java`
+- Updated: `src/main/resources/log4j2.xml`
+- Added: `src/main/java/.../service/AwsSecretsService.java`
 
-### authenticationServiceConfig
-- ✅ `prd/docker-compose-prd.yml` - Removed DB_USER/DB_PASS, added AWS env vars
-- ✅ `lcl/docker-compose-lcl.yml` - Removed DB_USER/DB_PASS, added AWS env vars
-- ✅ `.env` - Created with AWS credentials (already in .gitignore)
-- ✅ `.env.example` - Template for reference
+### In expenseManagerConfig repo:
+- Updated: `prd/docker-compose-prd.yml`
+- Added: `DEPLOYMENT_CHANGES.md` (this file)
+- Added: `AWS_SECRETS_SETUP.md` (setup guide)
 
-## Security Improvements
+## Success Criteria
 
-**Before:**
-- ❌ Database passwords hardcoded in docker-compose files
-- ❌ Passwords stored in git repository (even if encrypted)
-
-**After:**
-- ✅ Database passwords stored in AWS Secrets Manager (encrypted at rest)
-- ✅ AWS credentials in `.env` file (not in git)
-- ✅ No secrets in docker-compose files
-- ✅ Can rotate database passwords without changing docker-compose
-
-## AWS Secrets Required
-
-Both applications use the same secrets:
-
-```bash
-# Create once for both apps
-aws secretsmanager create-secret \
-    --name local-database-credentials \
-    --secret-string '{"USER_NAME":"postgres","PASSWORD":"Yoke1976%"}' \
-    --region ap-southeast-2
-
-aws secretsmanager create-secret \
-    --name prod-database-credentials \
-    --secret-string '{"USER_NAME":"postgres","PASSWORD":"your-prod-password"}' \
-    --region ap-southeast-2
-
-# Email credentials (expenseManager only)
-aws secretsmanager create-secret \
-    --name email-credentials \
-    --secret-string '{"USER_NAME":"your-email@gmail.com","PASSWORD":"your-app-password"}' \
-    --region ap-southeast-2
-```
-
-## Verification
-
-After deploying, check logs to confirm AWS Secrets Manager is working:
-
-```bash
-# expenseManager logs
-docker logs expensemanager 2>&1 | grep "AWS Secrets"
-# Should see: "AWS Secrets Manager client initialized for region: ap-southeast-2"
-# Should see: "Successfully retrieved secret: local-database-credentials" (or prod-)
-
-# authService logs
-docker logs authservice 2>&1 | grep "AWS Secrets"
-```
-
-## Rollback (If Needed)
-
-If you need to rollback, the old docker-compose files are in git history:
-
-```bash
-# expenseManagerConfig
-git log --oneline prd/docker-compose-prd.yml
-git checkout <previous-commit> prd/docker-compose-prd.yml
-
-# authenticationServiceConfig
-git log --oneline prd/docker-compose-prd.yml
-git checkout <previous-commit> prd/docker-compose-prd.yml
-```
-
-## Support
-
-See detailed documentation:
-- [AWS_SECRETS_SETUP.md](./AWS_SECRETS_SETUP.md) - Complete setup guide
+- ✅ Application starts without errors
+- ✅ Database connection works via AWS Secrets
+- ✅ Email trawler connects via AWS Secrets  
+- ✅ No "EncryptionService" errors
+- ✅ No hardcoded path errors in logs
+- ✅ Health endpoint responds
+- ✅ Jenkins pipeline completes successfully
