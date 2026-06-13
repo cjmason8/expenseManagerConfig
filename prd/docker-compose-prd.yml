@@ -4,6 +4,7 @@ expenseManager:
     service: expenseManager
   environment:
     ENV: prd
+    DATABASE_SECRET_NAME: prod-database-credentials
     SPRING_PROFILES_ACTIVE: production
     DB_URL: jdbc:postgresql://postgres:5432/expensemanager
     DB_DRIVER: org.postgresql.Driver
@@ -18,3 +19,4 @@ expenseManager:
     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     AWS_SECRETS_ENABLED: true
     AWS_SECRETS_REGION: ap-southeast-2
+    AWS_S3_BUCKET: expense-manager-documents-prod
