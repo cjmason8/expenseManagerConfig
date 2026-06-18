@@ -22,9 +22,25 @@ if [ "${1:-}" = "format-check" ]; then
   set -- "com.diffplug.spotless:spotless-maven-plugin:${SPOTLESS_VERSION}:check" "$@"
 fi
 
-echo "Running Maven in $(pwd)"
+# Jenkins runs inside a container; the Docker daemon mounts from the host filesystem.
+# Workspace is /var/jenkins_home/... in Jenkins but /jenkinsHome/... on the Docker host.
+SOURCE_DIR="$(pwd)"
+MOUNT_DIR="${MAVEN_DOCKER_SRC:-${SOURCE_DIR}}"
+if [ -z "${MAVEN_DOCKER_SRC:-}" ] && [[ "${SOURCE_DIR}" == /var/jenkins_home/* ]]; then
+  JENKINS_HOST_HOME="${JENKINS_HOST_HOME:-/jenkinsHome}"
+  MOUNT_DIR="${JENKINS_HOST_HOME}${SOURCE_DIR#/var/jenkins_home}"
+fi
+
+if [ ! -f "${MOUNT_DIR}/pom.xml" ]; then
+  echo "pom.xml not found at Docker mount source: ${MOUNT_DIR}" >&2
+  echo "Workspace path inside Jenkins: ${SOURCE_DIR}" >&2
+  echo "Set MAVEN_DOCKER_SRC to the host path visible to the Docker daemon if different." >&2
+  exit 1
+fi
+
+echo "Running Maven with mount ${MOUNT_DIR} -> /usr/src/mymaven"
 docker run --rm \
-  -v "$(pwd)":/usr/src/mymaven \
+  -v "${MOUNT_DIR}":/usr/src/mymaven \
   -u 1000:1000 \
   -v "/home/tomcat/.m2":/var/maven/.m2 \
   -e MAVEN_CONFIG=/var/maven/.m2 \
