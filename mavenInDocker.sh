@@ -25,20 +25,26 @@ fi
 SOURCE_DIR="$(pwd)"
 
 # Jenkins runs in Docker with /jenkinsHome:/var/jenkins_home (see ../jenkins/docker-compose.yml).
-# Maven is installed in the Jenkins image — run it natively to avoid bind-mounting the workspace
-# through the host Docker socket (/var/jenkins_home is not a valid host path for -v).
-if [[ "${SOURCE_DIR}" == /var/jenkins_home/* ]] && command -v mvn >/dev/null 2>&1; then
-  echo "Running Maven natively in Jenkins at ${SOURCE_DIR}"
-  mvn -Duser.home="${MAVEN_USER_HOME:-/var/jenkins_home/.m2}" "$@"
-  exit $?
+# Use the host path for docker -v; /var/jenkins_home is not visible to the Docker daemon.
+# Always use maven:3.8-openjdk-17 — Jenkins ships JDK 21 but this project targets Java 17 (Lombok).
+if [[ "${SOURCE_DIR}" == /var/jenkins_home/* ]]; then
+  JENKINS_HOST_HOME="${JENKINS_HOST_HOME:-/jenkinsHome}"
+  MOUNT_DIR="${MAVEN_DOCKER_SRC:-${JENKINS_HOST_HOME}${SOURCE_DIR#/var/jenkins_home}}"
+  MAVEN_USER_ID=1000
+  MAVEN_GROUP_ID=1000
+  M2_DIR="/home/tomcat/.m2"
+else
+  MOUNT_DIR="${MAVEN_DOCKER_SRC:-${SOURCE_DIR}}"
+  MAVEN_USER_ID="$(id -u)"
+  MAVEN_GROUP_ID="$(id -g)"
+  M2_DIR="${HOME}/.m2"
 fi
 
-# Local / non-Jenkins: run Maven in a container with the current directory mounted.
-echo "Running Maven in Docker at ${SOURCE_DIR}"
+echo "Running Maven in Docker (JDK 17) with mount ${MOUNT_DIR} -> /usr/src/mymaven"
 docker run --rm \
-  -v "${SOURCE_DIR}":/usr/src/mymaven \
-  -u "$(id -u):$(id -g)" \
-  -v "${HOME}/.m2":/var/maven/.m2 \
+  -v "${MOUNT_DIR}":/usr/src/mymaven \
+  -u "${MAVEN_USER_ID}:${MAVEN_GROUP_ID}" \
+  -v "${M2_DIR}":/var/maven/.m2 \
   -e MAVEN_CONFIG=/var/maven/.m2 \
   -w /usr/src/mymaven \
   maven:3.8-openjdk-17 \
