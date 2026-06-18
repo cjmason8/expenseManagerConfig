@@ -19,6 +19,32 @@ node {
         sh 'git clone git@github.com:cjmason8/expenseManager.git'
     }
 
+    stage('Format Check') {
+        sh '''
+            docker run --rm \
+              -v "${WORKSPACE}/expenseManager":/usr/src/mymaven \
+              -u 1000:1000 \
+              -v "/home/tomcat/.m2":/var/maven/.m2 \
+              -e MAVEN_CONFIG=/var/maven/.m2 \
+              -w /usr/src/mymaven \
+              maven:3.8-openjdk-17 \
+              mvn -Duser.home=/var/maven spotless:check --no-transfer-progress
+        '''
+    }
+
+    stage('Test') {
+        sh '''
+            docker run --rm \
+              -v "${WORKSPACE}/expenseManager":/usr/src/mymaven \
+              -u 1000:1000 \
+              -v "/home/tomcat/.m2":/var/maven/.m2 \
+              -e MAVEN_CONFIG=/var/maven/.m2 \
+              -w /usr/src/mymaven \
+              maven:3.8-openjdk-17 \
+              mvn -Duser.home=/var/maven test --no-transfer-progress
+        '''
+    }
+
     stage('Update Version') {
         sh './updateVersion.sh'
 
