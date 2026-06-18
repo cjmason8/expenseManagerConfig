@@ -19,11 +19,7 @@ fi
 echo "Creating image: ${FULL_IMAGE_NAME}:${TAG_NAME}"
 
 echo "maven"
-cd expenseManager
-echo "$PWD"
-docker run --rm -v "/jenkinsHome/workspace/expense-manager-pipeline/expenseManager":/usr/src/mymaven -u 1000:1000 -v "/home/tomcat/.m2":/var/maven/.m2 \
-    -e MAVEN_CONFIG=/var/maven/.m2 -w /usr/src/mymaven maven:3.8-openjdk-17 mvn -Duser.home=/var/maven clean install --no-transfer-progress
-cd ..
+./mavenInDocker.sh clean install --no-transfer-progress
 mkdir -p target
 cp expenseManager/target/expensemanager-0.0.1-SNAPSHOT.jar target
 
