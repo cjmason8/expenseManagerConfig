@@ -9,6 +9,19 @@ if [ ! -f pom.xml ]; then
   exit 1
 fi
 
+if [ "${1:-}" = "format-check" ]; then
+  shift
+  if ! grep -q 'spotless-maven-plugin' pom.xml; then
+    echo "spotless-maven-plugin not configured in pom.xml — push expenseManager master with Spotless config" >&2
+    exit 1
+  fi
+  SPOTLESS_VERSION="$(grep -m1 '<spotless.version>' pom.xml | sed -E 's/.*<spotless.version>([^<]+)<.*/\1/')"
+  if [ -z "${SPOTLESS_VERSION}" ]; then
+    SPOTLESS_VERSION="3.7.0"
+  fi
+  set -- "com.diffplug.spotless:spotless-maven-plugin:${SPOTLESS_VERSION}:check" "$@"
+fi
+
 echo "Running Maven in $(pwd)"
 docker run --rm \
   -v "$(pwd)":/usr/src/mymaven \

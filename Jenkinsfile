@@ -20,7 +20,7 @@ node {
     }
 
     stage('Format Check') {
-        sh './mavenInDocker.sh spotless:check --no-transfer-progress'
+        sh './mavenInDocker.sh format-check --no-transfer-progress'
     }
 
     stage('Test') {
