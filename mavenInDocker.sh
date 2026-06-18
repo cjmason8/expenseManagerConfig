@@ -22,27 +22,23 @@ if [ "${1:-}" = "format-check" ]; then
   set -- "com.diffplug.spotless:spotless-maven-plugin:${SPOTLESS_VERSION}:check" "$@"
 fi
 
-# Jenkins runs inside a container; the Docker daemon mounts from the host filesystem.
-# Workspace is /var/jenkins_home/... in Jenkins but /jenkinsHome/... on the Docker host.
 SOURCE_DIR="$(pwd)"
-MOUNT_DIR="${MAVEN_DOCKER_SRC:-${SOURCE_DIR}}"
-if [ -z "${MAVEN_DOCKER_SRC:-}" ] && [[ "${SOURCE_DIR}" == /var/jenkins_home/* ]]; then
-  JENKINS_HOST_HOME="${JENKINS_HOST_HOME:-/jenkinsHome}"
-  MOUNT_DIR="${JENKINS_HOST_HOME}${SOURCE_DIR#/var/jenkins_home}"
+
+# Jenkins runs in Docker with /jenkinsHome:/var/jenkins_home (see ../jenkins/docker-compose.yml).
+# Maven is installed in the Jenkins image — run it natively to avoid bind-mounting the workspace
+# through the host Docker socket (/var/jenkins_home is not a valid host path for -v).
+if [[ "${SOURCE_DIR}" == /var/jenkins_home/* ]] && command -v mvn >/dev/null 2>&1; then
+  echo "Running Maven natively in Jenkins at ${SOURCE_DIR}"
+  mvn -Duser.home="${MAVEN_USER_HOME:-/var/jenkins_home/.m2}" "$@"
+  exit $?
 fi
 
-if [ ! -f "${MOUNT_DIR}/pom.xml" ]; then
-  echo "pom.xml not found at Docker mount source: ${MOUNT_DIR}" >&2
-  echo "Workspace path inside Jenkins: ${SOURCE_DIR}" >&2
-  echo "Set MAVEN_DOCKER_SRC to the host path visible to the Docker daemon if different." >&2
-  exit 1
-fi
-
-echo "Running Maven with mount ${MOUNT_DIR} -> /usr/src/mymaven"
+# Local / non-Jenkins: run Maven in a container with the current directory mounted.
+echo "Running Maven in Docker at ${SOURCE_DIR}"
 docker run --rm \
-  -v "${MOUNT_DIR}":/usr/src/mymaven \
-  -u 1000:1000 \
-  -v "/home/tomcat/.m2":/var/maven/.m2 \
+  -v "${SOURCE_DIR}":/usr/src/mymaven \
+  -u "$(id -u):$(id -g)" \
+  -v "${HOME}/.m2":/var/maven/.m2 \
   -e MAVEN_CONFIG=/var/maven/.m2 \
   -w /usr/src/mymaven \
   maven:3.8-openjdk-17 \
