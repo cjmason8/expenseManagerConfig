@@ -20,29 +20,29 @@ node {
     }
 
     stage('Format Check') {
-        sh '''
+        sh """
             docker run --rm \
-              -v "${WORKSPACE}/expenseManager":/usr/src/mymaven \
+              -v "${env.WORKSPACE}/expenseManager":/usr/src/mymaven \
               -u 1000:1000 \
               -v "/home/tomcat/.m2":/var/maven/.m2 \
               -e MAVEN_CONFIG=/var/maven/.m2 \
               -w /usr/src/mymaven \
               maven:3.8-openjdk-17 \
-              mvn -Duser.home=/var/maven spotless:check --no-transfer-progress
-        '''
+              mvn -Duser.home=/var/maven com.diffplug.spotless:spotless-maven-plugin:3.7.0:check --no-transfer-progress
+        """
     }
 
     stage('Test') {
-        sh '''
+        sh """
             docker run --rm \
-              -v "${WORKSPACE}/expenseManager":/usr/src/mymaven \
+              -v "${env.WORKSPACE}/expenseManager":/usr/src/mymaven \
               -u 1000:1000 \
               -v "/home/tomcat/.m2":/var/maven/.m2 \
               -e MAVEN_CONFIG=/var/maven/.m2 \
               -w /usr/src/mymaven \
               maven:3.8-openjdk-17 \
               mvn -Duser.home=/var/maven test --no-transfer-progress
-        '''
+        """
     }
 
     stage('Update Version') {
